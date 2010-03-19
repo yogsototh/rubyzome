@@ -1,0 +1,2 @@
+class GridError < StandardError
+end

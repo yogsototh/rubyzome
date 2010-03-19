@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'dm-core'
+require 'benchmark'
+require 'date.rb'
+
+# Include all models
+Dir["../app/models/*.rb"].each { |file| require file }
+# Connect to DB 
+DataMapper.setup(:default, 'mysql://gridadmin:gridadmin@localhost/grid')
+# Reset tables
+DataMapper.auto_migrate!
+

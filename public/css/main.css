@@ -1,0 +1,89 @@
+html, body { 
+    margin: 0; 
+    padding: 0;
+    top: 0;
+    left: 0;
+}
+body {
+    background-color: #320;
+    color: #ca8;
+}
+#entete {
+    background-color: #320;
+    margin: 0;
+    padding: 1em;
+    text-align: center;
+    text-shadow: 0 0 9px #100;
+}
+
+#content {
+    border-top: 1px solid #db8;
+    border-bottom: 1px solid #eda;
+    background-color: #ca8;
+    color: #320;
+    text-align: center;
+    padding-top: 3em;
+    padding-bottom: 3em;
+}
+
+#bottom {
+    font-size: .8em;
+    text-align: center;
+    padding-top: 3em;
+    background-color: #320;
+    color: #ca8;
+    padding-bottom: 3em;
+}
+
+a,
+a:link,
+a:visited {
+    color: #fda; }
+a:hover,
+a:active {
+    color: #d70; }
+
+#gprefs {
+    font-size: 1.2em;
+    margin: 1em;
+}
+#promotion {
+    font-size: .8em;
+}
+
+
+/* input */
+#content input {
+    color: #320;
+    margin: .5em;
+    font-size: 1.5em;
+}
+
+#content input.inactive {
+    color: #dddddd;
+}
+
+#signin {
+    width: 10em;
+}
+
+/* tables */
+table {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left; }
+table tr th {
+    margin: 7px;
+    color: #ca8;
+    background-color: #320;
+}
+table tr th {
+    font-weight: bold;
+    text-align: center;
+    padding: 1.5em; }
+table tr td {
+    padding: .8em;
+    border: solid 1px #320; }
+table tr.r0 {
+    background-color: #e8c6a0;
+}

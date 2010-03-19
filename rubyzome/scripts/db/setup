@@ -1,0 +1,12 @@
+name=grid;
+mysql -u root -p <<END
+CREATE DATABASE $name;
+CREATE USER '${name}admin'@'localhost' IDENTIFIED BY '${name}admin';
+CREATE USER '${name}admin'@'127.0.0.1' IDENTIFIED BY '${name}admin' ;
+GRANT ALL on $name.* TO '${name}admin'@'localhost' ;
+GRANT ALL on $name.* TO '${name}admin'@'127.0.0.1' ;
+CREATE USER '$name'@'localhost' IDENTIFIED BY '$name' ;
+CREATE USER '$name'@'127.0.0.1' IDENTIFIED BY '$name' ;
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP on $name.* TO '$name'@'localhost';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP on $name.* TO '$name'@'127.0.0.1';
+END
