@@ -1,7 +1,7 @@
 class RestController
 
     # Use helpers module
-    require "app/controllers/include/Helpers.rb"
+    require "rubyzome/controllers/Helpers.rb"
     include Helpers
 
     # ajoute un attribut Request
