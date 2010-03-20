@@ -1,5 +1,8 @@
 require 'rubyzome/controllers/RestController.rb'
 class AccountController < RestController
+    require 'app/controllers/include/Helpers.rb'
+    include Helpers
+
     # curl -i -XGET http://gpadm.loc/accounts
     def index
         check_authentication

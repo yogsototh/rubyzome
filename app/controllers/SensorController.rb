@@ -1,5 +1,7 @@
 require 'rubyzome/controllers/RestController.rb'
 class SensorController < RestController
+    require 'app/controllers/include/Helpers.rb'
+    include Helpers
 
         # Get all sensors for a given user or for all users
         # curl -i -XGET -d'l=login&p=password' http://gpadm.loc/users/luc/sensors

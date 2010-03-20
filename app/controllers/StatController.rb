@@ -3,6 +3,8 @@ require 'date'
 require 'time'
 
 class StatController < ServiceRestController
+    require 'app/controllers/include/Helpers.rb'
+    include Helpers
 
    def services
         {        

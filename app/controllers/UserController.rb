@@ -1,5 +1,7 @@
 require 'rubyzome/controllers/RestController.rb'
 class UserController < RestController
+    require 'app/controllers/include/Helpers.rb'
+    include Helpers
 
         # Get all users 
         # curl -i -XGET -d'l=login&p=password' http://gpadm.loc/users.xml
