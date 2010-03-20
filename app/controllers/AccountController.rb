@@ -1,4 +1,8 @@
+require 'rubyzome/controllers/RestController.rb'
 class AccountController < RestController
+    require 'app/controllers/include/Helpers.rb'
+    include Helpers
+
 
     # Not available (should be done through admin) 
     def index

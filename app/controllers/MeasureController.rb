@@ -1,4 +1,8 @@
+require 'rubyzome/controllers/RestController.rb'
 class MeasureController < RestController
+    require 'app/controllers/include/Helpers.rb'
+    include Helpers
+
 
     # Get all measure for a given sensor
     # curl -i -d'l=login&p=password' -XGET http://gp.loc/sensors/main_home/measures

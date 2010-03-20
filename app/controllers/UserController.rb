@@ -1,4 +1,8 @@
+require 'rubyzome/controllers/RestController.rb'
 class UserController < RestController
+
+    require 'app/controllers/include/Helpers.rb'
+    include Helpers
 
     # Not available
     def index

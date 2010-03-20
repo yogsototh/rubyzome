@@ -1,3 +1,4 @@
+require 'rubyzome/controllers/RestController.rb'
 class SensorController < RestController
 
     # Get all sensors for a given user

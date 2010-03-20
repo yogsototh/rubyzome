@@ -1,6 +1,8 @@
-require 'app/controllers/include/ServiceRestController'
-
+require 'rubyzome/controllers/ServiceRestController.rb'
 class StatController < ServiceRestController
+    require 'app/controllers/include/Helpers.rb'
+    include Helpers
+
 
    def services
 	{	
