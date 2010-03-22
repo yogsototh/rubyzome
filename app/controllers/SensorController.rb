@@ -1,5 +1,6 @@
-require 'rubyzome/controllers/RestController.rb'
-class SensorController < RestController
+# encoding: utf-8
+
+class SensorController < Rubyzome::RestController
 
     # Get all sensors for a given user
     # curl -i -XGET -d'l=login&p=password' http://gp.loc/users/luc/sensors

@@ -1,5 +1,6 @@
-require 'rubyzome/controllers/RestController.rb'
-class MeasureController < RestController
+# encoding: utf-8
+
+class MeasureController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 

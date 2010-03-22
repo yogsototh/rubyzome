@@ -1,5 +1,6 @@
-require 'rubyzome/controllers/RestController.rb'
-class AccountController < RestController
+# encoding: utf-8
+
+class AccountController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 

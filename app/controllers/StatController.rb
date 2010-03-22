@@ -1,5 +1,6 @@
-require 'rubyzome/controllers/ServiceRestController.rb'
-class StatController < ServiceRestController
+# encoding: utf-8
+
+class StatController < Rubyzome::ServiceRestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 
