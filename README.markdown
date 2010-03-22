@@ -1,5 +1,15 @@
-# gpadm Project for GridPocket©
+# Rubyzome
 
-Using the *lyframework* usable with a free license.
+Ruby Restful Mobile oriented framework.
 
-This repository/branch contain the admin part of the project.
+- Concentrate on API
+- Can create Web interface easily
+
+
+## Docs
+
+Documentation is to be done.
+
+## Status
+
+Orientation and satus of the current project to define.

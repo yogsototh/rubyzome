@@ -1,4 +1,6 @@
-fatherClass=HTMLView.dup
+# encoding: utf-8
+
+fatherClass=Rubyzome::HTMLView.dup
 
 class AccountHTMLView < fatherClass
     def content(object)

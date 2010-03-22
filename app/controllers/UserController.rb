@@ -1,5 +1,5 @@
 require 'rubyzome/controllers/RestController.rb'
-class UserController < RestController
+class UserController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 

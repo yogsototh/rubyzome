@@ -1,12 +1,17 @@
-class RubyzomeAccount
-    # Includes
-    include DataMapper::Resource
+# encoding: utf-8
 
-    # Properties
-    property :id,       Serial
-    property :password, String
-
-    # Associations
-    belongs_to :user
+module Rubyzome
+    module AccountUserHelper
+        class Account
+            # Includes
+            include DataMapper::Resource
+        
+            # Properties
+            property :id,       Serial
+            property :password, String
+        
+            # Associations
+            belongs_to :user
+        end
+    end
 end
-

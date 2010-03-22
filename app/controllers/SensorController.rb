@@ -1,5 +1,5 @@
 require 'rubyzome/controllers/RestController.rb'
-class SensorController < RestController
+class SensorController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 
