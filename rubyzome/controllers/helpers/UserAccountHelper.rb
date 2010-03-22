@@ -5,21 +5,21 @@ module Rubyzome
 
         def check_admin_authentication
             if @request[:l] != 'adm' then
-                raise GridError, "Only admin is authorized to perform this action"
+                raise Error, "Only admin is authorized to perform this action"
             end
 
             if @request[:p] != 'adm' then
-                raise GridError, "Authentication failed, please check your login and password"
+                raise Error, "Authentication failed, please check your login and password"
             end
         end
 
         def check_authentication
             user=User.first({:nickname => @request[:l]})
             if user.nil?
-                raise GridError, "Authentication failed, user with login #{@request[:l]} does not exist"
+                raise Error, "Authentication failed, user with login #{@request[:l]} does not exist"
             end
             if(@request[:p] != Account.first({:user => user}).password) then
-                raise GridError, "Authentication failed, please check username and password"
+                raise Error, "Authentication failed, please check username and password"
             end
         end
 
@@ -28,15 +28,15 @@ module Rubyzome
         def get_account(id=:account_id)
             account_id = @request[id]
             if(account_id.nil?) then
-                raise GridError, "No user provided"
+                raise Error, "No user provided"
             end
             user = User.first({:nickname => account_id})
             if(user.nil?) then
-                raise GridError, "User #{account_id} does not exist"
+                raise Error, "User #{account_id} does not exist"
             end
             account = user.account
             if(account.nil?) then
-                raise GridError, "No account linked to user #{user_id}"
+                raise Error, "No account linked to user #{user_id}"
             end
             return account
         end
@@ -46,11 +46,11 @@ module Rubyzome
         def get_user(id=:user_id)
             user_id = @request[id]
             if(user_id.nil?) then
-                raise GridError, "No user provided"
+                raise Error, "No user provided"
             end
             user = User.first({:nickname => user_id})
             if(user.nil?) then
-                raise GridError, "User #{user_id} does not exist"
+                raise Error, "User #{user_id} does not exist"
             end
             return user
         end
@@ -60,11 +60,11 @@ module Rubyzome
         def get_sensor(id=:sensor_id)
             sensor_id = @request[id]
             if(sensor_id.nil?) then
-                raise GridError, "No sensor provided"
+                raise Error, "No sensor provided"
             end
             sensor = Sensor.first({:sensor_hr => sensor_id})
             if(sensor.nil?) then
-                raise GridError,"Sensor #{sensor_id} does not exist"
+                raise Error,"Sensor #{sensor_id} does not exist"
             end
             return sensor
         end
@@ -74,11 +74,11 @@ module Rubyzome
         def get_measure(id=:measure_id)
             measure_id = @request[id]
             if(measure_id.nil?) then
-                raise GridError, "No measure provided"
+                raise Error, "No measure provided"
             end
             measure = Measure.first({:measure_hr => measure_id})
             if(measure.nil?) then
-                raise GridError,"Measure #{measure_id} does not exist"
+                raise Error,"Measure #{measure_id} does not exist"
             end
             return measure
         end
@@ -87,19 +87,19 @@ module Rubyzome
 
         def check_ownership_user_account(user,account)
             if account.user_id = user
-                raise GridError, "Account is not linked to user #{user.nickname}"
+                raise Error, "Account is not linked to user #{user.nickname}"
             end
         end
 
         def check_ownership_user_sensor(user,sensor)
             if sensor.user != user then
-                raise GridError, "Sensor #{sensor.sensor_hr} does not belong to User #{user.nickname}"
+                raise Error, "Sensor #{sensor.sensor_hr} does not belong to User #{user.nickname}"
             end
         end
 
         def check_ownership_sensor_measure(sensor,measure)
             if measure.sensor != sensor then
-                raise GridError, "Measure #{measure.measure_hr} does not belong to Sensor #{sensor.sensor_hr}"
+                raise Error, "Measure #{measure.measure_hr} does not belong to Sensor #{sensor.sensor_hr}"
             end
         end
 
@@ -107,7 +107,7 @@ module Rubyzome
 
         def check_ownership_requestor_user(requestor,user)
             if requestor.nickname != user.nickname
-                raise GridError, "Requestor #{requestor.nickname} and user requested #{user.nickname} do not match"
+                raise Error, "Requestor #{requestor.nickname} and user requested #{user.nickname} do not match"
             end
         end
 
