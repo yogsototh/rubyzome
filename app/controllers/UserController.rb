@@ -35,7 +35,7 @@ class UserController < Rubyzome::RestController
                         user.update_attributes(clean_hash([:nickname,:status]))
                         user.save
                 rescue Exception => e
-                        raise GridError,"Cannot update user: #{e.message}"        
+                        raise Rubyzome::Error,"Cannot update user: #{e.message}"        
                 end
 
                 clean_id(user.attributes)

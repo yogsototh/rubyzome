@@ -32,7 +32,7 @@ class StatController < Rubyzome::ServiceRestController
                         }
                 end
         else
-                raised GridError, "No measure found for this period"
+                raised Rubyzome::Error, "No measure found for this period"
         end
    end
 
@@ -51,7 +51,7 @@ class StatController < Rubyzome::ServiceRestController
                 m = m / measures.length
                 {:average => m}
         else
-                raise GridError, "No measure found for this period"
+                raise Rubyzome::Error, "No measure found for this period"
         end
    end
 
@@ -69,7 +69,7 @@ class StatController < Rubyzome::ServiceRestController
                 measures.each { |x| m = x.consumption.to_i if m > x.consumption.to_i }
                 {:min => m}
         else
-                raise GridError, "No measure found for this period"
+                raise Rubyzome::Error, "No measure found for this period"
         end
    end
 
@@ -87,7 +87,7 @@ class StatController < Rubyzome::ServiceRestController
                 measures.each { |x| m = x.consumption.to_i if m < x.consumption.to_i }
                 {:max => m}
         else
-                raise GridError, "No measure found for this period"
+                raise Rubyzome::Error, "No measure found for this period"
         end
    end
 
@@ -103,7 +103,7 @@ class StatController < Rubyzome::ServiceRestController
 		m = measure.consumption.to_i
 		{:last => m}
         else
-                raise GridError, "No measure found for this period"
+                raise Rubyzome::Error, "No measure found for this period"
         end
    end
 end

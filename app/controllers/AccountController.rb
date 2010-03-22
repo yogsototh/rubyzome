@@ -29,7 +29,7 @@ class AccountController < Rubyzome::RestController
                 user=User.new(clean_hash([:nickname]))
                 user.save
         rescue Exception => e
-                raise GridError, "Unable to create user: #{e.message}"
+                raise Rubyzome::Error, "Unable to create user: #{e.message}"
         end
 
         # Account creation
@@ -48,7 +48,7 @@ class AccountController < Rubyzome::RestController
                 clean_id(account.attributes.merge(account.user.attributes))
         rescue Exception => e
                 user.destroy!
-                raise GridError, "Cannot create account: #{e.message}"
+                raise Rubyzome::Error, "Cannot create account: #{e.message}"
         end
     end
 
@@ -76,7 +76,7 @@ class AccountController < Rubyzome::RestController
                                                         :street] ))
                 account.save
         rescue Exception => e
-                raise GridError, "Cannot update account: #{e.message}"
+                raise Rubyzome::Error, "Cannot update account: #{e.message}"
         end
 
         clean_id(account.attributes)
@@ -91,13 +91,13 @@ class AccountController < Rubyzome::RestController
         begin
                 account.destroy!
         rescue Exception => e
-                raise GridError, "Cannot delete account linked to user #{user.nickname}: #{e.message}"
+                raise Rubyzome::Error, "Cannot delete account linked to user #{user.nickname}: #{e.message}"
         end
 
         begin
                 user.destroy!
         rescue Exception => e
-                raise GridError, "Cannot delete user #{user.nickname}: #{e.message}"
+                raise Rubyzome::Error, "Cannot delete user #{user.nickname}: #{e.message}"
         end
 
         action_completed("User #{user.nickname} and associated account deleted")

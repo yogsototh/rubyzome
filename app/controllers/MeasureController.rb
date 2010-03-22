@@ -26,7 +26,7 @@ class MeasureController < Rubyzome::RestController
                         measure.sensor = sensor
                         measure.save
                 rescue Exception => e
-                        raise GridError, "Cannot create new measure: #{e.message}"
+                        raise Rubyzome::Error, "Cannot create new measure: #{e.message}"
                 end
 
                 clean_id(measure.attributes)
@@ -57,7 +57,7 @@ class MeasureController < Rubyzome::RestController
                         measure.consumption = hash[:consumption]
                         measure.save
                 rescue
-                        raise GridError, "Cannot update measure: #{e.message}"
+                        raise Rubyzome::Error, "Cannot update measure: #{e.message}"
                 end
 
                 clean_id(measure.attributes)
@@ -76,7 +76,7 @@ class MeasureController < Rubyzome::RestController
                 begin
                         measure.destroy
                 rescue Exception => e
-                        raise GridError, "Cannot delete measure: #{e.message}"
+                        raise Rubyzome::Error, "Cannot delete measure: #{e.message}"
                 end
 
                 action_completed("Measure #{measure.measure_hr} deleted")

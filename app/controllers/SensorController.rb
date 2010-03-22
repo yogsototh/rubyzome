@@ -35,7 +35,7 @@ class SensorController < Rubyzome::RestController
                         sensor.user = user
                         sensor.save
                 rescue Exception => e
-                        raise GridError, "Cannot create sensor: #{e.message}"
+                        raise Rubyzome::Error, "Cannot create sensor: #{e.message}"
                 end
 
                 clean_id(sensor.attributes)
@@ -67,7 +67,7 @@ class SensorController < Rubyzome::RestController
                         sensor.address                 = hash[:address]         if not hash[:address].nil?
                         sensor.save
                 rescue Exception => e
-                        raise GridError, "Cannot update sensor: #{e.message}"
+                        raise Rubyzome::Error, "Cannot update sensor: #{e.message}"
                 end 
 
                 clean_id(sensor.attributes)
@@ -85,7 +85,7 @@ class SensorController < Rubyzome::RestController
                 begin
                         sensor.destroy
                 rescue Exception => e
-                        raise GridError, "Cannot delete sensor: #{e.message}"        
+                        raise Rubyzome::Error, "Cannot delete sensor: #{e.message}"        
                 end
 
                 action_completed("Sensor #{sensor.sensor_hr} deleted")
