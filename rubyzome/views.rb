@@ -11,6 +11,6 @@ module Rubyzome
             next
         end
         viewname=File.basename(file,File.extname(file))
-        $views[viewname]=Kernel.const_get(viewname)
+        $views[viewname]=Rubyzome.const_get(viewname)
     end
 end
