@@ -3,10 +3,6 @@
 module Rubyzome
     class RestController
 
-        # Use helpers module
-        require "rubyzome/controllers/Helpers.rb"
-        include Helpers
-
         # ajoute un attribut Request
         # contenant les détails des requêtes
         attr_accessor :request
