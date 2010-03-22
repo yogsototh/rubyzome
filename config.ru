@@ -6,7 +6,7 @@ require 'rack'
 
 # TODO: find a better way to manage $view, may be using Rubyzome module
 # n.b.: load the entire local application (/app files)
-require 'rubyzome/lib/Rubyzome.rb'
+require 'rubyzome'
 
 # ----------------------------
 # -- specific configuration --

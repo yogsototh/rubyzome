@@ -1,2 +1,0 @@
-class GridError < StandardError
-end
