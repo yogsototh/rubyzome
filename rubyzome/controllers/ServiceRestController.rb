@@ -12,7 +12,7 @@ module Rubyzome
             if services[:show].include?(service_name)
                 self.send(service_name)
             else
-                raise  GridError, "Service #{service_name} not available"
+                raise  Error, "Service #{service_name} not available"
             end
         end
 
@@ -20,13 +20,13 @@ module Rubyzome
             if ( services[:update].include?(service_name) )
                 self.send(service_name)
             else
-                raise  GridError, "Service #{service_name} not available"
+                raise  Error, "Service #{service_name} not available"
             end
         end
 
         def index
             if services.empty?
-                raise  GridError, "No service available"
+                raise  Error, "No service available"
             end
             services[:index].map { |service|
                 self.send(service)

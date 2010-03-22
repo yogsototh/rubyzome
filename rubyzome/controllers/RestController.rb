@@ -13,7 +13,7 @@ module Rubyzome
         end
 
         def bad_request
-            raise GridError, "Bad request, please refer to options"
+            raise Error, "Bad request, please refer to options"
         end
 
         def clean_hash( tab )
@@ -28,7 +28,7 @@ module Rubyzome
 
         # Action not available
         def action_not_available
-            raise GridError, "This action is not available"
+            raise Error, "This action is not available"
         end
 
         # Action completed 
@@ -40,7 +40,7 @@ module Rubyzome
         def check_mandatory_params(mandatory_params)
             mandatory_params.each do |param| 
                 if @request["#{param}"].nil? then
-                    raise GridError.new("Mandatory parameter [#{param}] must be provided") 
+                    raise Error.new("Mandatory parameter [#{param}] must be provided") 
                 end
             end
         end
