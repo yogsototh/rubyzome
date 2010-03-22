@@ -1,6 +1,6 @@
+# encoding: utf-8
 
-
-class UserHTMLView < HTMLView
+class UserHTMLView < Rubyzome::HTMLView
     def content(object)
         if object.class == Hash and object.has_key?(:html_content)
             return super
