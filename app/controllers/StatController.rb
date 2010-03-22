@@ -2,7 +2,7 @@ require 'rubyzome/controllers/ServiceRestController.rb'
 require 'date'
 require 'time'
 
-class StatController < ServiceRestController
+class StatController < Rubyzome::ServiceRestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 

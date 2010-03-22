@@ -1,5 +1,5 @@
 require 'rubyzome/controllers/RestController.rb'
-class MeasureController < RestController
+class MeasureController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 
