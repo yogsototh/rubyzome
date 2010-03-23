@@ -197,7 +197,6 @@ module Rubyzome
                             else            
                                 function_name=:bad_request
                             end
-                            request.delete[:_method]
                         end
                     else
                         if request.request_method == 'OPTIONS'
@@ -233,7 +232,6 @@ module Rubyzome
                             else            
                                 function_name=:bad_request
                             end
-                            request.delete[:_method]
                         end
                     else
                         if request.request_method == 'OPTIONS'
