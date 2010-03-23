@@ -69,7 +69,8 @@ def do_merge
     puts %{do_merge: #{src_branch} => #{current_branch}}
     if $known_branches.include?(current_branch)
         if $known_branches.include?(src_branch)
-            if $architecture[src_branch].include?(current_branch)
+            if $architecture.has_key?(src_branch) and 
+                $architecture[src_branch].include?(current_branch)
                 system %{git merge #{src_branch}}
             else
                 puts %{Forbidden merge: #{src_branch} => #{current_branch}}
