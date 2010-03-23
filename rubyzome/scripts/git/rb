@@ -87,5 +87,5 @@ end
 case ARGV[0] 
     when 'allmerges' then do_all_merges
     when 'merge' then do_merge
-    else puts(%{git #{ARGV}})
+    else system %{git #{ARGV}}
 end
