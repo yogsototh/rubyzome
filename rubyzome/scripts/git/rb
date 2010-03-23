@@ -19,7 +19,7 @@ $architecture={
     :grid => [ :gp, :gpadm ] }
 
 def get_current_branch()
-    (`git branch --no-color | awk '$1 == "*" {print $2}'`).intern
+    (`git branch --no-color | awk '$1 == "*" {print $2}'`).chop.intern
 end
 
 
@@ -65,9 +65,21 @@ end
 
 def do_merge
     current_branch=get_current_branch
-    puts %{do_merge: #{ARGV[1]} => #{current_branch}}
+    src_branch=ARGV[1].intern
+    puts %{do_merge: #{src_branch} => #{current_branch}}
     if $known_branches.include?(current_branch)
-        puts 'I know current branch'
+        if $known_branches.include?(src_branch)
+            if $architecture[src_branch].include?(current_branch)
+                system %{git merge #{src_branch}}
+            else
+                puts %{Forbidden merge: #{src_branch} => #{current_branch}}
+            end
+        else
+            puts %{Warning! #{src_branch} not mentionned in rb configuration}
+            sleep 2
+            system %{git merge #{src_branch}}
+            puts %{Warning! #{src_branch} not mentionned in rb configuration}
+        end
     end
 end
 
