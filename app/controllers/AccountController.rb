@@ -72,6 +72,7 @@ class AccountController < Rubyzome::RestController
                 account.update( { key => val })
             end
             account.user.update({:status => @request[:status]}) if not @request[:status].nil?
+            account.user.update({:nickname => @request[:nickname]}) if not @request[:nickname].nil?
             account.user.save
             account.save
         rescue Exception => e
