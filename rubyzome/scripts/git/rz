@@ -45,13 +45,26 @@ def rec_merge(branch)
         return
     end
     $architecture[branch].each do |b|
+        if $flag.has_key?(b.to_s + branch.to_s)
+            next
+        end
         flagname=branch.to_s + b.to_s
-        if not $flag.has_key?(flagname)
-            and not $flag.has_key?(b.to_s + branch.to_s)
-            if system %{git checkout #{b} && git merge #{branch}}
+        if $flag.has_key?(flagname)
+            next
+        end
+        if system %{rz checkout #{b}}
+            if get_current_branch != b
+                puts "Can't checkout to #{b}"
+                exit 2
+            end
+            if system %{rz merge #{branch}}
                 $flag[flagname]=true
                 rec_merge(b)
+            else
+                exit 1
             end
+        else
+            exit 1
         end
     end
 end
@@ -79,7 +92,7 @@ def do_merge
         else
             puts %{Warning! #{src_branch} not mentionned in rb configuration}
             sleep 2
-            system %{git merge #{src_branch}}
+            f system %{git merge #{src_branch}}
             puts %{Warning! #{src_branch} not mentionned in rb configuration}
         end
     end
@@ -88,5 +101,5 @@ end
 case ARGV[0] 
     when 'allmerges' then do_all_merges
     when 'merge' then do_merge
-    else system %{git #{ARGV}}
+    else system %{git #{ARGV.join(' ')}}
 end
