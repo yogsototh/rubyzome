@@ -1,4 +1,22 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
+
+# architecture
+#
+# master <-> rubyzome
+# master -> grid
+# grid -> gp | gpadm
+#
+# merge using two of these branches should be 
+#   restricted to these rules
+# merge to one of these branch and an unknown one should
+#   raise a warning, and may the option to add this new branch
+#   to the hierarchy
+
+$architecture={ 
+    :master => [ :rubyzome, :grid ],
+    :rubyzome => [ :master ],
+    :grid => [ :gp, :gpadm ] }
 
 def get_current_branch()
     (`git branch --no-color | awk '$1 == "*" {print $2}'`).intern
@@ -15,22 +33,6 @@ local commands:
     exit 0
 end
 
-
-# architecture
-#
-# master <-> rubyzome
-# master -> grid
-# grid -> gp | gpadm
-#
-# merge using two of these branches should be 
-#   restricted to these rules
-# merge to one of these branch and an unknown one should
-#   raise a warning.
-$architecture={ 
-    :master => [ :rubyzome, :grid ],
-    :rubyzome => [ :master ],
-    :grid => [ :gp, :gpadm ] }
-
 require 'set'
 $known_branches=Set.new
 $architecture.each do |k,v| 
@@ -38,8 +40,27 @@ $architecture.each do |k,v|
     v.each { |b| $known_branches.add(b) }
 end
 
+def rec_merge(branch)
+    if $architecture[branch].nil?
+        return
+    end
+    $architecture[branch].each do |b|
+        flagname=branch.to_s + b.to_s
+        if not $flag.has_key?(flagname)
+            if system %{git checkout #{b} && git merge #{branch}}
+                $flag[flagname]=true
+                rec_merge(b)
+            end
+        end
+    end
+end
+
 def do_all_merges
-    puts 'do_all_merges'
+    puts 'Will merge from father to sons'
+    current_branch=get_current_branch
+    $flag={}
+    rec_merge(:master)
+    system %{git co #{current_branch}}
 end
 
 def do_merge
