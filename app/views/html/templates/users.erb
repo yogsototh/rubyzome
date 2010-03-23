@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <script type="text/javascript" src="/js/jquery-1.3.1.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/index.js"></script>
+    <title><%= @title %></title>
+    <style>
+        input {
+            font-size: 10px !important;
+        }
+        .button {
+            background-color: #321;
+            color: #db9;
+            padding: .5em;
+            border-radius: 3px;
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+        }
+        .button:hover {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        var base='/users/' ;
+        function update_resource(nickname) {
+            $.post(
+                base+nickname+'.json', 
+                {   l: "adm",
+                    p: "adm",
+                    nickname: nickname, 
+                    status: $("#msg"+nickname).val(),
+                    _method: 'PUT'
+                },
+                function() {
+                    alert("User "+nickname+" updated successfully");
+                });
+        }
+
+        function delete_resource(nickname) {
+            $.post(
+                base+nickname+'.json', 
+                {   l: "adm",
+                    p: "adm",
+                    nickname: nickname, 
+                    _method: 'DELETE'
+                },
+                function() {
+                    location.reload();
+                });
+        }
+    </script>
+</head>
+<body>
+    <div id="entete">
+        <h1>Accounts</h1>
+        <h2>Administrate user messages here</h2>
+    </div>
+
+    <div id="content">
+        <table>
+            <tr>
+                <th>nickname</th>
+                <th>status</th>
+                <th>update</th>
+                <th>remove</th>
+            </tr>
+        <% parity_class = 0 %>
+        <% @object.sort {|x,y| x[:nickname] <=> y[:nickname]}.each do |account| %>
+            <% nkm=account[:nickname] %>
+            <% parity_class=( parity_class+1) %2 %>
+            <tr class="r<%=parity_class%>" id="line<%=nkm%>">
+                <td><a href="/accounts/<%=nkm%>?l=adm&p=adm"><%=  nkm %></a></td>
+                <td><input type="text" id="msg<%=nkm%>" value="<%=  account[:status] %>"/></td>
+                <td><span class="button"
+                        onclick='update_resource("<%=nkm%>")'>update</span></td>
+                <td><span class="button" 
+                        onclick='delete_resource("<%=nkm%>")'>remove</span></td>
+            </td>
+        <% end %>
+        </table>
+    </div>
+
+    <div id="bottom">
+    <div id="gprefs">
+    2009 GridPocket© SAS All Rights Reserved
+    </div>
+    <div id="promotion">
+        Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.com">Luc Juggery</a>. Done with the <em>Rubyzome</em> framework.
+    </div>
+    </div>
+</body>
+</html>
