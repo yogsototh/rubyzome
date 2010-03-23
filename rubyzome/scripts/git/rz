@@ -47,6 +47,7 @@ def rec_merge(branch)
     $architecture[branch].each do |b|
         flagname=branch.to_s + b.to_s
         if not $flag.has_key?(flagname)
+            and not $flag.has_key?(b.to_s + branch.to_s)
             if system %{git checkout #{b} && git merge #{branch}}
                 $flag[flagname]=true
                 rec_merge(b)
