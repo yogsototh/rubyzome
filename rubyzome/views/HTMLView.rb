@@ -124,4 +124,5 @@ module Rubyzome
 
     # TODO: think to create a Rubyzome contant Rubyzome::Views::TemplateDir
     HTMLView.template=File.read('rubyzome/views/html/templates/main.erb')
+    # TODO: create three standard sub-template: header, content and footer. Most of time, only content should vary.
 end
