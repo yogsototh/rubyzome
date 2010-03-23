@@ -4,7 +4,7 @@ html, body {
     top: 0;
     left: 0;
 }
-body {
+body, #info {
     background-color: #320;
     color: #ca8;
 }
@@ -85,6 +85,22 @@ table tr th {
     color: #ca8;
     background-color: #320;
 }
+
+#info {
+    font-size: 2em;
+    top: 30%;
+    left: 30%;
+    width: 40%;
+    position: fixed;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    opacity: .8;
+}
+#info div {
+    padding: .5em;
+    margin: .5em; }
+
 table tr th {
     font-weight: bold;
     text-align: center;
