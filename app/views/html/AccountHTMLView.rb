@@ -1,10 +1,7 @@
 # encoding: utf-8
 
-fatherClass=Rubyzome::HTMLView.dup
-
-class AccountHTMLView < fatherClass
+class AccountHTMLView < Rubyzome::HTMLView
     def content(object)
-        super
+        render
     end
 end
-AccountHTMLView.template=File.read('rubyzome/views/html/templates/main.erb')

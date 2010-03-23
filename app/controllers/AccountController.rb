@@ -8,7 +8,7 @@ class AccountController < Rubyzome::RestController
         check_authentication
 
         Account.all.map{ |x| 
-                clean_id(x.attributes.merge(x.user.attributes))
+            clean_id(x.attributes.merge(x.user.attributes))
         }
     end
 
@@ -16,39 +16,39 @@ class AccountController < Rubyzome::RestController
     def create
         check_authentication
         check_mandatory_params([:email,
-                                :password, 
-                                :firstname, 
-                                :lastname, 
-                                :country, 
-                                :zip, 
-                                :city, 
-                                :street])
+                               :password, 
+                               :firstname, 
+                               :lastname, 
+                               :country, 
+                               :zip, 
+                               :city, 
+                               :street])
 
         # User creation
         begin        
-                user=User.new(clean_hash([:nickname]))
-                user.save
+            user=User.new(clean_hash([:nickname]))
+            user.save
         rescue Exception => e
-                raise Rubyzome::Error, "Unable to create user: #{e.message}"
+            raise Rubyzome::Error, "Unable to create user: #{e.message}"
         end
 
         # Account creation
         begin
-                hash=clean_hash( [        :email,
-                                        :password,
-                                        :firstname,
-                                        :lastname,
-                                        :country,
-                                        :zip,
-                                        :city,
-                                        :street] )
-                hash[:user]=user
-                account=Account.new(hash)
-                account.save
-                clean_id(account.attributes.merge(account.user.attributes))
+            hash=clean_hash( [        :email,
+                            :password,
+                            :firstname,
+                            :lastname,
+                            :country,
+                            :zip,
+                            :city,
+                            :street] )
+            hash[:user]=user
+            account=Account.new(hash)
+            account.save
+            clean_id(account.attributes.merge(account.user.attributes))
         rescue Exception => e
-                user.destroy!
-                raise Rubyzome::Error, "Cannot create account: #{e.message}"
+            user.destroy!
+            raise Rubyzome::Error, "Cannot create account: #{e.message}"
         end
     end
 
@@ -66,17 +66,16 @@ class AccountController < Rubyzome::RestController
         account = get_account
 
         begin
-                account.update_attributes( clean_hash( [:email,
-                                                        :password,
-                                                        :firstname,
-                                                        :lastname,
-                                                        :country,
-                                                        :zip,
-                                                        :city,
-                                                        :street] ))
-                account.save
+            clean_hash( [:email, :password, :firstname,
+                       :lastname, :country, :zip,
+                       :city, :street]).each do |key,val|
+                account.update( { key => val })
+            end
+            account.user.update({:status => @request[:status]}) if not @request[:status].nil?
+            account.user.save
+            account.save
         rescue Exception => e
-                raise Rubyzome::Error, "Cannot update account: #{e.message}"
+            raise Rubyzome::Error, "Cannot update account: #{e.message}"
         end
 
         clean_id(account.attributes)
@@ -89,15 +88,15 @@ class AccountController < Rubyzome::RestController
         user = account.user
 
         begin
-                account.destroy!
+            account.destroy!
         rescue Exception => e
-                raise Rubyzome::Error, "Cannot delete account linked to user #{user.nickname}: #{e.message}"
+            raise Rubyzome::Error, "Cannot delete account linked to user #{user.nickname}: #{e.message}"
         end
 
         begin
-                user.destroy!
+            user.destroy!
         rescue Exception => e
-                raise Rubyzome::Error, "Cannot delete user #{user.nickname}: #{e.message}"
+            raise Rubyzome::Error, "Cannot delete user #{user.nickname}: #{e.message}"
         end
 
         action_completed("User #{user.nickname} and associated account deleted")
