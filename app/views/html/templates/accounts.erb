@@ -27,19 +27,32 @@
         }
     </style>
     <script>
-        function update_account(nickname) {
+        var base='/accounts/' ;
+        function update_resource(nickname) {
             $.post(
-                '/accounts/'+nickname+'.json', 
+                base+nickname+'.json', 
+                {   l: "adm",
+                    p: "adm",
+                    nickname: $("#"+nickname).val(), 
+                    status: $("#msg"+nickname).val(),
+                    password: $("#pw"+nickname).val(), 
+                    _method: 'PUT',
+                },
+                function() {
+                    alert("User "+nickname+" updated successfully");
+                });
+        }
+
+        function delete_resource(nickname) {
+            $.post(
+                base+nickname+'.json', 
                 {   l: "adm",
                     p: "adm",
                     nickname: nickname, 
-                    password: $("#pw"+nickname).val(), 
-                    status: $("#msg"+nickname).val(),
-                    _method: 'PUT'
+                    _method: 'DELETE'
                 },
-                function() {
-                    alert("Account of "+nickname+" updated successfully");
-                });
+                function() { location.reload(); }
+            );
         }
     </script>
 </head>
@@ -59,17 +72,17 @@
                 <th>remove</th>
             </tr>
         <% parity_class = 0 %>
-        <% @object.each do |account| %>
+        <% @object.sort{|x,y| x[:nickname] <=> y[:nickname] }.each do |account| %>
             <% nkm=account[:nickname] %>
             <% parity_class=( parity_class+1) %2 %>
             <tr class="r<%=parity_class%>" id="line<%=nkm%>">
-                <td><%=  nkm %></td>
-                <td><input type="text" id="pw<%=nkm%>"  value="<%=  account[:password] %>"/></td>
-                <td><input type="text" id="msg<%=nkm%>" value="<%=  account[:status] %>"/></td>
+                <td><input type="text" id="<%=nkm%>"  value="<%= nkm %>"/></td>
+                <td><input type="text" id="pw<%=nkm%>"  value="<%= account[:password] %>"/></td>
+                <td><input type="text" id="msg<%=nkm%>" value="<%= account[:status] %>"/></td>
                 <td><span class="button"
-                        onclick='update_account("<%=nkm%>")'>update</span></td>
+                        onclick='update_resource("<%=nkm%>")'>update</span></td>
                 <td><span class="button" 
-                        onclick='delete_account("<%=nkm%>")'>remove</span></td>
+                        onclick='delete_resource("<%=nkm%>")'>remove</span></td>
             </td>
         <% end %>
         </table>
