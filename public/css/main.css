@@ -112,3 +112,8 @@ table tr.r0 td {
     background-color: #DB9; }
 table tr.r1 td {
     background-color: #F3CFAA; }
+table input {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+}
