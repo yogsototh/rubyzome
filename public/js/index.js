@@ -50,6 +50,10 @@ $(document).ready(function(){
         if ( $(this).val() == '' ) {
             $(this).val('User Name');
             $(this).addClass('inactive');
+        } else {
+            alert("before modification: " + $("#mainform").attr("action"));
+            $("#mainform").attr("action","/users/"+$(this).val());
+            alert("after modification: " + $("#mainform").attr("action"));
         }
     });
     $('#password').change(function(){
