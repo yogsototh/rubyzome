@@ -24,6 +24,10 @@
             return vars;
         }
 
+        function draw_graphic( data ) {
+            // draw something inside $('#graph')
+        }
+
 
         $(document).ready(function(){
             var params = getUrlVars();
@@ -35,8 +39,12 @@
             $.getJSON(prefix_url+'.json', 
                 login , 
                 function(json){
+                    // only for first sensor
                     sensor=json[0]["sensor_hr"];
+                    var one_hour_ago=new Date((new Date).getTime() - 3600000)
+                    var last_measure_param = { "l": login, "p" : password, "from" : one_hour_ago.toString() };
                     $.get(prefix_url+'/'+sensor+'/measures.json', login, function(measure) {
+                        // draw_graphic( measure.consumptions )
                         alert(measure);
                 });
             });
