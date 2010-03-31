@@ -27,16 +27,6 @@ function signin() {
     enter_next_stage();
 }
 
-function setSpecificCss() {
-    var userAgent = navigator.userAgent.toLowerCase();
-
-    if ( /webkit/.test(userAgent) ) {
-        $('head').append('<link rel="stylesheet" href="/css/webkit.css"/>');
-    } else if ( /mozilla/.test(userAgent) ) {
-        $('head').append('<link rel="stylesheet" href="/css/mozilla.css"/>');
-    }
-}
-
 // after document loaded
 $(document).ready(function(){ 
     getUserFromCookie();

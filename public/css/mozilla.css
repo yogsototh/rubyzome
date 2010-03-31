@@ -1,8 +1,0 @@
-#entete, #bottom {
-    background: -moz-radial-gradient(center center, 0, center center, 300, from(#531), to(#320) ) no-repeat;
-}
-#bottom {
-    -moz-box-shadow: 0px 10px 10px rgba(6,4,0,.3);
-    margin-left: 10px;
-    margin-right: 10px;
-}
