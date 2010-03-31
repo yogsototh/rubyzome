@@ -30,7 +30,6 @@ function signin() {
 // after document loaded
 $(document).ready(function(){ 
     getUserFromCookie();
-    setSpecificCss();
     $('#username').click(become_active);
     $('#password').click(become_active);
     $('#username').focus(become_active);
