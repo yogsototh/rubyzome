@@ -21,6 +21,7 @@ class MeasureController < Rubyzome::RestController
 		if(not from.nil?) then
 			# List of measures to be returned
 			measures = []
+			period = 0
 
 			if(not to.nil?) then
 				# Make sure from date is older than to date
@@ -30,6 +31,7 @@ class MeasureController < Rubyzome::RestController
 
 				if not interval.nil? then
 					# Interval specified (number of sec) => measure average calculated
+					period = interval.to_i	
 
 					# Get time for "from" and "to" strings
 					from = Time.parse(from)
@@ -42,7 +44,6 @@ class MeasureController < Rubyzome::RestController
 
 					# Split timeframe (from..to) into timeframes of "interval" length
 					timeframe = (from.to_i..to.to_i)
-
 					interval_from_sec = timeframe.first
 					timeframe.step(interval.to_i) do |interval_to_sec|
 						# Do not take first value into account
@@ -81,10 +82,12 @@ class MeasureController < Rubyzome::RestController
 			# start date 	=> date of the first measure
 			# end date	=> date of the last measure
 			# max		=> max value
+			# interval
 			{
 		 	'from'		=> measures[0].date,
 			'to'		=> measures[-1].date,
 			'max'		=> measures.map{ |m| m.consumption }.max,
+			'interval'	=> period,
 			'data'		=> measures.map{ |x| clean_id(x.attributes) },
 			}
 		else
