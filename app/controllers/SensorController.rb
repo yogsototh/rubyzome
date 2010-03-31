@@ -12,7 +12,7 @@ class SensorController < Rubyzome::RestController
 	check_ownership_requestor_user(requestor,user)
 
         Sensor.all({:user => user}).map do |x| 
-		clean_id(x.attributes.merge(x.user.attributes))
+		clean_id(x.attributes)
         end
     end
 
