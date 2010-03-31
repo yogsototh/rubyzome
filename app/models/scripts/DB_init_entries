@@ -35,6 +35,16 @@ nb_users=30
 
         firstname         = Faker::Name.first_name
         lastname         = Faker::Name.last_name
+
+	# Add easy to remember users for testing purposes
+	if user_nb == 1 then
+		firstname= "John"
+		lastname = "Doe"
+	elsif user_nb == 2 then
+		firstname = "Jack"
+		lastname = "Blue"
+	end
+
         nickname        = "#{firstname.downcase}#{lastname.downcase}"
         # puts "User #{user_nb}:#{nickname}"
 
