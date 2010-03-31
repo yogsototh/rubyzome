@@ -43,6 +43,16 @@ module Rubyzome
                         puts %{selected view = #{view_name}} 
                         return
                     end
+                # check Ressource Type Specific View
+                # eg: /stats.xml will render using
+                #           app/views/xml/StatXMLView
+                view_name=%{/#{type.downcase}/#{model}#{type.upcase}View}
+                    puts %{try view = #{view_name}} 
+                    if $views.has_key?(view_name)
+                        @view=$views[view_name].new
+                        puts %{selected view = #{view_name}} 
+                        return
+                    end
             else
                 # check Plural Ressource Specific View
                 # eg: /stats.xml will render using
