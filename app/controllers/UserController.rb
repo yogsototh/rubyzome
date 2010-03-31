@@ -1,7 +1,5 @@
-# encoding: utf-8
-
+require 'rubyzome/controllers/RestController.rb'
 class UserController < Rubyzome::RestController
-
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 
@@ -38,7 +36,7 @@ class UserController < Rubyzome::RestController
 		user.update_attributes(clean_hash([:nickname]))
 		user.save
 	rescue
-		raise GridError, "Cannot update user attributes"
+		raise Rubyzome::Error, "Cannot update user attributes"
 	end
 
 	clean_id(user.attributes)	

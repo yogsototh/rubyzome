@@ -1,9 +1,10 @@
-# encoding: utf-8
+require 'rubyzome/controllers/ServiceRestController.rb'
+require 'date'
+require 'time'
 
 class StatController < Rubyzome::ServiceRestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
-
 
    def services
 	{	
@@ -33,7 +34,7 @@ class StatController < Rubyzome::ServiceRestController
 			}
 		end
 	else
-		raise GridError, "No measure found for this period"
+		raise Rubyzome::Error, "No measure found for this period"
 	end
    end
 
@@ -54,7 +55,7 @@ class StatController < Rubyzome::ServiceRestController
 		m = m / measures.length
 		{:average => m}
 	else
-		raise GridError, "No measure found for this period"
+		raise Rubyzome::Error, "No measure found for this period"
 	end
    end
 
@@ -94,7 +95,7 @@ class StatController < Rubyzome::ServiceRestController
 		measures.each { |x| m = x.consumption.to_i if m < x.consumption.to_i }
 		{:max => m}
 	else
-		raise GridError, "No measure found for this period"
+		raise Rubyzome::Error, "No measure found for this period"
 	end
    end
 end

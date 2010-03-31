@@ -1,6 +1,7 @@
-# encoding: utf-8
-
+require 'rubyzome/controllers/RestController.rb'
 class SensorController < Rubyzome::RestController
+    require 'app/controllers/include/Helpers.rb'
+    include Helpers
 
     # Get all sensors for a given user
     # curl -i -XGET -d'l=login&p=password' http://gp.loc/users/luc/sensors

@@ -1,9 +1,7 @@
-# encoding: utf-8
-
+require 'rubyzome/controllers/RestController.rb'
 class AccountController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
-
 
     # Not available (should be done through admin) 
     def index
@@ -42,7 +40,7 @@ class AccountController < Rubyzome::RestController
 							:city,
 							:street]) )
 	rescue Exception => e
-		raise GridError,"Cannot update account attributes: #{e.message}"
+		raise Rubyzome::Error,"Cannot update account attributes: #{e.message}"
 	end
 
 	clean_id(account.attributes.merge(account.user.attributes))
