@@ -2,10 +2,16 @@
 
 class UserHTMLView < Rubyzome::HTMLView
     def content(object)
-        @title=object[:nickname]
-        @subtitle=object[:status]
-        @content=%{Welcome <em>#{object[:nickname]}</em>.<p>Your last hour consumption:</p>
-        <div id="graph"></div>}
+        if object[:html_title]
+            @title="Authentification error"
+            @subtitle="500"
+            @content=%{Please try a new password.
+                <script>top.location = "/";</script>}
+        else
+            @title=object[:nickname]
+            @subtitle=object[:status]
+            @content=%{Welcome <em>#{object[:nickname]}</em>.<p>Your last hour consumption:</p><div id="graph"></div>}
+        end
         render
     end
 end
