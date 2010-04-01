@@ -54,18 +54,21 @@
         function draw_graphic( data ) {
             // draw something inside $('#graph')
             var datatabs=new Array();
-            $.each(data,function(index, value) {
+            $.each(data["data"],function(index, value) {
                 if (index) {
                     recupdate=new Date();
                     recupdate.setISO8601(value["date"]);
                     datatabs[index]=[ recupdate.getTime(), value["consumption"] ];
                 }
             });
-            var offset = (new Date).getTimezoneOffset() * 60000;
+            var from=new Date();
+            var to=new Date();
+            from.setISO8601(data["from"]);
+            to.setISO8601(data["to"]);
             $.plot($('#graph'), [ datatabs ], { xaxis: {
                 mode: "time",
-                min: one_hour_ago.getTime() - offset,
-                max: (new Date).getTime() - offset
+                min: from.getTime(),
+                max: to.getTime()
             }});
         }
 
