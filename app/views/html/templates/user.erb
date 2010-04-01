@@ -34,16 +34,16 @@
             var login=params['l'];
             var password=params['p'];
             var prefix_url='/users/'+login+'/sensors';
-            var login = { "l": login, "p" : password };
+            var login_param = { "l": login, "p" : password };
 
             $.getJSON(prefix_url+'.json', 
-                login , 
+                login_param , 
                 function(json){
                     // only for first sensor
                     sensor=json[0]["sensor_hr"];
                     var one_hour_ago=new Date((new Date).getTime() - 3600000)
                     var last_measure_param = { "l": login, "p" : password, "from" : one_hour_ago.toString() };
-                    $.get(prefix_url+'/'+sensor+'/measures.json', login, function(measure) {
+                    $.get(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
                         // draw_graphic( measure.consumptions )
                         alert(measure);
                 });
