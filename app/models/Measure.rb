@@ -4,7 +4,7 @@ class Measure
 
         # Properties
         property :id,           Serial
-        property :measure_hr,        String
+        # property :measure_hr,        String
         property :date,                DateTime
         property :consumption,  Integer
 

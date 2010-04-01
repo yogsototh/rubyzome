@@ -22,7 +22,7 @@ Sensor.all.each do |sensor|
         sensor_hr = sensor[:sensor_hr] 
 
         # Create measure
-        measure = Measure.new(:measure_hr        => "#{sensor_hr}_#{current_date.strftime("%Y%m%dT%H%M%S")}",
+        measure = Measure.new( # :measure_hr        => "#{sensor_hr}_#{current_date.strftime("%Y%m%dT%H%M%S")}",
                               :date                => current_date,
                               :consumption         => consumption,
                               :sensor                => sensor)
