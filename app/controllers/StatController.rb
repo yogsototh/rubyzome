@@ -75,7 +75,7 @@ class StatController < Rubyzome::ServiceRestController
 		measures.each { |x| m = x.consumption.to_i if m > x.consumption.to_i }
 		{:min => m}
 	else
-		raise GridError, "No measure found for this period"
+		raise Rubyzome::Error, "No measure found for this period"
 	end
    end
 
