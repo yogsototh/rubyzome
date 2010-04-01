@@ -5,8 +5,7 @@ require 'benchmark'
 require 'date.rb'
 
 # Include all models 
-# Dir["../*.rb"].each { |file| require file }
-Dir["/home/grid/gpadm/app/models/*.rb"].each { |file| require file }
+Dir["#{File.dirname($0)}/../*.rb"].each { |file| require file }
 # Connect to DB 
 DataMapper.setup(:default, 'mysql://gridadmin:gridadmin@localhost/grid')
 
