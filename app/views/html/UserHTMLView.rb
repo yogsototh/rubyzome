@@ -5,7 +5,7 @@ class UserHTMLView < Rubyzome::HTMLView
         @title=object[:nickname]
         @subtitle=object[:status]
         @content=%{Welcome <em>#{object[:nickname]}</em>.<p>Your last hour consumption:</p>
-        <div id="graph">Graphique</div>}
+        <div id="graph"></div>}
         render
     end
 end
