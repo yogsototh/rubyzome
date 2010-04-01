@@ -21,7 +21,7 @@ comments =         {
                 }
 
 # User creation
-nb_users=30
+nb_users=10
 (1..nb_users).each do |user_nb|
         # Get dummy 
         # - firstname
@@ -75,7 +75,7 @@ nb_users=30
                 (1..nb_measures).each do |measure_nb|
                         # puts "Measure:#{measure_nb}"
                         d = Time.now - measure_nb * 5 * 60
-                        measure = Measure.new(        :measure_hr => "#{nickname}_#{sensor_nb}_#{measure_nb}",
+                        measure = Measure.new(        # :measure_hr => "#{nickname}_#{sensor_nb}_#{measure_nb}",
                                                 :date => d,
                                                 :consumption => rand(3000),
                                                 :sensor => sensor)
