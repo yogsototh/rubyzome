@@ -72,13 +72,18 @@
             }});
         }
 
+        function getUserNameFromURI() {
+            var tmp=new String( window.location );
+            return tmp.replace( /^.*\/([^/]*)\?.*$/, "$1");
+        }
 
         var one_hour_ago=new Date((new Date).getTime() - 3600000)
         $(document).ready(function(){
             var params = getUrlVars();
+            var username=getUserNameFromURI();
             var login=params['l'];
             var password=params['p'];
-            var prefix_url='/users/'+login+'/sensors';
+            var prefix_url='/users/'+username+'/sensors';
             var login_param = { "l": login, "p" : password };
 
             $.getJSON(prefix_url+'.json', 
