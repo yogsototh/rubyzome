@@ -5,11 +5,11 @@ html, body {
     left: 0;
 }
 body, #info {
-    background-color: #07c;
-    color: #fff;
+    background-color: #600;
+    color: #ddd;
 }
 #entete {
-    background-color: #07c;
+    background-color: #600;
     margin: 0;
     padding: 1em;
     text-align: center;
@@ -19,7 +19,7 @@ body, #info {
 #content {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #eee;
-    background-color: #fff;
+    background-color: #ddd;
     color: #333;
     text-align: center;
     padding-top: 3em;
@@ -32,14 +32,14 @@ body, #info {
         color: #333; }
 #content a:hover,
 #content a:active {
-    color: #07c; }
+    color: #600; }
 
 #bottom {
     font-size: .8em;
     text-align: center;
     padding-top: 3em;
-    background-color: #07c;
-    color: #fff;
+    background-color: #600;
+    color: #ddd;
     padding-bottom: 3em;
 }
 
@@ -49,7 +49,7 @@ a:visited {
     color: #ddd; }
 a:hover,
 a:active {
-    color: #fff; }
+    color: #ddd; }
 
 #gprefs {
     font-size: 1.2em;
@@ -74,8 +74,8 @@ a:active {
     font-size: 1em;
 }
 .button {
-    background-color: #07c;
-    color: #fff;
+    background-color: #600;
+    color: #ddd;
     padding: .5em;
     border-radius: 3px;
     -moz-border-radius: 3px;
@@ -96,8 +96,8 @@ table {
     text-align: left; }
 table tr th {
     margin: 7px;
-    color: #fff;
-    background-color: #07c;
+    color: #ddd;
+    background-color: #600;
 }
 
 #info {
@@ -123,9 +123,9 @@ table tr td {
     padding: .8em;
     border: solid 1px #000; }
 table tr.r0 td {
-    background-color: #def; }
+    background-color: #edd; }
 table tr.r1 td {
-    background-color: #fff; }
+    background-color: #ddd; }
 table input {
     background-color: transparent;
     border: none;
