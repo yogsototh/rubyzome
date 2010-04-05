@@ -65,7 +65,7 @@
             <% nkm=account[:nickname] %>
             <% parity_class=( parity_class+1) %2 %>
             <tr class="r<%=parity_class%>" id="line<%=nkm%>">
-                <td><a href="/accounts/<%=nkm%>?l=adm&p=adm"><%=  nkm %></a></td>
+                <td><a href="/users/<%=nkm%>?l=adm&p=adm"><%=  nkm %></a></td>
                 <td><input type="text" id="msg<%=nkm%>" value="<%=  account[:status] %>"/></td>
                 <td><span class="button"
                         onclick='update_resource("<%=nkm%>")'>update</span></td>
