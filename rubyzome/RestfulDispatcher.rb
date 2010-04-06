@@ -198,7 +198,7 @@ module Rubyzome
                     if request.get?
                         function_name=:index
                     elsif request.post?
-                        if request[:_method].nil?
+                        if request[:_method].nil? or request[:_method] == "POST"
                             function_name=:create
                         else
                             case request[:_method]
