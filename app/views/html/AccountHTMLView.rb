@@ -1,4 +1,5 @@
 # encoding: utf-8
+
 class AccountHTMLView < Rubyzome::HTMLView
     def content(object)
         if object[:html_title]
