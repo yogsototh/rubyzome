@@ -4,6 +4,16 @@ class MeasureController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 
+    def encapsulate(measures, interval = 0 )
+        {
+            'from'		=> measures[0].date,
+            'to'		=> measures[-1].date,
+            'max'		=> measures.map{ |m| m.consumption }.max,
+            'interval'	=> interval.to_i,
+            'data'		=> measures.map{ |x| clean_id(x.attributes) },
+        }
+    end
+
     # Get all measure for a given sensor
     # curl -i -d'l=login&p=password' -XGET http://gpadm.loc/sensors/main_home/measures
     def index
@@ -15,85 +25,72 @@ class MeasureController < Rubyzome::RestController
         to	 	    = @request[:to]
         interval 	= @request[:interval]
 
-        # If from and to are provided 		=> get measures within this timeframe
-        # If only from is provided 		=> get all measures created after this date
-        # If from and to are not provided 	=> only get the last created measure
-        if(not from.nil?) then
-            # List of measures to be returned
-            measures = []
-            period = 0
+        # return last measure if from not given
+        if from.nil?
+            return encapsulate(Measure.last({:sensor => sensor, :date.lt => DateTime.now}))
+        end
 
-            if(not to.nil?) then
-                # Make sure from date is older than to date
-                if(from > to) then
-                    raise Rubyzome::Error, "\"from\" date must be older than \"to\" date"
-                end
+        # if only from is given return all values from 'from'
+        if to.nil?
+            return encapsulate(Measure.all({:sensor => sensor, :date.gt => from}))
+        end
 
-                if not interval.nil? then
-                    # Interval specified (number of sec) => measure average calculated
-                    period = interval.to_i	
+        # Make sure from date is older than to date
+        if(from > to) then
+            raise Rubyzome::Error, "\"from\" date must be older than \"to\" date"
+        end
 
-                    # Get time for "from" and "to" strings
-                    from = Time.parse(from)
-                    to = Time.parse(to)
+        # if from and to given but not interval
+        if interval.nil? or interval.to_i <= 0
+            return encapsulate(Measure.all({:sensor => sensor, :date.gt => from, :date.lt => to}))
+        end
 
-                    # Make sure timeframe (from..to) is wider than an interval
-                    if(to.to_i - from.to_i < interval.to_i) then
-                        raise Rubyzome::Error, "timeframe is not wide enough to fit an interval"
-                    end
+        # Get time for "from" and "to" strings
+        from = Time.parse(from)
+        to = Time.parse(to)
 
-                    # Split timeframe (from..to) into timeframes of "interval" length
-                    timeframe = (from.to_i..to.to_i)
-                    interval_from_sec = timeframe.first
-                    timeframe.step(interval.to_i) do |interval_to_sec|
-                        # Do not take first value into account
-                        next if interval_to_sec == timeframe.first
+        # Make sure timeframe (from..to) is wider than an interval
+        if(to.to_i - from.to_i < interval.to_i) then
+            raise Rubyzome::Error, "timeframe is not wide enough to fit an interval"
+        end
 
-                        # Make sure current "from" to current "to" is wider than an interval
-                        next if interval_to_sec - interval_from_sec < interval.to_i
+        # Split timeframe (from..to) into timeframes of "interval" length
+        timeframe = (from.to_i..to.to_i)
+        interval_from_sec = timeframe.first
+        measures=[]
+        timeframe.step(interval.to_i) do |interval_to_sec|
+            # Do not take first value into account
+            next if interval_to_sec == timeframe.first
 
-                        # Convert interval_from_sec and interval_to_sec into DateTime
-                        interval_from_date = Time.at(interval_from_sec)
-                        interval_to_date = Time.at(interval_to_sec)
+            # Make sure current "from" to current "to" is wider than an interval
+            next if interval_to_sec - interval_from_sec < interval.to_i
 
-                        tot = 0
-                        avg = 0
-                        ms =  Measure.all({ :sensor => sensor,
-                                          :date.gt => interval_from_date,
-                                          :date.lt => interval_to_date})
-                        ms.each { |m| puts m.attributes;tot = tot + m.consumption }
-                        avg = tot / ms.length if ms.length != 0
-                        m = Measure.new({:date => interval_from_date, :consumption => avg})
-                        measures << m
+            # Convert interval_from_sec and interval_to_sec into DateTime
+            interval_from_date = Time.at(interval_from_sec)
+            interval_to_date = Time.at(interval_to_sec)
 
-                        interval_from_sec = interval_to_sec
-                    end
-                else
-                    measures = Measure.all({:sensor => sensor, :date.gt => from, :date.lt => to})
-                end
-            else
-                measures = Measure.all({:sensor => sensor, :date.gt => from})
-            end
+            tot = 0
+            avg = 0
+            ms =  Measure.all({ :sensor => sensor,
+                              :date.gt => interval_from_date,
+                              :date.lt => interval_to_date})
 
             # Make sure list of measures is not emtpy
-            raise Rubyzome::Error, "No data for this timeframe" unless(measures.length > 0)
+            # if it is, return -1 as consumption
+            if ms.length == 0
+                m = Measure.new({:date => interval_from_date, :consumption => -1})
+                measures << m
+                next
+            end
 
-            # Add values to be returned
-            # start date 	=> date of the first measure
-            # end date	=> date of the last measure
-            # max		=> max value
-            # interval
-            {
-                'from'		=> measures[0].date,
-                'to'		=> measures[-1].date,
-                'max'		=> measures.map{ |m| m.consumption }.max,
-                'interval'	=> period,
-                'data'		=> measures.map{ |x| clean_id(x.attributes) },
-            }
-        else
-            measure = Measure.last({:sensor => sensor, :date.lt => DateTime.now})
-            clean_id(measure.attributes)
+            ms.each { |m| tot = tot + m.consumption }
+            avg = tot / ms.length 
+            m = Measure.new({:date => interval_from_date, :consumption => avg})
+            measures << m
+
+            interval_from_sec = interval_to_sec
         end
+        encapsulate(measures, interval)
     end
 
     # Create a new measure for a sensor
