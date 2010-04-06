@@ -77,7 +77,8 @@
             return tmp.replace( /^.*\/([^/]*)\?.*$/, "$1");
         }
 
-        var one_hour_ago=new Date((new Date).getTime() - 3600000)
+        var now=new Date
+        var one_day_ago=new Date((new Date).getTime() - 24 * 3600000)
         $(document).ready(function(){
             var params = getUrlVars();
             var username=getUserNameFromURI();
@@ -91,7 +92,7 @@
                 function(json){
                     // only for first sensor
                     sensor=json[0]["sensor_hr"];
-                    var last_measure_param = { "l": login, "p" : password, "from" : one_hour_ago.toString() };
+                    var last_measure_param = { "l": login, "p" : password, "from" : one_day_ago.toString(), "to": now.toString(), interval: 1800 };
                     $.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
                         draw_graphic( measure );
                 });
@@ -117,9 +118,18 @@
 
     <div id="content" width="600px" height="300px">
         <%= @content %>
+        <div>
+            <a href="/accounts/<%=@object[:nickname]%>?l=<%=@request[:l]%>&p=<%=@request[:p]%>">Account settings</a>
+        </div>
     </div>
 
     <div id="bottom">
+        <div>
+            <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
+            <a href="/accounts<%=login_str%>">Accounts list</a>
+            .
+            <a href="/users<%=login_str%>">Users list</a>
+        </div>
     <div id="gprefs">
     2009 GridPocket© SAS All Rights Reserved
     </div>
