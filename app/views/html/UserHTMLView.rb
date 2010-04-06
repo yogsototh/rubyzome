@@ -10,7 +10,7 @@ class UserHTMLView < Rubyzome::HTMLView
         else
             @title=object[:nickname]
             @subtitle=object[:status]
-            @content=%{Welcome <em>#{object[:nickname]}</em>.<p>Your last hour consumption:</p><div id="graph"></div>}
+            @content=%{Welcome <em>#{object[:nickname]}</em>.<p>last 24 hours consumption:</p><div id="graph"></div>}
         end
         render
     end
