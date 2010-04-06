@@ -75,7 +75,7 @@ module Helpers
     ### OWNERSHIP ###
 
     def check_ownership_user_account(user,account)
-        if account.user_id = user
+        if account.user != user
             raise Rubyzome::Error, "Account is not linked to user #{user.nickname}"
         end
     end
