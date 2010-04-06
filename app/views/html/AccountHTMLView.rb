@@ -1,10 +1,18 @@
 # encoding: utf-8
-
-fatherClass=Rubyzome::HTMLView.dup
-
-class AccountHTMLView < fatherClass
+class AccountHTMLView < Rubyzome::HTMLView
     def content(object)
-        super
+        if object[:html_title]
+            @title="Authentification error"
+            @subtitle="500"
+            @content=%{Please try a new password.
+                <script>top.location = "/";</script>}
+        else
+            @object=object
+            @title="Account Setting"
+            @subtitle=object[:nickname]
+            @content=%{}
+        end
+        render
     end
 end
-AccountHTMLView.template=File.read('rubyzome/views/html/templates/main.erb')
+AccountHTMLView.template=File.read('app/views/html/templates/account.erb')
