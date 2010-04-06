@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'dm-core'
+require 'benchmark'
+require 'date'
+
+# Include all models 
+Dir["#{File.dirname($0)}/../*.rb"].each { |file| require file }
+# Connect to DB 
+DataMapper.setup(:default, 'mysql://gridadmin:gridadmin@localhost/grid')
+
+now=Time.now
+# one measure all 5 minutes
+step=5
+(-100..1000).each do |minutes|
+    # Get current date
+    current_date = DateTime.parse( (now + minutes * 60 * step).to_s )
+    puts current_date
+
+    # Loop through list of sensors
+    Sensor.all.each do |sensor|
+        # Create random number between 1000 and 3000
+        consumption = rand(3000)
+
+        # Create unique human readable identifier 
+        sensor_hr = sensor[:sensor_hr] 
+
+        # Create measure
+        measure = Measure.new( # :measure_hr        => "#{sensor_hr}_#{current_date.strftime("%Y%m%dT%H%M%S")}",
+                              :date                => current_date,
+                              :consumption         => consumption,
+                              :sensor                => sensor)
+        measure.save
+    end
+end
