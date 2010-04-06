@@ -120,6 +120,10 @@
     </div>
 
     <div id="bottom">
+        <div>
+            <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
+            <a href="/accounts/<%=@object[:nickname]%><%=login_str%>">Account setting</a>
+        </div>
     <div id="gprefs">
     2009 GridPocket© SAS All Rights Reserved
     </div>
