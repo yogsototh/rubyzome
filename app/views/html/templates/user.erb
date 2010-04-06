@@ -77,6 +77,7 @@
             return tmp.replace( /^.*\/([^/]*)\?.*$/, "$1");
         }
 
+        var now=new Date
         var one_day_ago=new Date((new Date).getTime() - 24 * 3600000)
         $(document).ready(function(){
             var params = getUrlVars();
@@ -91,7 +92,7 @@
                 function(json){
                     // only for first sensor
                     sensor=json[0]["sensor_hr"];
-                    var last_measure_param = { "l": login, "p" : password, "from" : one_day_ago.toString(), interval: 1800 };
+                    var last_measure_param = { "l": login, "p" : password, "from" : one_day_ago.toString(), "to": now.toString(), interval: 1800 };
                     $.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
                         draw_graphic( measure );
                 });
