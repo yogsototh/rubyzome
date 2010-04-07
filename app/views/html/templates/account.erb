@@ -11,12 +11,25 @@
     <script type="text/javascript" src="/js/rubyzome.js"></script>
     <title><%= @title %></title>
     <script>
+        function getUrlVars()
+        {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(var i = 0; i < hashes.length; i++)
+            {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
         var base='/accounts/' ;
         function update_resource(nickname) {
+            var params = getUrlVars();
             $.post(
                 base+nickname+'.json', 
-                {   l: "adm",
-                    p: "adm",
+                {   l: params['l'],
+                    p: params['p'],
                     nickname: $("#"+nickname).val(), 
                     password: $("#pw"+nickname).val(), 
                     _method: 'PUT',

@@ -31,14 +31,10 @@ class AccountController < Rubyzome::RestController
 	check_ownership_user_account(user,account)
 
 	begin
-		account.update_attributes( clean_hash([	:email,
-							:password,
-							:firstname,
-							:lastname,
-							:country,
-							:zip,
-							:city,
-							:street]) )
+		clean_hash([:email, :password, :firstname, :lastname,
+                    :country, :zip, :city, :street]).each { |k,v|
+            account.update( k => v )
+        }
 	rescue Exception => e
 		raise Rubyzome::Error,"Cannot update account attributes: #{e.message}"
 	end
