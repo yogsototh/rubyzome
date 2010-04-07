@@ -51,6 +51,8 @@
     </div>
 
     <div id="content">
+    <% begin %>
+        <% @object[0][:nickname] %>
         <div id="info">
         </div>
         <table>
@@ -74,6 +76,9 @@
             </td>
         <% end %>
         </table>
+    <% rescue Exception => e %>
+        <%= @content %>
+    <% end %>
     </div>
 
     <div id="bottom">
