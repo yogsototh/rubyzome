@@ -18,7 +18,6 @@
                 {   l: "adm",
                     p: "adm",
                     nickname: $("#"+nickname).val(), 
-                    status: $("#msg"+nickname).val(),
                     password: $("#pw"+nickname).val(), 
                     _method: 'PUT',
                 },
@@ -41,7 +40,6 @@
             <tr>
                 <th>nickname</th>
                 <th>password</th>
-                <th>status</th>
                 <th>update</th>
             </tr>
         <% parity_class = 0 %>
@@ -51,7 +49,6 @@
             <tr class="r<%=parity_class%>" id="line<%=nkm%>">
                 <td><input type="text" id="<%=nkm%>"  value="<%= nkm %>"/></td>
                 <td><input type="text" id="pw<%=nkm%>"  value="<%= account[:password] %>"/></td>
-                <td><input type="text" id="msg<%=nkm%>" value="<%= account[:status] %>"/></td>
                 <td><span class="button"
                         onclick='update_resource("<%=nkm%>")'>update</span></td>
             </td>
