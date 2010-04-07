@@ -118,15 +118,13 @@
 
     <div id="content" width="600px" height="300px">
         <%= @content %>
-        <div>
-            <a href="/accounts/<%=@object[:nickname]%>?l=<%=@request[:l]%>&p=<%=@request[:p]%>">Account settings</a>
-        </div>
     </div>
 
     <div id="bottom">
         <div>
             <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
-            <a href="/accounts/<%=@object[:nickname]%><%=login_str%>">Account setting</a>
+            <a href="/accounts/<%=@object[:nickname]%><%=login_str%>">Account setting</a> .
+            <a href="/">Logout</a>
         </div>
     <div id="gprefs">
     2009 GridPocket© SAS All Rights Reserved
