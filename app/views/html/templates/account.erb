@@ -27,17 +27,6 @@
                 });
         }
 
-        function delete_resource(nickname) {
-            $.post(
-                base+nickname+'.json', 
-                {   l: "adm",
-                    p: "adm",
-                    nickname: nickname, 
-                    _method: 'DELETE'
-                },
-                function() { location.reload(); }
-            );
-        }
     </script>
     <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
 </head>
@@ -54,7 +43,6 @@
                 <th>password</th>
                 <th>status</th>
                 <th>update</th>
-                <th>remove</th>
             </tr>
         <% parity_class = 0 %>
         <% account=@object %>
@@ -66,8 +54,6 @@
                 <td><input type="text" id="msg<%=nkm%>" value="<%= account[:status] %>"/></td>
                 <td><span class="button"
                         onclick='update_resource("<%=nkm%>")'>update</span></td>
-                <td><span class="button" 
-                        onclick='delete_resource("<%=nkm%>")'>remove</span></td>
             </td>
         </table>
         <a href="/users/<%=@object[:nickname]%><%=login_str%>">Back to user view</a>
