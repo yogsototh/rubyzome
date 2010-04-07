@@ -30,7 +30,7 @@
                 base+nickname+'.json', 
                 {   l: params['l'],
                     p: params['p'],
-                    nickname: $("#"+nickname).val(), 
+                    nickname: nickname, 
                     password: $("#pw"+nickname).val(), 
                     _method: 'PUT',
                 },
@@ -40,7 +40,6 @@
         }
 
     </script>
-    <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
 </head>
 <body>
     <div id="entete">
@@ -49,6 +48,8 @@
     </div>
 
     <div id="content">
+    <% begin %>
+        <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
         <table>
             <tr>
                 <th>nickname</th>
@@ -60,13 +61,16 @@
         <% nkm=account[:nickname] %>
         <% parity_class=( parity_class+1) %2 %>
             <tr class="r<%=parity_class%>" id="line<%=nkm%>">
-                <td><input type="text" id="<%=nkm%>"  value="<%= nkm %>"/></td>
+                <td><span id="nickname"><%= nkm %></span></td>
                 <td><input type="text" id="pw<%=nkm%>"  value="<%= account[:password] %>"/></td>
                 <td><span class="button"
                         onclick='update_resource("<%=nkm%>")'>update</span></td>
             </td>
         </table>
         <a href="/users/<%=@object[:nickname]%><%=login_str%>">Back to user view</a>
+    <% rescue Exception => e %>
+        <%= @content %>
+    <% end %>
     </div>
 
     <div id="bottom">
