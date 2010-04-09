@@ -39,6 +39,11 @@ class MeasureController < Rubyzome::RestController
             return encapsulate(Measure.all({:sensor => sensor, :date.gt => from}))
         end
 
+        # Get time for "from" and "to" strings
+        from = Time.parse(from)
+        to = Time.parse(to)
+
+
         # Make sure from date is older than to date
         if(from > to) then
             raise Rubyzome::Error, "\"from\" date must be older than \"to\" date"
@@ -48,10 +53,6 @@ class MeasureController < Rubyzome::RestController
         if interval.nil? or interval.to_i <= 0
             return encapsulate(Measure.all({:sensor => sensor, :date.gt => from, :date.lt => to}))
         end
-
-        # Get time for "from" and "to" strings
-        from = Time.parse(from)
-        to = Time.parse(to)
 
         # Make sure timeframe (from..to) is wider than an interval
         if(to.to_i - from.to_i < interval.to_i) then
