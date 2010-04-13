@@ -50,7 +50,7 @@
                     password: $("#newpw").val(), 
                     _method: 'POST',
                 },
-		function(){alert('User ' + nk + ' created');});
+		function() { alert('User created:' + nk); });
 
             $.post(
                 '/sensors.json', 
@@ -62,7 +62,10 @@
 		    address:'address to be set',
                     _method: 'POST',
                 },
-		function(){ location.reload(); });
+		function() {
+			alert('Sensor created');
+			location.reload(true);
+		});
         }
 
     </script>
