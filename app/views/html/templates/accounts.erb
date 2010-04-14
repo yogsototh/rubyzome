@@ -40,32 +40,31 @@
         }
 
         function create_resource() {
-	    nk = $("#newnickname").val();
+            nk = $("#newnickname").val();
             $.post(
-                base+'.json', 
-                {   l: "adm",
-                    p: "adm",
-                    nickname: nk,
-                    status: $("#newmsg").val(),
-                    password: $("#newpw").val(), 
-                    _method: 'POST',
-                },
-		function() { alert('User created:' + nk); });
-
-            $.post(
+            base+'.json', 
+            {   l: "adm",
+                p: "adm",
+                nickname: nk,
+                status: $("#newmsg").val(),
+                password: $("#newpw").val(), 
+                _method: 'POST',
+            },
+            function() { 
+                $.post(
                 '/sensors.json', 
                 {   l: "adm",
                     p: "adm",
                     user_id: nk,
                     sensor_hr: nk + '_1', 
-		    description: 'Sensor for user:' + nk,
-		    address:'address to be set',
+                    description: 'Sensor for user:' + nk,
+                    address:'address to be set',
                     _method: 'POST',
                 },
-		function() {
-			alert('Sensor created');
-			location.reload(true);
-		});
+                function() {
+                    location.reload(true);
+                });
+            });
         }
 
     </script>
