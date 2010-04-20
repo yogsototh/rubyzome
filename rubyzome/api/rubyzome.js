@@ -1,11 +1,13 @@
 // general action
+// f_ok(data, textStatus, XMLHttpRequest)
+// f_err(XMLHttpRequest,textStatus, errorThrown)
 function general_action( type, url, params, f_ok, f_err ) {
     $.ajax({ 
         type: type,
         url:  url,
         data: params,
-        success: f_ok(data, textStatus, XMLHttpRequest), 
-        error:  f_err(XMLHttpRequest,textStatus, errorThrown)
+        success: f_ok, 
+        error:  f_err
         });
 }
 
