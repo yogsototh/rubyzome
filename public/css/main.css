@@ -14,6 +14,9 @@ body, #info {
     padding: 1em;
     text-align: center;
     color: #034;
+}
+#entete h1,
+#entete h2 {
     text-shadow: 0 0 3px #59a;
 }
 
@@ -46,10 +49,10 @@ body, #info {
 a,
 a:link,
 a:visited {
-    color: #800; }
+    color: #059; }
 a:hover,
 a:active {
-    color: #800; }
+    color: #830; }
 
 #gprefs {
     font-size: 1.2em;
@@ -116,4 +119,29 @@ table input {
     background-color: transparent;
     border: none;
     margin: 0;
+}
+
+#button {
+    width: 15em;
+    font-size: 1.5em;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1em;
+    margin-bottom: 2em;
+    background-color: #034;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 1px;
+}
+
+#login {
+    width: 22.5em;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1.5em;
+    border: 1px solid;
+}
+#messagelogin {
+    font-size: .8em;
 }
