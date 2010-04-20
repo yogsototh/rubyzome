@@ -5,8 +5,8 @@ html, body {
     left: 0;
 }
 body, #info {
-    background-color: #fff;
-    color: #034 ;
+    background-color: #034;
+    color: #fff;
 }
 #entete {
     background-color: #fff;
@@ -14,11 +14,11 @@ body, #info {
     padding: 1em;
     text-align: center;
     color: #034;
-    text-shadow: 0 0 3px #378;
+    text-shadow: 0 0 3px #59a;
 }
 
 #content {
-    border-bottom: 1px solid #034;
+    border-bottom: 1px solid #cde;
     background-color: #fff;
     color: #343;
     text-align: center;
