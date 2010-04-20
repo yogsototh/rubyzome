@@ -17,7 +17,7 @@ body, #info {
 }
 #entete h1,
 #entete h2 {
-    text-shadow: 0 0 3px #59a;
+    text-shadow: 0 0 2px #cde;
 }
 
 #content {
@@ -35,7 +35,7 @@ body, #info {
    color: #cde; }
 #bottom a:hover,
 #bottom a:active {
-    color: #fc8; }
+    color: #0cf; }
 
 #bottom {
     background-color: #034;
@@ -52,12 +52,8 @@ a:visited {
     color: #059; }
 a:hover,
 a:active {
-    color: #830; }
+    color: #0cf; }
 
-#gprefs {
-    font-size: 1.2em;
-    margin: 1em;
-}
 #promotion {
     font-size: .8em;
 }
@@ -121,18 +117,25 @@ table input {
     margin: 0;
 }
 
-#button {
+.button {
     width: 15em;
     font-size: 1.5em;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
     padding: 1em;
+    margin-top: 2em;
     margin-bottom: 2em;
     background-color: #034;
     color: #fff;
     cursor: pointer;
-    border-radius: 1px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+.button:hover {
+    color: #0cf;
+    text-shadow: 0px 0px 3px #09f;
+    background-color: #045;
 }
 
 #login {
@@ -141,7 +144,17 @@ table input {
     margin-right: auto;
     padding: 1.5em;
     border: 1px solid;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 #messagelogin {
     font-size: .8em;
+}
+#create_todolist_button {
+    margin-top: 0px;
+}
+#menu {
+    font-size: 1.2em;
+    margin-bottom: 1em;
 }
