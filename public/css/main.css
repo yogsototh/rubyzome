@@ -131,3 +131,9 @@ table input {
     border: none;
     margin: 0;
 }
+#actions {
+    margin-bottom: 2em;
+}
+#actionbutton {
+    margin: 2em;
+}

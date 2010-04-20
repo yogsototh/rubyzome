@@ -15,18 +15,11 @@ class AccountController < Rubyzome::RestController
     # curl -i -XPOST -d'l=login&p=pass&...' http://gpadm.loc/accounts
     def create
         check_authentication
-        check_mandatory_params([:email,
-                               :password, 
-                               :firstname, 
-                               :lastname, 
-                               :country, 
-                               :zip, 
-                               :city, 
-                               :street])
+        check_mandatory_params([:password ])
 
         # User creation
         begin        
-            user=User.new(clean_hash([:nickname]))
+            user=User.new(clean_hash([:nickname,:status]))
             user.save
         rescue Exception => e
             raise Rubyzome::Error, "Unable to create user: #{e.message}"
@@ -34,18 +27,11 @@ class AccountController < Rubyzome::RestController
 
         # Account creation
         begin
-            hash=clean_hash( [        :email,
-                            :password,
-                            :firstname,
-                            :lastname,
-                            :country,
-                            :zip,
-                            :city,
-                            :street] )
+            hash=clean_hash( [ :password ] )
             hash[:user]=user
             account=Account.new(hash)
             account.save
-            clean_id(account.attributes.merge(account.user.attributes))
+            clean_id(account.attributes.merge(user.attributes))
         rescue Exception => e
             user.destroy!
             raise Rubyzome::Error, "Cannot create account: #{e.message}"

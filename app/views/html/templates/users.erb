@@ -51,6 +51,8 @@
     </div>
 
     <div id="content">
+    <% begin %>
+        <% @object[0][:nickname] %>
         <div id="info">
         </div>
         <table>
@@ -74,6 +76,9 @@
             </td>
         <% end %>
         </table>
+    <% rescue Exception => e %>
+        <%= @content %>
+    <% end %>
     </div>
 
     <div id="bottom">
@@ -82,12 +87,14 @@
             <a href="/accounts<%=login_str%>">Accounts list</a>
             .
             <a href="/users<%=login_str%>">Users list</a>
+            .
+            <a href="/">Logout</a>
         </div>
     <div id="gprefs">
     2009 GridPocket© SAS All Rights Reserved
     </div>
     <div id="promotion">
-        Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.com">Luc Juggery</a>. Done with the <em>Rubyzome</em> framework.
+        Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.net">Luc Juggery</a>. Done with the <em>Rubyzome</em> framework.
     </div>
     </div>
 </body>

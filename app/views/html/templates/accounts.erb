@@ -11,10 +11,10 @@
     <script type="text/javascript" src="/js/rubyzome.js"></script>
     <title><%= @title %></title>
     <script>
-        var base='/accounts/' ;
+        var base='/accounts' ;
         function update_resource(nickname) {
             $.post(
-                base+nickname+'.json', 
+                base+'/'+nickname+'.json', 
                 {   l: "adm",
                     p: "adm",
                     nickname: $("#"+nickname).val(), 
@@ -29,7 +29,7 @@
 
         function delete_resource(nickname) {
             $.post(
-                base+nickname+'.json', 
+                base+'/'+nickname+'.json', 
                 {   l: "adm",
                     p: "adm",
                     nickname: nickname, 
@@ -38,6 +38,35 @@
                 function() { location.reload(); }
             );
         }
+
+        function create_resource() {
+            nk = $("#newnickname").val();
+            $.post(
+            base+'.json', 
+            {   l: "adm",
+                p: "adm",
+                nickname: nk,
+                status: $("#newmsg").val(),
+                password: $("#newpw").val(), 
+                _method: 'POST',
+            },
+            function() { 
+                $.post(
+                '/sensors.json', 
+                {   l: "adm",
+                    p: "adm",
+                    user_id: nk,
+                    sensor_hr: nk + '_1', 
+                    description: 'Sensor for user:' + nk,
+                    address:'address to be set',
+                    _method: 'POST',
+                },
+                function() {
+                    location.reload(true);
+                });
+            });
+        }
+
     </script>
 </head>
 <body>
@@ -47,6 +76,28 @@
     </div>
 
     <div id="content">
+        <div id="actions">
+            <div>Edit here to create a new user.</div>
+            <table>
+                <tr>
+                    <th>nickname</th>
+                    <td><input type="text" id="newnickname"  value=""/></td>
+                </tr>
+                <tr>
+                    <th>password</th>
+                    <td><input type="text" id="newpw"  value="guest"/></td>
+                </tr>
+                <tr>
+                    <th>status</th>
+                    <td><input type="text" id="newmsg" value="Welcome new user"/></td>
+                </tr>
+            </table>
+            <div id="actionbutton">
+            <span class="button" onclick="create_resource()">add new user</span>
+            </div>
+        </div>
+        <hr/>
+
         <table>
             <tr>
                 <th>nickname</th>
@@ -78,12 +129,14 @@
             <a href="/accounts<%=login_str%>">Accounts list</a>
             .
             <a href="/users<%=login_str%>">Users list</a>
+            .
+            <a href="/">Logout</a>
         </div>
     <div id="gprefs">
     2009 GridPocket© SAS All Rights Reserved
     </div>
     <div id="promotion">
-        Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.com">Luc Juggery</a>. Done with the <em>Rubyzome</em> framework.
+        Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.net">Luc Juggery</a>. Done with the <em>Rubyzome</em> framework.
     </div>
     </div>
 </body>
