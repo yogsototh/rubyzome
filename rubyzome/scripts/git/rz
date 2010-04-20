@@ -14,7 +14,7 @@
 #   to the hierarchy
 
 $architecture={ 
-    :master => [ :rubyzome, :grid ],
+    :master => [ :rubyzome, :grid, :todogether ],
     :rubyzome => [ :master ],
     :grid => [ :gp, :gpadm ] }
 
