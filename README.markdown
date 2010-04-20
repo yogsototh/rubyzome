@@ -1,15 +1,5 @@
-# Rubyzome
+# Todogether
 
-Ruby Restful Mobile oriented framework.
+Easiest shared Todolist on the internet
 
-- Concentrate on API
-- Can create Web interface easily
-
-
-## Docs
-
-Documentation is to be done.
-
-## Status
-
-Orientation and satus of the current project to define.
+# some blog entry should be done
