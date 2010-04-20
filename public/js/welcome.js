@@ -4,6 +4,7 @@ function rzalert(message) {
 
 function go_to_new_todolist() {
     create('/todolist', 
+            {},
             function(res){ 
                 window.location = res["url"]; 
             }, 
@@ -13,5 +14,5 @@ function go_to_new_todolist() {
 }
 
 $(document).ready(function(){ 
-    $('#new').click(go_to_new_todolist);
+    $('#create_todolist_button').click(go_to_new_todolist);
 });
