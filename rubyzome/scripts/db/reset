@@ -4,10 +4,12 @@ require 'dm-core'
 require 'benchmark'
 require 'date.rb'
 
+# Include global configuration
+require "global_config.rb"
 # Include all models
 Dir["../app/models/*.rb"].each { |file| require file }
 # Connect to DB 
-DataMapper.setup(:default, 'mysql://gridadmin:gridadmin@localhost/grid')
+DataMapper.setup(:default, %{#{$db_type}://#{$db_user}:#{$db_password}@#{$db_host}/#{$db_database}})
 # Reset tables
 DataMapper.auto_migrate!
 

@@ -5,10 +5,11 @@ require 'dm-core'
 require 'time'
 require 'faker'
 
+include "global_config.rb"
 # inclusion de tous les modèles
 Dir["../../app/models/*.rb"].each { |file| require file }
 # connexion à la base de donnée
-DataMapper.setup(:default, 'mysql://gridadmin:gridadmin@localhost/grid')
+DataMapper.setup(:default, %{#{$db_type}://#{$db_user}:#{$db_password}@#{$db_host}/#{$db_database}})
 
 # Comment that could be added by admin, based on user average consumption
 comments =         {
