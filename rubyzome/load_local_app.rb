@@ -17,6 +17,5 @@ module Rubyzome
     # Include all models
     Dir["app/models/*.rb"].each { |file| require file }
     
-    # TODO: centralize datamapper configuration infos
     DataMapper.setup(:default, %{#{$db_type}://#{$db_user}:#{$db_password}@#{$db_host}/#{$db_database}})
 end
