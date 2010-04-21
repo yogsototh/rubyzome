@@ -4,13 +4,9 @@ for info in $( egrep '\$db_.*=' global_config.rb ); do
     print $info[2,-1]
     eval $info[2,-1]
 done
-db_admin="${db_user}admin"
-
-print "db_admin='"$db_admin"'"
-
 print "Enter your mysql root password"
 mysql -u root -p <<END
 DROP DATABASE ${db_database};
-DROP USER '${db_admin}'@'${db_host}';
+DROP USER '${db_admin_user}'@'${db_host}';
 DROP USER '${db_user}'@'${db_host}';
 END
