@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'dm-core'
-require 'benchmark'
-require 'date.rb'
 
 # Include global configuration
 require "global_config.rb"
