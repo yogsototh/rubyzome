@@ -12,7 +12,8 @@ class TodolistController < RestController
 
     def generate_random_syllab
         consomn=["b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z"][rand(20)]
-        voyel=['a','e','i','o','u'][rand(5)]
+        voyel=["a","e","i","o","u"][rand(5)]
+        consomn+voyel
     end 
 
     def generate_random_id(n)
@@ -26,8 +27,9 @@ class TodolistController < RestController
         end
       
         new_todolist=Todolist.new( :uid => new_id )
-        new_todolist.attributes = clean_hash[:title] 
+        new_todolist.attributes = clean_hash( [:title]  )
         new_todolist.save
+        return new_todolist.attributes
     end
 
     def show
