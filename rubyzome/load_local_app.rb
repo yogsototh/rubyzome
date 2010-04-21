@@ -3,10 +3,6 @@
 module Rubyzome
     # TODO: centralize configuration for example: default is app/ directory (should be different)
 
-    # TODO: use app/controllers/helpers/* instead
-    # Include application custom classes (Error, Util, ...)
-    require 'app/controllers/include/Helpers.rb'
-    
     # Include all controllers 
     Dir["app/controllers/*.rb"].each { |file| require file }
     
@@ -21,6 +17,5 @@ module Rubyzome
     # Include all models
     Dir["app/models/*.rb"].each { |file| require file }
     
-    # TODO: centralize datamapper configuration infos
-    DataMapper.setup(:default, 'mysql://gridadmin:gridadmin@localhost/grid')
+    DataMapper.setup(:default, %{#{$db_type}://#{$db_user}:#{$db_password}@#{$db_host}/#{$db_database}})
 end
