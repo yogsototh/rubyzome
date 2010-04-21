@@ -5,8 +5,9 @@ function rzalert(message) {
 function go_to_new_todolist() {
     create('/todolists', 
             {},
-            function(res){ 
-                rzalert(res);
+            function(json_res){ 
+                eval('res='+json_res) ;
+                window.location = '/todolists/'+res["uid"];
             }, 
             function(error){ 
                 rzalert("Impossible de créer une nouvelle liste"); 
