@@ -6,6 +6,7 @@
 $directory_of_website='/website'
 
 # db configuration
+$db_type='mysql'
 $db_user='todogether'
 $db_password='18582fdee46ef66db2937cd40b90c9eb7bfe310a'
 $db_host='localhost'
