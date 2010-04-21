@@ -6,7 +6,7 @@ function go_to_new_todolist() {
     create('/todolists', 
             {},
             function(res){ 
-                window.location = res["url"]; 
+                rzalert(res);
             }, 
             function(error){ 
                 rzalert("Impossible de créer une nouvelle liste"); 
