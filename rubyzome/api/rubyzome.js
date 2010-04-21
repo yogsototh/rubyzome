@@ -4,7 +4,7 @@
 function general_action( type, url, params, f_ok, f_err ) {
     $.ajax({ 
         type: type,
-        url:  url,
+        url:  url+'.json',
         data: params,
         success: f_ok, 
         error:  f_err
