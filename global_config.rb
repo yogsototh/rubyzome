@@ -6,7 +6,7 @@
 $directory_of_website='/website'
 
 # db configuration
-$db_user='rubyzome'
-$db_password='rubyzome'
-$db_host='mysql_rubyzome_server'
-$db_database='rubyzome'
+$db_user='todogether'
+$db_password='18582fdee46ef66db2937cd40b90c9eb7bfe310a'
+$db_host='localhost'
+$db_database='todogether'
