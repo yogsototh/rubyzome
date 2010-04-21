@@ -195,24 +195,22 @@ module Rubyzome
                     classname = chemin[0..-2].capitalize + 'Controller'
                     modelname = chemin[0..-2].capitalize
                     last_class_id=chemin[0..-2]+'_id'
-                    if request.get?
-                        function_name=:index
-                    elsif request.post?
-                        if request[:_method].nil? or request[:_method] == "POST"
+                    if request[:_method].nil?
+                        if request.get?
+                            function_name=:index
+                        elsif request.post?
                             function_name=:create
-                        else
-                            case request[:_method]
-                            when 'OPTIONS'  
-                                function_name=:options
-                            else            
-                                function_name=:bad_request
-                            end
-                        end
-                    else
-                        if request.request_method == 'OPTIONS'
+                        elsif request.request_method == 'OPTIONS'
                             function_name=:options
                         else
                             function_name=:bad_request
+                        end
+                    else
+                        case request[:_method]
+                        when "GET"      then function_name=:index
+                        when "POST"     then function_name=:create
+                        when 'OPTIONS'  then function_name=:options
+                        else                 function_name=:bad_request
                         end
                     end
                 else
@@ -222,31 +220,29 @@ module Rubyzome
                     request[last_class_id]=chemin
                     # dispatche la fonction a appeler en fonction
                     # du type de requête.
-                    if request.get?
-                        function_name=:show
-                    elsif request.put?
-                        function_name=:update
-                    elsif request.delete?
-                        function_name=:delete
-                    elsif request.post?
-                        if request[:_method].nil?
-                            function_name=:bad_request
-                        else
-                            case request[:_method]
-                            when 'OPTIONS'  
-                                function_name=:options
-                            when 'PUT'      
-                                function_name=:update
-                            when 'DELETE'   
-                                function_name=:delete
-                            else            
-                                function_name=:bad_request
-                            end
-                        end
-                    else
-                        if request.request_method == 'OPTIONS'
+                    if request[:_method].nil?
+                        if request.get?
+                            function_name=:show
+                        elsif request.put?
+                            function_name=:update
+                        elsif request.delete?
+                            function_name=:delete
+                        elsif request.request_method == 'OPTIONS'
                             function_name=:options
                         else
+                            function_name=:bad_request
+                        end
+                    else
+                        case request[:_method]
+                        when 'GET'  
+                            function_name=:show
+                        when 'PUT'  
+                            function_name=:update
+                        when 'DELETE'   
+                            function_name=:delete
+                        when 'OPTIONS'  
+                            function_name=:options
+                        else            
                             function_name=:bad_request
                         end
                     end
