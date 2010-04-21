@@ -8,6 +8,7 @@ db_admin="${db_user}admin"
 
 print "db_admin='"$db_admin"'"
 
+print "Enter your mysql root password"
 mysql -u root -p <<END
 CREATE DATABASE ${db_database};
 CREATE USER '${db_admin}'@'${db_host}' IDENTIFIED BY '${db_admin}';
