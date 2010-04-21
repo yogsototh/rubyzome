@@ -1,4 +1,4 @@
-class Todo
+class Todolist
         # Includes
         include DataMapper::Resource
 
@@ -7,6 +7,6 @@ class Todo
         property :title,  String
 
         # Associations
-        has_n :todos,   :model => "Todo"
+        has n, :todos, :model => 'Todo'
 end
 
