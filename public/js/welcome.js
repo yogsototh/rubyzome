@@ -3,7 +3,7 @@ function rzalert(message) {
 }
 
 function go_to_new_todolist() {
-    create('/todolist', 
+    create('/todolists', 
             {},
             function(res){ 
                 window.location = res["url"]; 
