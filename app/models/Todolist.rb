@@ -7,6 +7,6 @@ class Todo
         property :title,  String
 
         # Associations
-        has_n :todo,   :model => "Todo"
+        has_n :todos,   :model => "Todo"
 end
 
