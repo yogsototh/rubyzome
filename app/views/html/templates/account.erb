@@ -43,8 +43,13 @@
 </head>
 <body>
     <div id="entete">
-        <h1><%= @title %></h1>
-        <h2><%= @subtitle %></h2>
+        <div id="logo">
+            <img src="/img/GridPocketBlueLogo.jpg" alt="Grid Pocket Logo" width="250px" />
+        </div>
+        <div id="titles">
+            <h1><%= @title %> <%= @subtitle %></h1>
+        </div>
+        <div class="flush"></div>
     </div>
 
     <div id="content">
