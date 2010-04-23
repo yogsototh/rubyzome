@@ -27,7 +27,7 @@ class MeasureController < Rubyzome::RestController
 
         # return last measure if from not given
         if from.nil?
-            return encapsulate(Measure.last({:sensor => sensor, :date.lt => DateTime.now}))
+            return encapsulate( [ Measure.last({:sensor => sensor, :date.lt => DateTime.now} )])
         end
 
         # if only from is given return all values from 'from'
