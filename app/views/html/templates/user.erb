@@ -103,8 +103,8 @@
     </script>
     <style>
         #graph {
-           width: 600px; 
-           height: 300px; 
+           width: 45em; 
+           height: 25em; 
            text-align: center;
            margin-left: auto;
            margin-right: auto;
@@ -156,7 +156,7 @@
     </div>
 
     <div id="bottom">
-        <div>
+        <div id="menu">
             <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
             <a href="/accounts/<%=@object[:nickname]%><%=login_str%>">Account setting</a> .
             <a href="/">Logout</a>
