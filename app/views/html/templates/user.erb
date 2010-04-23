@@ -11,7 +11,7 @@
     <script type="text/javascript" src="/js/index.js"></script>
     <!--[if IE]><script type="text/javascript" src="js/flot/excanvas.min.js"></script><![endif]-->
     <script type="text/javascript" src="/js/flot/jquery.flot.min.js"></script>
-    <title><%= @title %></title>
+    <title>GridPocket Energy Monitor</title>
     <script>
         function getUrlVars()
         {
@@ -113,25 +113,51 @@
 </head>
 <body>
     <div id="entete">
-        <h1><%= @title %></h1>
-        <h2><%= @subtitle %></h2>
+        <div id="logo">
+            <img src="/img/GridPocketBlueLogo.jpg" alt="Grid Pocket Logo" width="250px" />
+        </div>
+        <div id="titles">
+            <h1>GridPocket Energy Monitor</h1>
+        </div>
+        <div class="flush"></div>
     </div>
 
     <div id="content" width="600px" height="300px">
-        <%= @content %>
-        <div>
-            <a href="/accounts/<%=@object[:nickname]%>?l=<%=@request[:l]%>&p=<%=@request[:p]%>">Account settings</a>
+        <% if not @object[:nickname].nil? %>
+        <div id="username">
+        User name: <strong><%= @object[:nickname] %></strong>
         </div>
+        <div id="instantconsumption">
+        Instant power consumption: <span id="instantconsumptionvalue">loading...</span>
+        </div>
+        <div id="costs">
+            <h4> Energy cost estimations </h4>
+            <table>
+                <tr>
+                    <th>Instant hourly cost</th>
+                    <td> <span id="instanthourlycostvalue">loading...</span></td>
+                </tr>
+                <tr>
+                    <th>Instant daily cost</th> 
+                    <td><span id="instantdailycostvalue">loading...</span></td>
+                </tr>
+                <tr>
+                    <th>Instant monthly cost</th> 
+                    <td><span id="instantmonthlycostvalue">loading...</span></td>
+                </tr>
+            </table>
+        </div>
+        <div id="message">
+            Utility message: <strong><%= @object[:status] %></strong>
+        </div>
+        <div id="graphinfo">Last 24 hours energy consumption</div>
+        <div id="graph"> Please wait while loading data...</div>
+        <% end %>
     </div>
 
     <div id="bottom">
-        <div>
-            <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
-            <a href="/accounts<%=login_str%>">Accounts list</a>
-            .
-            <a href="/users<%=login_str%>">Users list</a>
-            .
-            <a href="/">Logout</a>
+        <div id="menu">
+            <a href="/accounts/<%=@object[:nickname]%>?l=<%=@request[:l]%>&p=<%=@request[:p]%>">Account settings</a>
         </div>
     <div id="gprefs">
     2009 GridPocket© SAS All Rights Reserved
