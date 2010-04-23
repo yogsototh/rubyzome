@@ -46,6 +46,11 @@ body, #info {
     padding-bottom: 3em;
 }
 
+/* don't print bottom */
+@media print {
+    #bottom { display: none; }
+}
+
 a,
 a:link,
 a:visited {
