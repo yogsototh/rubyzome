@@ -17,6 +17,7 @@ function getUserFromCookie() {
 
 function become_active() {
     $(this).removeClass('inactive');
+    $(this).select();
 }
 
 function signin() {
@@ -27,25 +28,20 @@ function signin() {
     enter_next_stage();
 }
 
+function create_todo() {
+    create('/todolists/'+json["uid"]+'/todos',
+            {"description": $('#newtododescription').val()},
+            function (res) {
+                alert('new todo ok');
+            },
+            function(res) {
+                alert('Todo not submited, try again please');
+            });
+    return false;
+}
+
 // after document loaded
 $(document).ready(function(){ 
-    getUserFromCookie();
-    $('#username').click(become_active);
-    $('#password').click(become_active);
-    $('#username').focus(become_active);
-    $('#password').focus(become_active);
-
-    $('#username').change(function(){
-        if ( $(this).val() == '' ) {
-            $(this).val('User Name');
-            $(this).addClass('inactive');
-        }
-    });
-    $('#password').change(function(){
-        if ( $(this).val() == '' ) {
-            $(this).val('password');
-            $(this).addClass('inactive');
-        }
-    });
-    $('#signin').click( signin );
+    $('input[type=text]').focus(become_active);
+    $('#newtodo').submit( create_todo );
 });

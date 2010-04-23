@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <script type="text/javascript" src="/js/jquery-1.3.1.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/rubyzome.js"></script>
+    <script>
+        <% 
+            require 'json' 
+        %>
+        var json=<%= JSON @object %>;
+    </script>
+    <script type="text/javascript" src="/js/index.js"></script>
+    <title><%= @title %></title>
+</head>
+<body>
+    <div id="entete">
+        <h1><%= @title %></h1>
+        <h2><%= @subtitle %></h2>
+    </div>
+
+    <div id="content" width="600px" height="300px">
+        <%= @content %>
+
+        <form id="newtodo" action="#">
+            <input name="newtododescription" type="text" id="newtododescription" value="Describe here a new thing to do" class="inactive" />
+        </form>
+
+        <% if not @object[:todos].nil? and @object[:todos].length > 0 %>
+        <table>
+            <% @object[:todos].each do |t| %>
+                <tr id="task_<%=t[:id]%>">
+                    <% if t[:done] %>
+                    <td class="done" onclick="undone(<%=t[:id] %>)">&#x2611;</td>
+                    <% else %>
+                    <td class="done" onclick="done(<%=t[:id] %>)">&#x2610;</td>
+                    <% end %>
+                    <% if t[:taken] %>
+                    <td class="taken" onclick="untake(<%=t[:id] %>)">free</td>
+                    <% else %>
+                    <td class="taken" onclick="take(<%=t[:id] %>)">take</td>
+                    <% end %>
+                    <td class="description"><%= t[:description] %></td>
+                </tr>
+            <% end %>
+        </table>
+        <% end %>
+    </div>
+
+    <div id="bottom">
+        <div>
+            <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
+            <a href="/accounts/<%=@object[:nickname]%><%=login_str%>">Account setting</a> .
+            <a href="/">Logout</a>
+        </div>
+    <div id="gprefs">
+    2009 GridPocket© SAS All Rights Reserved
+    </div>
+    <div id="promotion">
+    Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.net">Luc Juggery</a>.
+    </div>
+    </div>
+</body>
+</html>

@@ -33,7 +33,10 @@ class TodolistController < RestController
     end
 
     def show
-        get_todolist.attributes
+        todolist=get_todolist
+        res=todolist.attributes 
+        res[:todos] = todolist.todos.map{ |t| t.attributes }
+        res
     end
 
     def update
