@@ -33,7 +33,7 @@
         </form>
 
         <% if not @object[:todos].nil? and @object[:todos].length > 0 %>
-        <table>
+        <table id="todolist">
             <% @object[:todos].each do |t| %>
                 <tr id="task_<%=t[:id]%>">
                     <% if t[:done] %>

@@ -16,7 +16,7 @@ class TodoController < RestController
         new_todo.attributes = clean_hash([:description])
         new_todo.todolist = todolist
         new_todo.save
-        { :message => 'creation done' }
+        new_todo.attributes
     end
 
     def show
