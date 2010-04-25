@@ -8,11 +8,16 @@ html, body {
 }
 body, #info {
     background-color: #600;
-    color: #ddd;
+    color: #eee;
+}
+#content b, 
+#content strong,
+#content em {
+    color: #600;
 }
 #entete {
     background-color: #600;
-    margin: 0;
+    margin: 1.5em;
     padding: 1em;
     text-align: center;
     text-shadow: 0 0 9px #111;
@@ -55,7 +60,7 @@ body, #info {
 }
 
 #menu {
-    font-size: 1.2em;
+    font-size: 1.5em;
 }
 
 a,
@@ -158,6 +163,7 @@ table input {
 }
 #instantconsumption {
     margin: 1em;
+    font-size: 1.5em;
 }
 #message {
     margin: 1em;
