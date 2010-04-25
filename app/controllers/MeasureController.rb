@@ -81,13 +81,12 @@ class MeasureController < Rubyzome::RestController
             if ms.length == 0
                 m = Measure.new({:date => interval_from_date, :consumption => -1})
                 measures << m
-                next
+            else
+                ms.each { |m| tot = tot + m.consumption }
+                avg = tot / ms.length 
+                m = Measure.new({:date => interval_from_date, :consumption => avg})
+                measures << m
             end
-
-            ms.each { |m| tot = tot + m.consumption }
-            avg = tot / ms.length 
-            m = Measure.new({:date => interval_from_date, :consumption => avg})
-            measures << m
 
             interval_from_sec = interval_to_sec
         end
