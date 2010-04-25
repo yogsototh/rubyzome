@@ -93,10 +93,24 @@
                 function(json){
                     // only for first sensor
                     sensor=json[0]["sensor_hr"];
-                    var last_measure_param = { "l": login, "p" : password, "from" : one_day_ago.toString(), "to": now.toString(), interval: 1800 };
-                    $.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
-                        draw_graphic( measure );
+                    var last_measure_param = { "l": login, "p" : password };
+                    var last_day_measure_param = { "l": login, "p" : password, "from" : one_day_ago.toString(), "to": now.toString(), interval: 1800 };
+                $.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
+                    draw_graphic( measure );
                 });
+                $.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
+                        var len=measure["data"].length;
+                        var last=measure["data"][len-1];
+                        var cons=last["consumption"]
+                        var KWH_COST=0.082;
+                        var HOURLY_COST_MULTI = 0.001;
+                        var DAILY_COST_MULTI = 0.024;
+                        var MONTHLY_COST_MULTI = 0.720;
+                        $('#instantconsumptionvalue').html( cons + ' Watts' );
+                        $('#instanthourlycostvalue').html( (cons * KWH_COST * HOURLY_COST_MULTI).toFixed(2) + " €");
+                        $('#instantdailycostvalue').html( (cons * KWH_COST * DAILY_COST_MULTI).toFixed(2) + " €");
+                        $('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
+                    });
             });
         });
 
@@ -128,7 +142,7 @@
         User name: <strong><%= @object[:nickname] %></strong>
         </div>
         <div id="instantconsumption">
-        Instant power consumption: <span id="instantconsumptionvalue">loading...</span>
+            Instant power consumption: <strong><span id="instantconsumptionvalue">loading...</span></strong>
         </div>
         <div id="costs">
             <h4> Energy cost estimations </h4>
