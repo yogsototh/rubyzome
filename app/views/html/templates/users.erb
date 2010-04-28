@@ -46,8 +46,13 @@
 </head>
 <body>
     <div id="entete">
-        <h1>Users</h1>
-        <h2>Administrate user messages here</h2>
+        <div id="logo">
+            <img src="/img/GridPocketBlueLogo.jpg" alt="Grid Pocket Logo" width="250px" />
+        </div>
+        <div id="titles">
+            <h1>Users</h1>
+        </div>
+        <div class="flush"></div>
     </div>
 
     <div id="content">
@@ -82,7 +87,7 @@
     </div>
 
     <div id="bottom">
-        <div>
+        <div id="menu">
             <% login_str=%{?l=#{@request[:l]}&p=#{@request[:p]}} %>
             <a href="/accounts<%=login_str%>">Accounts list</a>
             .
@@ -92,9 +97,6 @@
         </div>
     <div id="gprefs">
     2009 GridPocket© SAS All Rights Reserved
-    </div>
-    <div id="promotion">
-        Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.net">Luc Juggery</a>. Done with the <em>Rubyzome</em> framework.
     </div>
     </div>
 </body>
