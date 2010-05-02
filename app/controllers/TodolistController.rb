@@ -12,7 +12,10 @@ class TodolistController < RestController
 
     def generate_random_syllab
         consomn=["b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z"][rand(20)]
-        voyel=["a","e","i","o","u"][rand(5)]
+        voyel=["a","e","i","o","u","a","o","u"][rand(5)]
+        if rand(3) == 0
+            voyel=voyel+["b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z"][rand(20)]
+        end
         consomn+voyel
     end 
 
