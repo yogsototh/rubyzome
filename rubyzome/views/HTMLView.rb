@@ -12,9 +12,13 @@ module Rubyzome
         # a complete class hierarchy variable (as @@var are)
         class << self
             attr_accessor :template
+            attr_accessor :error_template
         end
         def template
             self.class.template
+        end
+        def error_template
+            self.class.error_template
         end
 
         def initialize
@@ -90,24 +94,10 @@ module Rubyzome
         end
 
         def init_titles_from(object)
-            if object.class == Hash and object.has_key?(:html_content)
-                if object.has_key?(:html_title)
-                    @title=object[:html_title]
-                else
-                    @title="Error"
-                end
-                if object.has_key?(:html_subtitle)
-                    @subtitle=object[:html_subtitle]
-                else
-                    @subtitle="404"
-                end
-                @content=object[:html_content]
-            else
-                @content=html_repr(object)
-                if not request.nil?
-                    @title=File.basename(request.path)
-                    @subtitile=request.path
-                end
+            @content=html_repr(object)
+            if not request.nil?
+                @title=File.basename(request.path)
+                @subtitile=request.path
             end
         end
 
@@ -115,14 +105,26 @@ module Rubyzome
             Erubis::Eruby.new(template).result(binding())
         end
 
+        def render_error
+            Erubis::Eruby.new(error_template).result(binding())
+        end
+
         # Handle content
         def content(object)
             init_titles_from(object)
+            @object=object
             render
+        end 
+
+        # Handle content
+        def error(object)
+            @object=object
+            render_error
         end 
     end
 
     # TODO: think to create a Rubyzome contant Rubyzome::Views::TemplateDir
     HTMLView.template=File.read('rubyzome/views/html/templates/main.erb')
+    HTMLView.error_template=File.read('rubyzome/views/html/templates/error.erb')
     # TODO: create three standard sub-template: header, content and footer. Most of time, only content should vary.
 end
