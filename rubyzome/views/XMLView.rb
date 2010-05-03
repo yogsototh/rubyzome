@@ -51,6 +51,10 @@ module Rubyzome
             return  document.to_s.gsub(/\\n/,"")
         end 
 
+        def error(object)
+            content(object)
+        end
+
         # Build item that will be inserted in the tree structure
         def build_item(item,doc)
             xml_item = Nokogiri::XML::Node.new("item",doc)

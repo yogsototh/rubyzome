@@ -14,8 +14,14 @@ module Rubyzome
         end
 
         def httpContent(object)
-            init_code_return_from_object(object)
-            self.content(object)
+            if object.class == Hash and object.has_key?(:error)
+                @code_return = object[:error]
+                object.delete(:error)
+                self.error(object)
+            else
+                @code_return = 200
+                self.content(object)
+            end
         end
     end
 end

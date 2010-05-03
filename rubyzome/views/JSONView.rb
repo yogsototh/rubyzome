@@ -11,5 +11,9 @@ module Rubyzome
         def content(object)
             JSON object
         end
+
+        def error(object)
+            content(object)
+        end
     end
 end
