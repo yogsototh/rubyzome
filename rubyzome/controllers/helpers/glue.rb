@@ -49,7 +49,7 @@ module ResourcesFromRequest
         # A bit of introspection
         if params.is_a?(String)
          resource_name=params
-        elsif param.is_a?(Hash)
+        elsif params.is_a?(Hash)
             resource_name=params[:resource_name]
             db_pkey=params[:db_pkey]
             req_id=params[:req_id]
@@ -62,7 +62,7 @@ module ResourcesFromRequest
         # set the model name from the ressource name if needed
         model_name=resource_name.capitalize if model_name == nil
         # set the db primary key if needed
-        db_pkey=:id if dp_pkey == nil
+        db_pkey=:id if db_pkey == nil
 
         # get the given (by parameter) identifier of the ressource
         ressource_id = @request[req_id]
@@ -72,7 +72,7 @@ module ResourcesFromRequest
         end
 
         # get the object from DB using ressource id to identify it
-        ressource = Kernel.const_get(modelname).first({db_pkey => ressource_id})
+        ressource = Kernel.const_get(model_name).first({db_pkey => ressource_id})
 
         # raise an error if no ressource is found
         if(ressource.nil?) then
