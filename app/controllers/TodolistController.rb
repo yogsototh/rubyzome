@@ -38,7 +38,7 @@ class TodolistController < RestController
     def show
         # todolist=get_todolist
         todolist=get_resource({ :resource_name => "todolist", 
-                                :db_pkey => :uid})
+                                :db_key => :uid})
         res=todolist.attributes 
         res[:todos] = todolist.todos.map{ |t| t.attributes }
         res
