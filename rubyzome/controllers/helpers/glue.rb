@@ -23,7 +23,7 @@ module ResourcesFromRequest
     #
     #  For example as Todolist as :uid as primary key, we should have
     #  reclaimed:
-    #  get_resource({ resource_name=>"todolist",db_pkey => :uid })
+    #  get_resource({ resource_name=>"todolist",db_key => :uid })
     #
     #  and if we provided the user to send todoidentifier 
     #  instead of todolist_id in the HTTP request we should
@@ -32,7 +32,7 @@ module ResourcesFromRequest
     #
     #  and if todolist wasn't for Todolist model but for Egg
     #  we should have written
-    #  get_resource({:db_pkey => :uid,
+    #  get_resource({:db_key => :uid,
     #               :req_id => :todoidentifier,
     #               :model_name => "Egg"})
     #
@@ -44,14 +44,14 @@ module ResourcesFromRequest
     #    :req_id            the name of the HTTP parameter 
     #                       used to identify resource
     #    :model_name        the model class name 
-    #    :db_pkey           the primary key of the model
+    #    :db_key           the primary key of the model
     def get_resource(params)
         # A bit of introspection
         if params.is_a?(String)
          resource_name=params
         elsif params.is_a?(Hash)
             resource_name=params[:resource_name]
-            db_pkey=params[:db_pkey]
+            db_key=params[:db_key]
             req_id=params[:req_id]
             model_name=params[:model_name]
         else
@@ -62,7 +62,7 @@ module ResourcesFromRequest
         # set the model name from the ressource name if needed
         model_name=resource_name.capitalize if model_name == nil
         # set the db primary key if needed
-        db_pkey=:id if db_pkey == nil
+        db_key=:id if db_key == nil
 
         # get the given (by parameter) identifier of the ressource
         ressource_id = @request[req_id]
@@ -72,7 +72,7 @@ module ResourcesFromRequest
         end
 
         # get the object from DB using ressource id to identify it
-        ressource = Kernel.const_get(model_name).first({db_pkey => ressource_id})
+        ressource = Kernel.const_get(model_name).first({db_key => ressource_id})
 
         # raise an error if no ressource is found
         if(ressource.nil?) then
