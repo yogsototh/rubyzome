@@ -3,8 +3,8 @@ include Rubyzome
 class TodolistController < RestController
 
     # provide get_todolist and get_todo
-    require 'app/controllers/include/glue.rb'
-    include Glue
+    require 'rubyzome/controllers/helpers/glue.rb'
+    include ResourcesFromRequest
 
     def index
         action_not_available
@@ -36,7 +36,9 @@ class TodolistController < RestController
     end
 
     def show
-        todolist=get_todolist
+        # todolist=get_todolist
+        todolist=get_resource({ :resource_name => "todolist", 
+                                :db_pkey => :uid})
         res=todolist.attributes 
         res[:todos] = todolist.todos.map{ |t| t.attributes }
         res
