@@ -17,10 +17,10 @@ module Rubyzome
             if object.class == Hash and object.has_key?(:error)
                 @code_return = object[:error]
                 object.delete(:error)
-                self.error(object)
+                return self.error(object)
             else
                 @code_return = 200
-                self.content(object)
+                return self.content(object)
             end
         end
     end
