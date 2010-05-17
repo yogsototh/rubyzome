@@ -16,6 +16,7 @@ module Rubyzome
     
     # Include all models
     Dir["app/models/*.rb"].each { |file| require file }
-    
-    DataMapper.setup(:default, %{#{$db_type}://#{$db_user}:#{$db_password}@#{$db_host}/#{$db_database}})
+
+    require "rubyzome/lib/db.rb"
+    DataMapper.setup(:default,dbstring_from_globalconf)
 end

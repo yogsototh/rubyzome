@@ -5,11 +5,13 @@ for info in $( egrep '\$db_.*=' global_config.rb ); do
     eval $info[2,-1]
 done
 
-print "Enter your mysql root password"
-mysql -u root -p <<END
-CREATE DATABASE ${db_database};
-CREATE USER '${db_admin_user}'@'${db_host}' IDENTIFIED BY '${db_admin_password}';
-GRANT ALL on ${db_database}.* TO '${db_admin_user}'@'${db_host}' ;
-CREATE USER '${db_user}'@'${db_host}' IDENTIFIED BY '${db_password}';
-GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP on ${db_database}.* TO '${db_user}'@'${db_host}';
-END
+if [[ $db_type == "mysql" ]]; then
+    print "Enter your mysql root password"
+    mysql -u root -p <<END
+    CREATE DATABASE ${db_database};
+    CREATE USER '${db_admin_user}'@'${db_host}' IDENTIFIED BY '${db_admin_password}';
+    GRANT ALL on ${db_database}.* TO '${db_admin_user}'@'${db_host}' ;
+    CREATE USER '${db_user}'@'${db_host}' IDENTIFIED BY '${db_password}';
+    GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP on ${db_database}.* TO '${db_user}'@'${db_host}';
+    END
+fi

@@ -8,5 +8,7 @@ require 'global_config.rb'
 
 require 'rubyzome/rubyzome.rb'
 
+use Rack::Static, :urls => ["/css", "/js"], :root => "public"
+
 run Rubyzome::RestfulDispatcher.new
 
