@@ -16,6 +16,7 @@ module Rubyzome
             raise Error, "Bad request, please refer to options"
         end
 
+        # TODO: rename it as pruned_request for example
         def clean_hash( tab )
             hash={}
             tab.each do |t| 

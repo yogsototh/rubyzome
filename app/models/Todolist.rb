@@ -4,8 +4,9 @@ class Todolist
     include DataMapper::Resource
 
     # Properties
-    property :id,   Serial
-    property :title,  String
+   
+    # the title
+    property :id,  String, :key => true
 
     # Associations
     has n, :todos, :model => 'Todo'
