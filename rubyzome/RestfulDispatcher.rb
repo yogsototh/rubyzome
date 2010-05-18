@@ -15,7 +15,9 @@ module Rubyzome
 
             # If it is a file of a website which is required then use the file load
             if path.empty? or path =~ /^#{$directory_of_website}\//
-                return nil?
+                puts "nil view returned, path : #{path}"
+                @view=nil
+                return
             end
 
             # View used is based upon request's last characters
@@ -79,7 +81,7 @@ module Rubyzome
 
                 puts %{no view selected} 
                 # No view found...
-                return nil
+                @view=nil
         end
 
         # Nice html error (404 by default)
@@ -123,8 +125,9 @@ module Rubyzome
             # If no view selected, try to load the file associated to the path
             if @view.nil?
                 begin
+                    puts request.path.sub($directory_of_website,'/public')
                     # third choice, prefer loading file
-                    file=File.new('/public'+path,'r')
+                    file=File.new(request.path.sub($directory_of_website,'public'),'r')
                     # load the content of the file in memory 
                     # may be not the best way to do that
                     # TODO: caching issue for file who didn't changed
@@ -133,7 +136,9 @@ module Rubyzome
                     content = file.collect
                     file.close
                     # MIME Type get
-                    head={ 'Content-Type' => MIME::Types.of('file')[0].to_s }
+                    # head={ 'Content-Type' => MIME::Types.of('file')[0].to_s }
+                    head={ 'Content-Type' => 'text/html' }
+                    puts head.to_s
                     return [200, head, content ] 
                 rescue Exception => e
                     return html_error(e)

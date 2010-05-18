@@ -2,12 +2,11 @@
 require 'rubygems'
 require 'dm-core'
 
-# Include global configuration
-require "global_config.rb"
 # Include all models
 Dir["app/models/*.rb"].each { |file| require file }
 # Connect to DB 
 require "rubyzome/lib/db.rb"
+include Rubyzome::DB_Conf
 DataMapper.setup( :default, dbstring_from_globalconf )
 # Reset tables
 DataMapper.auto_migrate!

@@ -18,5 +18,5 @@ module Rubyzome
     Dir["app/models/*.rb"].each { |file| require file }
 
     require "rubyzome/lib/db.rb"
-    DataMapper.setup(:default,dbstring_from_globalconf)
+    DataMapper.setup( :default , DB_Conf::dbstring_from_globalconf )
 end
