@@ -21,4 +21,4 @@ $db_password=nil
 $db_admin_user=nil
 $db_admin_password=nil
 $db_host=nil
-$db_database='/Users/luc/Projects/todo.sqlite3'
+$db_database='/tmp/db.sqlite3'
