@@ -3,8 +3,8 @@ class Todolist
         include DataMapper::Resource
 
         # Properties
-        property :id,	Serial 
-        property :title,String
+        property :uid,   String, :key => true
+        property :title,  String
 
         # Associations
         has n, :todos, :model => 'Todo'
