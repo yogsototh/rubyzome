@@ -6,7 +6,8 @@ class Todolist
     # Properties
    
     # the title
-    property :id,  String, :key => true
+    property :id,	Serial
+    property :title,	String
 
     # Associations
     has n, :todos, :model => 'Todo'
