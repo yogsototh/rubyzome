@@ -11,25 +11,31 @@ class TodolistController < RestController
     end
 
     def create
-        new_todolist=Todolist.new( :id => clean_hash[:id] )
+        new_todolist=Todolist.new( :title => clean_hash[:title] )
         new_todolist.save
         return new_todolist.attributes
     end
 
     def show
-        todolist=get_resource("todolist")
+        todolist=get_resource(:model_name  => "Todolist",
+			      :req_id  => "todolist_id",
+			      :db_key => :id)
         res=todolist.attributes 
         res[:todos] = todolist.todos.map{ |t| t.attributes }
         res
     end
 
     def update
-        todolist=get_resource("todolist")
+        todolist=get_resource(:model_name  => "Todolist",
+			      :req_id  => "todolist_id",
+			      :db_key => :id)
         todolist.attributes( clean_hash([:title]) )
         todolist.save
     end
 
     def delete
-        get_resource("todolist").destroy!
+        todolist=get_resource(:model_name  => "Todolist",
+			      :req_id  => "todolist_id",
+			      :db_key => :id).destroy!
     end
 end
