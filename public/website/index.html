@@ -8,32 +8,31 @@
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
     <script type="text/javascript" src="/js/jquery-1.3.1.min.js"></script>
     <script type="text/javascript" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/rubyzome.js"></script>
     <script type="text/javascript" src="/js/index.js"></script>
     <title>Rubyzome</title>
 </head>
 <body>
     <div id="entete">
-        <h1>Rubyzome</h1>
-        <h2>Sign in</h2>
+        <h1>ToDoGether</h1>
     </div>
 
     <div id="content">
-        <form action="/todolists" method="POST"> 
-            <div id="usernameblock">
-                <input name="title" type="text" id="title" value="Title of the todolist" class="inactive" />
-            </div>
-            <div id="signinbutton">
-                <input name="signin" type="submit" id="signin" value="Create new todolist" />
+        <form id="create_new_list"> 
+            <div id="newlist">
+                <input name="title" type="text" id="title" value="New todo list" class="inactive" />
             </div>
         </form>
+
+	<div id="lists">
+	</div>
     </div>
 
     <div id="bottom">
     <div id="gprefs">
-    Rubyzome© All Rights Reserved
+    Rubyzome© powered
     </div>
     <div id="promotion">
-    Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.com">Luc Juggery</a>.
     </div>
     </div>
 </body>

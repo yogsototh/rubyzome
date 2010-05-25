@@ -1,32 +1,3 @@
-var user = "";
-var password = "";
-
-function enter_next_stage() {
-    return false;
-}
-
-function getUserFromCookie() {
-    user = $.cookie('user');
-    if (user) {
-        password = $.cookie('password'); 
-        $('#username').val(user).become_active();
-        $('#password').val(password).become_active();
-        enter_next_stage();
-    }
-}
-
-function become_active() {
-    $(this).removeClass('inactive');
-}
-
-function signin() {
-    if ( $('#remember input:checkbox').is(':checked') ) {
-        $.cookie('user', user, {path:'/'});
-        $.cookie('password', password, {path:'/'});
-    } 
-    enter_next_stage();
-}
-
 function setSpecificCss() {
     var userAgent = navigator.userAgent.toLowerCase();
 
@@ -39,24 +10,38 @@ function setSpecificCss() {
 
 // after document loaded
 $(document).ready(function(){ 
-    getUserFromCookie();
     setSpecificCss();
-    $('#username').click(become_active);
-    $('#password').click(become_active);
-    $('#username').focus(become_active);
-    $('#password').focus(become_active);
 
-    $('#username').change(function(){
+    $('#newlist').click(function() {
+	$('#title').removeClass('inactive');
+	$('#title').select();
+    });
+
+    $('#newlist').focus(function() {
+	$('#title').removeClass('inactive');
+	$('#title').select();
+    });
+
+    $('#title').change(function(){
         if ( $(this).val() == '' ) {
-            $(this).val('User Name');
+            $(this).val('New todo list');
             $(this).addClass('inactive');
         }
     });
-    $('#password').change(function(){
-        if ( $(this).val() == '' ) {
-            $(this).val('password');
-            $(this).addClass('inactive');
-        }
+
+    // Create new list in DB
+    $('#create_new_list').submit(function() {
+	alert('about to create todolist in DB');
+        create("/todolists",
+	       "title='test'",
+	       function(){alert('todolist created in DB')},
+		function (xhr, ajaxOptions, thrownError){
+                    alert(xhr.status);
+		    alert(ajaxOptions);
+                    alert(thrownError);
+                });
     });
-    $('#signin').click( signin );
+
+    // Display list of existing todolists within lists div
+    // TODO
 });
