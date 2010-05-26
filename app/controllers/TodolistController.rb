@@ -10,8 +10,12 @@ class TodolistController < RestController
         action_not_available
     end
 
+
+
+
+
     def create
-        new_todolist=Todolist.new( :title => clean_hash[:title] )
+        new_todolist=Todolist.new(clean_hash[:title])
         new_todolist.save
         return new_todolist.attributes
     end
