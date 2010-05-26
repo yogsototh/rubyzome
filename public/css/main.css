@@ -41,6 +41,7 @@ body, #info {
     background-color: #320;
     color: #ca8;
     padding-bottom: 3em;
+    clear:both;
 }
 
 a,
@@ -73,6 +74,26 @@ a:active {
 
 #newlist {
     width: 10em;
+}
+
+#lists {}
+
+.list {
+    width: 10em;
+    border-top: 1px solid #db8;
+    border-bottom: 1px solid #eda;
+    background-color: #db9;
+    color: #431;
+    text-align: center;
+    padding-top: 3em;
+    padding-bottom: 3em;
+    margin-top:3em;
+    margin-right:3em;
+    float:left;
+}
+
+.todo {
+    width: 5em;
 }
 
 /* tables */

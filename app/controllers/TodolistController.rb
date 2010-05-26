@@ -7,15 +7,12 @@ class TodolistController < RestController
     include ResourcesFromRequest
 
     def index
-        action_not_available
+	todolists = Todolist.all;
+	todolists.map {|x| x.attributes}
     end
 
-
-
-
-
     def create
-        new_todolist=Todolist.new(clean_hash[:title])
+        new_todolist=Todolist.new(clean_hash([:title]))
         new_todolist.save
         return new_todolist.attributes
     end
