@@ -33,13 +33,13 @@ $(document).ready(function(){
     $('#create_new_list').submit(function() {
 	alert('about to create todolist in DB');
         create("/todolists",
-	       "title='test'",
+	       {},
 	       function(){alert('todolist created in DB')},
-		function (xhr, ajaxOptions, thrownError){
+	       function (xhr, ajaxOptions, thrownError){
                     alert(xhr.status);
 		    alert(ajaxOptions);
                     alert(thrownError);
-                });
+               });
     });
 
     // Display list of existing todolists within lists div
