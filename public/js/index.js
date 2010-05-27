@@ -14,48 +14,51 @@ $(document).ready(function(){
 
     // Display list of existing todolists within lists div
     $.getJSON("/todolists.json", function(data){
-            $.each(data, function(i,item){
-		list = $('<div id="' + item.id + '" class="list">' + item.title + '</div>');
+         $.each(data, function(i,item){
+		list = $('<div id="' + item.id + '" class="list"><h3>' + item.title + '</h3></div>');
 		$('#lists').append(list);
 
-		// Add event handler on list
-		// Will be used for list deletion later on
-		/*
-		$('#' + item.id).click(function() {
-                    alert('Handler for .click() called.');
+                $.getJSON('/todolists/' + item.id + '/todos.json', function(todoArray){
+		    $.each(todoArray, function(k2,v2){
+                     $.each(v2, function(k3,v3){
+			 if(k3 == 'description' ){
+		             td = $('<div class="todo">' + v3 + '</div>');
+		             $('#' + item.id).append(td);
+			 }
+		     });
+		   });
                 });
-                */
 
-    // Get list of todos for the current list
-    // TODO
-/*
-    $.getJSON("/todos.json", function(td){
-        alert(1);
-        alert(td);
-        $.each(td, function(i,tdi){
-            tdo = $('<div id="' + tdi.id + '" class="todo">' + tdi.description + '</div>');
-            $('#lists').append(tdo);
-        });
-    });
-*/
-		// Add text field for new todo
-	       todo = $('<form id="create_new_todo' + item.id + '"><input name="todo" type="text" id="todo_' + item.id + '" class="todo" value="New todo"/></form>');
+		// Add event handler on list
+		// Will be used to rename or delete list later on
+		$('#' + item.id + '> h3').click(function() {
+                    alert('Trigger will be used to rename / delete list later on');
+		    /* this.addClass('modify'); */
+                });
+
+		// Add text input for new todo
+	        todo = $('<form id="create_new_todo' + item.id + '"><input name="todo" type="text" id="todo_' + item.id + '" class="todo" value="New todo"/></form>');
 		$('#' + item.id).append(todo);
 
-		// Add event handle on todo
+		// Add event handle on todo text input
 		$('#create_new_todo' + item.id).submit(function() {
-		    alert("About to add a new todo to the list");
+		    desc = $('input[id="todo_' + item.id + '"]').val();
 		    create("/todos",
-                        {description: $('input[id="todo_' + item.id + '"]').val(), todolist_id: item.id},
-                        function(){alert('todolist created in DB')},
+                        {description: desc, todolist_id: item.id},
+                        function(data, textStatus, XMLHttpRequest){
+		             td = $('<div class="todo">' + desc + '</div>');
+		             $('#' + item.id).append(td);
+			},
                         function (xhr, ajaxOptions, thrownError){
                             alert(xhr.status);
                             alert(ajaxOptions);
                             alert(thrownError);
                         });
+			return false;
                 });
-	  });
+	 });
     });
+
 
     $('#newlist').click(function() {
 	$('#title').removeClass('inactive');
@@ -78,11 +81,18 @@ $(document).ready(function(){
     $('#create_new_list').submit(function() {
         create("/todolists",
 	       {title: $('#title').val()},
-	       function(){alert('todolist created in DB')},
+	       function(data, textStatus, XMLHttpRequest){
+		// TODO prevent reload of the page
+		// Check which id to add on newly created todolist
+	           /*list = $('<div class="list"><h3>' + $('#title').val() + '</h3></div>');
+		   $('#lists').append(list);
+			*/
+	       },
 	       function (xhr, ajaxOptions, thrownError){
                     alert(xhr.status);
 		    alert(ajaxOptions);
                     alert(thrownError);
                });
+	// return false;
     });
 });
