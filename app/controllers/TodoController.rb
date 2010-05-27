@@ -6,7 +6,7 @@ class TodoController < RestController
     include ResourcesFromRequest
 
     def index
-        get_resource("todolist").todos.all
+        get_resource("todolist").todos.all.map {|x| x.attributes}
     end
 
     def create
