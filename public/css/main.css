@@ -92,6 +92,23 @@ a:active {
     float:left;
 }
 
+.listtitle {
+    width:6em;
+    background-color: #db9;
+    color: #431;
+    text-align: center;
+    border:0;
+}
+
+.tododescription {
+    width:6em;
+    background-color: #db9;
+    color: #431;
+    text-align: center;
+    border:0;
+}
+
+
 .todo {
     width: 5em;
 }
