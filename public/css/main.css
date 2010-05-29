@@ -113,6 +113,10 @@ a:active {
     width: 5em;
 }
 
+.newtodo {
+    width: 5em;
+}
+
 /* tables */
 table {
     margin-left: auto;

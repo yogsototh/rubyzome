@@ -25,7 +25,7 @@ $(document).ready(function(){
 		addEventHandlerOnTodolistTitle(item.id);
 
 		// Add text input for new todo
-		buildNewTodoInput(item);
+		buildNewTodoInput(item.id);
 
 		// Add event handle on todo text input
 		addEventHandlerOnNewTodo(item.id);
@@ -52,12 +52,12 @@ function buildTodolist(jsonObj){
 
 // Build todo
 
-function buildNewTodoInput(jsonObj){
-    todo = $('<form id="create_new_todo' + jsonObj.id + '"><input name="todo" type="text" id="todo_' + jsonObj.id + '" class="inactive" value="New todo"/></form>');
-    $('#' + jsonObj.id).append(todo);
+function buildNewTodoInput(list_id){
+    todo = $('<form id="create_new_todo' + list_id + '"><input name="todo" type="text" id="todo_' + list_id + '" class="newtodo" value="New todo"/></form>');
+    $('#' + list_id).append(todo);
 
     // Add handler to make "new todo" field inactive unless clicked
-    inputNewTodoField('#todo_' + jsonObj.id);
+    inputNewTodoField('#todo_' + list_id);
 }
 
 // Get list of todo for a given list and append to list's div
@@ -138,8 +138,7 @@ function addEventHandlerOnNewTodolist(){
 	           $('#lists').append(list);
 
 		   // Add text input for new todo
-	           todo = $('<form id="create_new_todo' + list_id + '"><input name="todo" type="text" id="todo_' + list_id + '" class="todo" value="New todo"/></form>');
-		   $('#' + list_id).append(todo);
+		   buildNewTodoInput(list_id);
 	       },
 	       function (xhr, ajaxOptions, thrownError){
                     alert(xhr.status);
@@ -174,6 +173,8 @@ function inputNewTodolistField(){
 }
 
 function inputNewTodoField(field_id){
+    $(field_id).addClass('inactive');
+
     $(field_id).click(function() {
 	$(field_id).removeClass('inactive');
 	$(field_id).select();
@@ -182,6 +183,11 @@ function inputNewTodoField(field_id){
     $(field_id).focus(function() {
 	$(field_id).removeClass('inactive');
 	$(field_id).select();
+    });
+
+    $(field_id).blur(function() {
+	$(field_id).addClass('inactive');
+        $(this).val('New todo');
     });
 
     $(field_id).change(function(){
