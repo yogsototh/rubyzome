@@ -76,9 +76,9 @@ function buildNewTodoInput(list_id){
     return todo;
 }
 
-// Build tododescription
-function buildTodoDescription(list_id, todo_id, todo_description){
-    td = $('<div id="' + todo_id  + '"><form id="update_todo_description' + todo_id + '"><input type="text" id="input_todo_description' + todo_id + '" class="tododescription" value="' + todo_description + '"/><input type="checkbox" id="input_todo_checkbox' + todo_id + '"/></form></div>');
+// Build todo
+function buildTodo(list_id, todo_id, todo_description){
+    td = $('<div id="' + todo_id  + '"><img id="img_delete_todo' + todo_id + '" src="../img/delete.gif"/><form id="update_todo_description' + todo_id + '"><input type="text" id="input_todo_description' + todo_id + '" class="tododescription" value="' + todo_description + '"/><input type="checkbox" id="input_todo_checkbox' + todo_id + '"/></form></div>');
     $('#' + list_id).append(td);
 }
 
@@ -89,18 +89,22 @@ function getListOfTodos(list_id){
         $.each(todoArray, function(index,todo){
 	   
             // Add todo description in list
-            buildTodoDescription(list_id, todo['id'], todo['description']);
+            buildTodo(list_id, todo['id'], todo['description']);
 
             // Add event handler on todo for renaming
             addEventHandlerOnTodoDescription(todo['id']);
 
             // Add event handler on todo checkbox
             addEventHandlerOnTodoCheckbox(todo['id']);
+
+	    // Add event handler on todo's delete image
+	    addEventHandlerOnTodoDeleteImage(todo['id']);
         });
     });
 }
 
 // Add event handler on list's delete image
+
 function addEventHandlerOnTodolistDeleteImage(list_id){
 
     $('#img_delete_list' + list_id).click(function() {
@@ -111,7 +115,27 @@ function addEventHandlerOnTodolistDeleteImage(list_id){
                 success: function(data, textStatus, XMLHttpRequest){
 			$('#' + list_id).remove();
 			tdl_nbr--;
-			alert('list deleted');
+                },
+	        error: function (xhr, ajaxOptions, thrownError){
+	           alert(xhr.status);
+                   alert(ajaxOptions);
+                   alert(thrownError);
+	        }
+         });
+    });
+}
+
+// Add event handler on todo's delete image
+
+function addEventHandlerOnTodoDeleteImage(todo_id){
+
+    $('#img_delete_todo' + todo_id).click(function() {
+        // Update description
+	$.ajax({type: "POST",
+		url: '/todos/' + todo_id + '.json',
+                data: {_method: "DELETE"},
+                success: function(data, textStatus, XMLHttpRequest){
+			$('#' + todo_id).remove();
                 },
 	        error: function (xhr, ajaxOptions, thrownError){
 	           alert(xhr.status);
@@ -223,14 +247,17 @@ function addEventHandlerOnNewTodo(list_id){
                {description: desc, todolist_id: list_id},
                function(data, textStatus, XMLHttpRequest){
 
-                   // Add todo description in list
-                   buildTodoDescription(list_id, data['id'], desc);
+                   // Add todo in list
+                   buildTodo(list_id, data['id'], desc);
 
 		   // Add event handler on newly created todo
 		   addEventHandlerOnTodoDescription(data['id']);
 
                    // Add event handler on todo checkbox
                    addEventHandlerOnTodoCheckbox(data['id']);
+
+		   // Add event handler on todo's delete image
+		   addEventHandlerOnTodoDeleteImage(data['id']);
 
 		   // Remove focus from input
                    $('input[id="todo_' + list_id + '"]').blur();
