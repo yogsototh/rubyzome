@@ -109,7 +109,7 @@ module Rubyzome
             if hash.nil?
                 hash={:error => 500, :exception => e}
             else
-                hash=hash.merge({:error => code, :exception => e})
+                hash=hash.merge({:error => 500, :exception => e})
             end
             [ 500, @view.head, @view.httpContent({:error => 500, :exception => e}) ]
         end
