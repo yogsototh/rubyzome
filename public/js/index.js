@@ -116,8 +116,8 @@ function addEventHandlerOnTodoDescription(todo_id){
     $('#update_todo_description' + todo_id).submit(function() {
         // Update description
 	$.ajax({type: "PUT",
-		url: "/todos.json",
-                data: {id: todo_id, description: "test"},
+		url: '/todos/' + todo_id + '.json',
+                data: {description: "test2"},
                 success: function(data, textStatus, XMLHttpRequest){
 			alert('updated');
                 },
