@@ -14,21 +14,21 @@ $(document).ready(function(){
 
     // Display list of existing todolists within lists div
     $.getJSON("/todolists.json", function(data){
-         $.each(data, function(i,item){
+         $.each(data, function(i,list){
 		// Build list and add to lists
-		buildTodolist(item);
+		buildTodolist(list);
 
 		// Get todos for each list
-		getListOfTodos(item.id);
+		getListOfTodos(list.id);
 
 		// Add event handler on list title for renaming
-		addEventHandlerOnTodolistTitle(item.id);
+		addEventHandlerOnTodolistTitle(list.id);
 
 		// Add text input for new todo
-		buildNewTodoInput(item.id);
+		buildNewTodoInput(list.id);
 
 		// Add event handle on todo text input
-		addEventHandlerOnNewTodo(item.id);
+		addEventHandlerOnNewTodo(list.id);
 	 });
     });
 
@@ -60,21 +60,23 @@ function buildNewTodoInput(list_id){
     inputNewTodoField('#todo_' + list_id);
 }
 
+// Build tododescription
+function buildTodoDescription(list_id, todo_id, todo_description){
+    td = $('<div id="' + todo_id  + '"><form id="update_todo_description' + todo_id + '"><input type="text" id="input_todo_description' + todo_id + '" class="tododescription" value="' + todo_description + '"/></form></div>');
+    $('#' + list_id).append(td);
+}
+
 // Get list of todo for a given list and append to list's div
 
 function getListOfTodos(list_id){
     $.getJSON('/todolists/' + list_id + '/todos.json', function(todoArray){
-	var todo_id, todo_description;
-        $.each(todoArray, function(k2,v2){
-	    $.each(v2, function(k3,v3){
-	        if(k3 == 'id' ){todo_id = v3}
-		if(k3 == 'description' ){todo_description = v3}
-	    });
-	    td = $('<div id="' + todo_id  + '" class="todo"><form id="update_todo_description' + todo_id + '"><input type="text" class="tododescription" value="' + todo_description + '"/></form></div>');
-	    $('#' + list_id).append(td);
+        $.each(todoArray, function(index,todo){
+	   
+            // Add todo description in list
+            buildTodoDescription(list_id, todo['id'], todo['description']);
 
             // Add event handler on todo for renaming
-            addEventHandlerOnTodoDescription(todo_id);
+            addEventHandlerOnTodoDescription(todo['id']);
         });
     });
 }
@@ -91,9 +93,32 @@ function addEventHandlerOnTodolistTitle(list_id){
 // Add event handler on todo description
 
 function addEventHandlerOnTodoDescription(todo_id){
+
+    $('#update_todo_description' + todo_id).click(function() {
+	$('#input_todo_description' + todo_id).addClass('editable');
+    });
+
+    $('#input_todo_description' + todo_id).blur(function() {
+	$('#input_todo_description' + todo_id).removeClass('editable');
+    });
+
     $('#update_todo_description' + todo_id).submit(function() {
-        alert('Todo will be renamed');
-        return false;
+        // Update description
+	$.ajax({type: "PUT",
+		url: "/todos.json",
+                data: {id: todo_id, description: "test"},
+                success: function(data, textStatus, XMLHttpRequest){
+			alert('updated');
+                },
+	        error: function (xhr, ajaxOptions, thrownError){
+	           alert(xhr.status);
+                   alert(ajaxOptions);
+                   alert(thrownError);
+	        }
+         });
+	 $('#input_todo_description' + todo_id).removeClass('editable');
+	 $('#input_todo_description' + todo_id).blur();
+	 return false;
     });
 }
 
@@ -105,12 +130,15 @@ function addEventHandlerOnNewTodo(list_id){
         create("/todos.json",
                {description: desc, todolist_id: list_id},
                function(data, textStatus, XMLHttpRequest){
-		   var todo_id;
-                   $.each(data, function(k,v){
-                       if(k == 'id' ){todo_id = v}
-                   });
-                   td = $('<div id="' + todo_id  + '" class="todo"><form id="update_todo_description"><input type="text" class="tododescription" value="' + desc + '"/></form></div>');
-                   $('#' + list_id).append(td);
+
+                   // Add todo description in list
+                   buildTodoDescription(list_id, data['id'], desc);
+
+		   // Add event handler on newly created todo
+		   addEventHandlerOnTodoDescription(data['id']);
+
+		   // Remove focus from input
+                   $('input[id="todo_' + list_id + '"]').blur();
                },
 	       function (xhr, ajaxOptions, thrownError){
 	           alert(xhr.status);
@@ -130,22 +158,25 @@ function addEventHandlerOnNewTodolist(){
         create("/todolists.json",
 	       {title: title},
 	       function(dat, textStatus, XMLHttpRequest){
-	           $.each(dat, function(k,v){
-	               if(k == 'id' ){list_id = v}
-	           });
-
+		   list_id = dat['id'];
 	           list = $('<div id="' + list_id + '" class="list"><form id="update_list_title' + list_id + '"><input type="text" class="listtitle" value="' + title + '"/></form></div>');
 	           $('#lists').append(list);
 
 		   // Add text input for new todo
 		   buildNewTodoInput(list_id);
+
+		   // Add event handle on todo text input
+		   addEventHandlerOnNewTodo(list_id);
+
+		   // Remove focus from input
+		   $('#title').blur();
 	       },
 	       function (xhr, ajaxOptions, thrownError){
                     alert(xhr.status);
 		    alert(ajaxOptions);
                     alert(thrownError);
                });
-	//return false;
+	return false;
     });
 }
 
@@ -155,13 +186,18 @@ function addEventHandlerOnNewTodolist(){
 
 function inputNewTodolistField(){
     $('#title').click(function() {
-	$('#title').removeClass('inactive');
-	$('#title').select();
+	$(this).removeClass('inactive');
+	$(this).select();
     });
 
     $('#title').focus(function() {
-	$('#title').removeClass('inactive');
-	$('#title').select();
+	$(this).removeClass('inactive');
+	$(this).select();
+    });
+
+    $('#title').blur(function() {
+	$(this).addClass('inactive');
+        $(this).val('New todo list');
     });
 
     $('#title').change(function(){
@@ -176,17 +212,17 @@ function inputNewTodoField(field_id){
     $(field_id).addClass('inactive');
 
     $(field_id).click(function() {
-	$(field_id).removeClass('inactive');
-	$(field_id).select();
+	$(this).removeClass('inactive');
+	$(this).select();
     });
 
     $(field_id).focus(function() {
-	$(field_id).removeClass('inactive');
-	$(field_id).select();
+	$(this).removeClass('inactive');
+	$(this).select();
     });
 
     $(field_id).blur(function() {
-	$(field_id).addClass('inactive');
+	$(this).addClass('inactive');
         $(this).val('New todo');
     });
 

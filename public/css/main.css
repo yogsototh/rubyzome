@@ -72,11 +72,21 @@ a:active {
     color: #dddddd;
 }
 
+#content input.editable {
+    border: 1px solid;
+    background: #ffffff;
+}
+
+#content input.tododescription {
+    font-size: 1em;
+}
+
 #newlist {
     width: 10em;
 }
 
-#lists {}
+#lists {
+}
 
 .list {
     width: 10em;
@@ -85,9 +95,9 @@ a:active {
     background-color: #db9;
     color: #431;
     text-align: center;
-    padding-top: 3em;
+    /*padding-top: 3em;
     padding-bottom: 3em;
-    margin-top:3em;
+    margin-top:3em;*/
     margin-right:3em;
     float:left;
 }
@@ -101,16 +111,15 @@ a:active {
 }
 
 .tododescription {
-    width:6em;
+    width: 5em;
     background-color: #db9;
     color: #431;
-    text-align: center;
+    text-align: left;
     border:0;
 }
 
-
 .todo {
-    width: 5em;
+    width: 7em;
 }
 
 .newtodo {
