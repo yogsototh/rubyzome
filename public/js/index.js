@@ -14,21 +14,34 @@ $(document).ready(function(){
 
     // Display list of existing todolists within lists div
     $.getJSON("/todolists.json", function(data){
-         $.each(data, function(i,list){
+
+alert(data);
+
+	 // Get number of todo lists
+	 tdl_nbr = data.length
+
+	 // Create a new row every 4 lists
+	 // TODO
+         $.each(data, function(i,obj){
+
 		// Build list and add to lists
-		buildTodolist(list);
+		list = buildTodolist(obj);
+
+		// Add list to the correct row
+		// TODO
+                $('#lists').append(list);
 
 		// Get todos for each list
-		getListOfTodos(list.id);
+		getListOfTodos(obj.id);
 
 		// Add event handler on list title for renaming
-		addEventHandlerOnTodolistTitle(list.id);
+		addEventHandlerOnTodolistTitle(obj.id);
 
 		// Add text input for new todo
-		buildNewTodoInput(list.id);
+		buildNewTodoInput(obj.id);
 
 		// Add event handle on todo text input
-		addEventHandlerOnNewTodo(list.id);
+		addEventHandlerOnNewTodo(obj.id);
 	 });
     });
 
@@ -47,7 +60,7 @@ $(document).ready(function(){
 
 function buildTodolist(jsonObj){
     list = $('<div id="' + jsonObj.id + '" class="list"><form id="update_list_title' + jsonObj.id + '"><input type="text" class="listtitle" value="' + jsonObj.title + '"/></form></div>');
-    $('#lists').append(list);
+   return list;
 }
 
 // Build todo
@@ -161,6 +174,7 @@ function addEventHandlerOnNewTodolist(){
 		   list_id = dat['id'];
 	           list = $('<div id="' + list_id + '" class="list"><form id="update_list_title' + list_id + '"><input type="text" class="listtitle" value="' + title + '"/></form></div>');
 	           $('#lists').append(list);
+		   // TODO: make sure list is in the correct row
 
 		   // Add text input for new todo
 		   buildNewTodoInput(list_id);
