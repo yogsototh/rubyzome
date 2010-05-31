@@ -107,7 +107,7 @@ module Rubyzome
 
         def general_error(e, hash=nil)
             if hash.nil?
-                hash={:error => code, :exception => e}
+                hash={:error => 500, :exception => e}
             else
                 hash=hash.merge({:error => code, :exception => e})
             end
