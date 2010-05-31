@@ -8,6 +8,10 @@ function setSpecificCss() {
     }
 }
 
+// Keep number of lists
+var tdl_nbr = 0;
+
+
 // after document loaded
 $(document).ready(function(){ 
     setSpecificCss();
@@ -22,24 +26,26 @@ $(document).ready(function(){
 	 // TODO
          $.each(data, function(i,obj){
 
-		// Build list and add to lists
-		list = buildTodolist(obj);
+		// Add div for cleaning 
+		if(i%5 == 0){ $('#lists').append($('<div id="clean"></div>'))};
 
-		// Add list to the correct row
-		// TODO
-                $('#lists').append(list);
+		// Build list div and add to lists div
+		$('#lists').append(buildTodolist(obj.id, obj.title));
 
-		// Get todos for each list
+		// Get todos and add to list
 		getListOfTodos(obj.id);
 
 		// Add event handler on list title for renaming
 		addEventHandlerOnTodolistTitle(obj.id);
 
-		// Add text input for new todo
-		buildNewTodoInput(obj.id);
+		// Add text input for new todo and add to list
+   		$('#' + obj.id).append(buildNewTodoInput(obj.id));
 
 		// Add event handle on todo text input
 		addEventHandlerOnNewTodo(obj.id);
+
+		// Make new todo input inactive
+                inputNewTodoField('#todo_' + obj.id);
 	 });
     });
 
@@ -56,8 +62,8 @@ $(document).ready(function(){
 
 // Build list
 
-function buildTodolist(jsonObj){
-    list = $('<div id="' + jsonObj.id + '" class="list"><form id="update_list_title' + jsonObj.id + '"><input type="text" class="listtitle" value="' + jsonObj.title + '"/></form></div>');
+function buildTodolist(id, title){
+   list = $('<div id="' + id + '" class="list"><form id="update_list_title' + id + '"><input id="input_list_title' + id + '" type="text" class="listtitle" value="' + title + '"/></form></div>');
    return list;
 }
 
@@ -65,10 +71,7 @@ function buildTodolist(jsonObj){
 
 function buildNewTodoInput(list_id){
     todo = $('<form id="create_new_todo' + list_id + '"><input name="todo" type="text" id="todo_' + list_id + '" class="newtodo" value="New todo"/></form>');
-    $('#' + list_id).append(todo);
-
-    // Add handler to make "new todo" field inactive unless clicked
-    inputNewTodoField('#todo_' + list_id);
+    return todo;
 }
 
 // Build tododescription
@@ -95,9 +98,32 @@ function getListOfTodos(list_id){
 // Add event handler on list title
 
 function addEventHandlerOnTodolistTitle(list_id){
+    $('#update_list_title' + list_id).click(function() {
+	$('#input_list_title' + list_id).addClass('editable');
+    });
+
+    $('#input_list_title' + list_id).blur(function() {
+	$('#input_list_title' + list_id).removeClass('editable');
+    });
+
     $('#update_list_title' + list_id).submit(function() {
-        alert('List will be renamed');
-        return false;
+        alert('List shoud be renamed (but still dont work...)');
+        // Update description
+	$.ajax({type: "PUT",
+		url: '/todolists/' + list_id + '.json',
+                data: {title: "NEW TITLE"},
+                success: function(data, textStatus, XMLHttpRequest){
+			alert('updated');
+                },
+	        error: function (xhr, ajaxOptions, thrownError){
+	           alert(xhr.status);
+                   alert(ajaxOptions);
+                   alert(thrownError);
+	        }
+         });
+	 $('#input_list_title' + list_id).removeClass('editable');
+	 $('#input_list_title' + list_id).blur();
+         return false;
     });
 }
 
@@ -115,9 +141,11 @@ function addEventHandlerOnTodoDescription(todo_id){
 
     $('#update_todo_description' + todo_id).submit(function() {
         // Update description
+        alert('Todo shoud be renamed (but still dont work...)');
+        // Update description
 	$.ajax({type: "PUT",
 		url: '/todos/' + todo_id + '.json',
-                data: {description: "test2"},
+                data: {description: "NEW DESCRIPTION"},
                 success: function(data, textStatus, XMLHttpRequest){
 			alert('updated');
                 },
@@ -164,23 +192,34 @@ function addEventHandlerOnNewTodo(list_id){
 
 function addEventHandlerOnNewTodolist(){
     $('#create_new_list').submit(function() {
-	var list_id;
+	var list_id ;
 	var title = $('#title').val();
         create("/todolists.json",
 	       {title: title},
 	       function(dat, textStatus, XMLHttpRequest){
 		   list_id = dat['id'];
-	           list = $('<div id="' + list_id + '" class="list"><form id="update_list_title' + list_id + '"><input type="text" class="listtitle" value="' + title + '"/></form></div>');
-	           $('#lists').append(list);
-		   // TODO: make sure list is in the correct row
 
-		   // Add text input for new todo
-		   buildNewTodoInput(list_id);
+		   // Add div for cleaning 
+		   if(tdl_nbr%5 == 0){ $('#lists').append($('<div id="clean"></div>'))};
+		   tdl_nbr++;
+
+		   // Create list div and add to lists div
+		   $('#lists').append(buildTodolist(list_id, title));
+
+		   // Add text input for new todo and add to newly created list
+   		   $('#' + list_id).append(buildNewTodoInput(list_id));
 
 		   // Add event handle on todo text input
 		   addEventHandlerOnNewTodo(list_id);
 
+		   // Add event handler on list title for renaming
+		   addEventHandlerOnTodolistTitle(list_id);
+
+		   // Make new todo input inactive
+                   inputNewTodoField('#todo_' + list_id);
+
 		   // Remove focus from input
+    		   $('#title').addClass('inactive');
 		   $('#title').blur();
 	       },
 	       function (xhr, ajaxOptions, thrownError){
@@ -197,6 +236,7 @@ function addEventHandlerOnNewTodolist(){
 // - disable => field not editable and default value restored
 
 function inputNewTodolistField(){
+
     $('#title').click(function() {
 	$(this).removeClass('inactive');
 	$(this).select();
@@ -221,7 +261,6 @@ function inputNewTodolistField(){
 }
 
 function inputNewTodoField(field_id){
-    $(field_id).addClass('inactive');
 
     $(field_id).click(function() {
 	$(this).removeClass('inactive');
@@ -244,4 +283,6 @@ function inputNewTodoField(field_id){
             $(this).addClass('inactive');
         }
     });
+
+    $(field_id).addClass('inactive');
 }
