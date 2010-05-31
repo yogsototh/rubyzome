@@ -43,6 +43,7 @@ body, #info {
     padding-bottom: 3em;
     clear:both;
 }
+.flush{clear:both;}
 
 a,
 a:link,
@@ -73,7 +74,7 @@ a:active {
 }
 
 #content input.editable {
-    border: 1px solid;
+    border: none;
     background: #ffffff;
 }
 
