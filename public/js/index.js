@@ -37,6 +37,9 @@ $(document).ready(function(){
 		// Add event handler on list title for renaming
 		addEventHandlerOnTodolistTitle(obj.id);
 
+		// Add event handler while clicking on list's delete image
+		addEventHandlerOnTodolistDeleteImage(obj.id);
+
 		// Add text input for new todo and add to list
    		$('#' + obj.id).append(buildNewTodoInput(obj.id));
 
@@ -62,7 +65,7 @@ $(document).ready(function(){
 // Build list
 
 function buildTodolist(id, title){
-   list = $('<div id="' + id + '" class="list"><form id="update_list_title' + id + '"><input id="input_list_title' + id + '" type="text" class="listtitle" value="' + title + '"/></form></div>');
+   list = $('<div id="' + id + '" class="list"><img id="img_delete_list' + id + '" src="../img/delete.gif"/><form id="update_list_title' + id + '"><input id="input_list_title' + id + '" type="text" class="listtitle" value="' + title + '"/></form></div>');
    return list;
 }
 
@@ -94,6 +97,26 @@ function getListOfTodos(list_id){
             // Add event handler on todo checkbox
             addEventHandlerOnTodoCheckbox(todo['id']);
         });
+    });
+}
+
+// Add event handler on list's delete image
+function addEventHandlerOnTodolistDeleteImage(list_id){
+
+    $('#img_delete_list' + list_id).click(function() {
+        // Update description
+	$.ajax({type: "POST",
+		url: '/todolists/' + list_id + '.json',
+                data: {_method: "DELETE"},
+                success: function(data, textStatus, XMLHttpRequest){
+			alert('list deleted (still need to reload the page)');
+                },
+	        error: function (xhr, ajaxOptions, thrownError){
+	           alert(xhr.status);
+                   alert(ajaxOptions);
+                   alert(thrownError);
+	        }
+         });
     });
 }
 
@@ -204,6 +227,9 @@ function addEventHandlerOnNewTodo(list_id){
 		   // Add event handler on newly created todo
 		   addEventHandlerOnTodoDescription(data['id']);
 
+                   // Add event handler on todo checkbox
+                   addEventHandlerOnTodoCheckbox(data['id']);
+
 		   // Remove focus from input
                    $('input[id="todo_' + list_id + '"]').blur();
                },
@@ -242,6 +268,9 @@ function addEventHandlerOnNewTodolist(){
 
 		   // Add event handler on list title for renaming
 		   addEventHandlerOnTodolistTitle(list_id);
+
+		   // Add event handler while clicking on list's delete image
+		   addEventHandlerOnTodolistDeleteImage(list_id);
 
 		   // Make new todo input inactive
                    inputNewTodoField('#todo_' + list_id);
