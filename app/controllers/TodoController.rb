@@ -23,10 +23,10 @@ class TodoController < RestController
     end
 
     def update
-        todo = Todo.first(:id => @request[:todo_id])
-	todo.attributes = clean_hash([:description, :done, :taken]);
+        todo=get_resource("todo")
+        todo.attributes = clean_hash([:description, :done, :taken]);
         todo.save
-	todo.attributes
+        todo.attributes
     end
 
     def delete
