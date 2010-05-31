@@ -11,7 +11,6 @@ function setSpecificCss() {
 // Keep number of lists
 var tdl_nbr = 0;
 
-
 // after document loaded
 $(document).ready(function(){ 
     setSpecificCss();
@@ -76,7 +75,7 @@ function buildNewTodoInput(list_id){
 
 // Build tododescription
 function buildTodoDescription(list_id, todo_id, todo_description){
-    td = $('<div id="' + todo_id  + '"><form id="update_todo_description' + todo_id + '"><input type="text" id="input_todo_description' + todo_id + '" class="tododescription" value="' + todo_description + '"/></form></div>');
+    td = $('<div id="' + todo_id  + '"><form id="update_todo_description' + todo_id + '"><input type="text" id="input_todo_description' + todo_id + '" class="tododescription" value="' + todo_description + '"/><input type="checkbox" id="input_todo_checkbox' + todo_id + '"/></form></div>');
     $('#' + list_id).append(td);
 }
 
@@ -91,6 +90,9 @@ function getListOfTodos(list_id){
 
             // Add event handler on todo for renaming
             addEventHandlerOnTodoDescription(todo['id']);
+
+            // Add event handler on todo checkbox
+            addEventHandlerOnTodoCheckbox(todo['id']);
         });
     });
 }
@@ -98,7 +100,7 @@ function getListOfTodos(list_id){
 // Add event handler on list title
 
 function addEventHandlerOnTodolistTitle(list_id){
-    $('#update_list_title' + list_id).click(function() {
+    $('#input_list_title' + list_id).click(function() {
 	$('#input_list_title' + list_id).addClass('editable');
     });
 
@@ -131,7 +133,7 @@ function addEventHandlerOnTodolistTitle(list_id){
 
 function addEventHandlerOnTodoDescription(todo_id){
 
-    $('#update_todo_description' + todo_id).click(function() {
+    $('#input_todo_description' + todo_id).click(function() {
 	$('#input_todo_description' + todo_id).addClass('editable');
     });
 
@@ -161,6 +163,32 @@ function addEventHandlerOnTodoDescription(todo_id){
     });
 }
 
+// Add event handler on todo checkbox
+
+function addEventHandlerOnTodoCheckbox(todo_id){
+
+    $('#input_todo_checkbox' + todo_id).change(function() {
+        // Update description
+        alert('Todo shoud be flagged as done in DB (but still dont work...)');
+        // Update description
+	$.ajax({type: "PUT",
+		url: '/todos/' + todo_id + '.json',
+                data: {done: true},
+                success: function(data, textStatus, XMLHttpRequest){
+			alert('updated');
+                },
+	        error: function (xhr, ajaxOptions, thrownError){
+	           alert(xhr.status);
+                   alert(ajaxOptions);
+                   alert(thrownError);
+	        }
+         });
+	 $('#input_todo_checkbox' + todo_id).blur();
+	 return false;
+    });
+}
+
+// Add event handler on input field used to create a new Todo
 // Add event handler on input field used to create a new Todo
 
 function addEventHandlerOnNewTodo(list_id){
