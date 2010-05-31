@@ -23,15 +23,14 @@ class TodoController < RestController
     end
 
     def update
-        todo=get_todo
-        clean_hash([:description, :done, :taken]).each do |k,v|
-            todo.update( k => v )
-        end
+        todo = Todo.first(:id => @request[:todo_id])
+	todo.attributes = clean_hash([:description, :done, :taken]);
         todo.save
-        { :message => 'update done successfully' }
+	todo.attributes
     end
 
     def delete
-        get_todo.destroy!
+        Todo.first(:id => @request[:todo_id]).destroy!
+	{:message => 'todo deleted'}
     end
 end

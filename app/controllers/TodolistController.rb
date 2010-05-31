@@ -27,16 +27,14 @@ class TodolistController < RestController
     end
 
     def update
-        todolist=get_resource(:model_name  => "Todolist",
-			      :req_id  => "todolist_id",
-			      :db_key => :id)
-        todolist.attributes( clean_hash([:title]) )
-        todolist.save
+	todolist = Todolist.first(:id => @request[:todolist_id]);
+	todolist.title = @request[:title];
+	todolist.save;
+	todolist.attributes
     end
 
     def delete
-        todolist=get_resource(:model_name  => "Todolist",
-			      :req_id  => "todolist_id",
-			      :db_key => :id).destroy!
+	todolist = Todolist.first(:id => @request[:todolist_id]).destroy!
+	{:message => "todolist deleted"}
     end
 end
