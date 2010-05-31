@@ -109,7 +109,9 @@ function addEventHandlerOnTodolistDeleteImage(list_id){
 		url: '/todolists/' + list_id + '.json',
                 data: {_method: "DELETE"},
                 success: function(data, textStatus, XMLHttpRequest){
-			alert('list deleted (still need to reload the page)');
+			$('#' + list_id).remove();
+			tdl_nbr--;
+			alert('list deleted');
                 },
 	        error: function (xhr, ajaxOptions, thrownError){
 	           alert(xhr.status);
