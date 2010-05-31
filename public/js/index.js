@@ -15,8 +15,6 @@ $(document).ready(function(){
     // Display list of existing todolists within lists div
     $.getJSON("/todolists.json", function(data){
 
-alert(data);
-
 	 // Get number of todo lists
 	 tdl_nbr = data.length
 
