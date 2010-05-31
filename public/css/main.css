@@ -136,6 +136,10 @@ a:active {
     width: 5em;
 }
 
+#alert {
+    margin: auto auto;
+}
+
 /* tables */
 table {
     margin-left: auto;
