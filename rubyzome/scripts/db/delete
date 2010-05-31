@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+
+for info in $( egrep '\$db_.*=' global_config.rb ); do
+    print $info[2,-1]
+    eval $info[2,-1]
+done
+print "Enter your mysql root password"
+mysql -u root -p <<END
+DROP DATABASE ${db_database};
+DROP USER '${db_admin_user}'@'${db_host}';
+DROP USER '${db_user}'@'${db_host}';
+END
