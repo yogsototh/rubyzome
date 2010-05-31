@@ -22,7 +22,6 @@ $(document).ready(function(){
 	 tdl_nbr = data.length
 
 	 // Create a new row every 4 lists
-	 // TODO
          $.each(data, function(i,obj){
 
 		// Add div for cleaning 
