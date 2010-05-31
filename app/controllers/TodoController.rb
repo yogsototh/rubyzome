@@ -19,7 +19,7 @@ class TodoController < RestController
     end
 
     def show
-        get_todo.attributes
+        get_resource("todo").attributes
     end
 
     def update
