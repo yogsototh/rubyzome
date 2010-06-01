@@ -97,8 +97,8 @@ a:active {
 }
 
 #delete {
-    width: 5em;
-    background-color: #320;
+    width: 2em;
+    /*background-color: #320;*/
     position: absolute;
     display: none;
 }
@@ -145,10 +145,14 @@ a:active {
 
 #message {
     position: absolute;
+    top: 200px;
+    left:400px;
     width: 10em;
     height: 7em;
     margin-left: auto;
     margin-rigth: auto;
+    margin-top: auto;
+    margin-bottom: auto;
     background-color: #db9;
     border: solid 1px #320;
     display: none;

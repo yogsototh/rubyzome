@@ -15,6 +15,23 @@ var tdl_nbr = 0;
 $(document).ready(function(){ 
     setSpecificCss();
 
+    // Load lists
+    loadAllLists();
+
+    // Add event handler on new list creation
+    addEventHandlerOnNewTodolist();
+
+    // Make  "new todolist" field inactive unless clicked
+    inputNewTodolistField();
+});
+
+/*********************/
+/***** functions *****/
+/*********************/
+
+// Load all lists
+function loadAllLists(){
+
     // Display list of existing todolists within lists div
     $.getJSON("/todolists.json", function(data){
 
@@ -46,17 +63,7 @@ $(document).ready(function(){
                 inputNewTodoField('#todo_' + obj.id);
 	 });
     });
-
-    // Add event handler on new list creation
-    addEventHandlerOnNewTodolist();
-
-    // Make  "new todolist" field inactive unless clicked
-    inputNewTodolistField();
-});
-
-/*********************/
-/***** functions *****/
-/*********************/
+}
 
 // Build list
 
@@ -101,16 +108,22 @@ function getListOfTodos(list_id){
 function addEventHandlerOnTodolistTitle(list_id){
     $('#input_list_title' + list_id).click(function() {
 	$('#input_list_title' + list_id).addClass('editable');
-	$('#delete').hide();
+	$('#delete').empty();
     });
 
     $('#input_list_title' + list_id).blur(function() {
 	$('#input_list_title' + list_id).removeClass('editable');
     });
 
-    $('#input_list_title' + list_id).mouseenter(function(evt) {
-	showListDeleteDiv(list_id, evt);
+    $('#update_list_title' + list_id).mouseenter(function() {
+	showListDeleteDiv(list_id);
     });
+
+/*
+    $('#' + list_id).mouseout(function(){
+	$('#delete').empty();
+    });
+*/
 
     $('#update_list_title' + list_id).submit(function() {
         // Update todolist title
@@ -134,22 +147,25 @@ function addEventHandlerOnTodolistTitle(list_id){
 
 // Deletion div
 
-function showListDeleteDiv(id,evt){
-	$('#delete').css({ top: evt.pageY + 3, left: evt.pageX + 3}).show();
+function showListDeleteDiv(id){
+	x = $('#input_list_title' + id).position().left;
+	y = $('#input_list_title' + id).position().top;
+	$('#delete').empty();
+	$('#delete').append($('<div id="delete' + id + '"><img src="../img/delete.gif"/></div>')).css({ top: y, left: x}).show();
 
-        $('#delete').mouseleave(function(){
-		$('#delete').hide();
-	});
-
-       // Delete todo
-       $('#delete').click(function(){
+       // Delete list
+       $('#delete' + id).click(function(){
            $.ajax({type: "POST",
 		url: '/todolists/' + id + '.json',
                 data: {_method: "DELETE"},
                 success: function(data, textStatus, XMLHttpRequest){
 			$('#' + id).remove();
+                        $('#delete').empty();
 			tdl_nbr--;
 			showMessageDiv("List deleted");
+
+			// Handle row stuff here
+			// TODO
                 },
 	        error: function (xhr, ajaxOptions, thrownError){
 	           /*alert(xhr.status);
@@ -161,20 +177,20 @@ function showListDeleteDiv(id,evt){
       });
 }
 
-function showTodoDeleteDiv(id, evt){
-	$('#delete').css({ top: evt.pageY + 3, left: evt.pageX + 3}).show();
-
-        $('#delete').mouseleave(function(){
-		$('#delete').hide();
-	});
+function showTodoDeleteDiv(id){
+	x = $('#input_todo_description' + id).position().left;
+	y = $('#input_todo_description' + id).position().top;
+	$('#delete').empty();
+	$('#delete').append($('<div id="delete' + id + '"><img src="../img/delete.gif"/></div>')).css({ top: y, left: x}).show();
 
        // Delete todo
-       $('#delete').click(function(){
+       $('#delete' + id).click(function(){
            $.ajax({type: "POST",
 		url: '/todos/' + id + '.json',
                 data: {_method: "DELETE"},
                 success: function(data, textStatus, XMLHttpRequest){
 			$('#' + id).remove();
+		        $('#delete').empty();
 			showMessageDiv("Todo entry deleted");
                 },
 	        error: function (xhr, ajaxOptions, thrownError){
@@ -191,8 +207,8 @@ function showTodoDeleteDiv(id, evt){
 
 function showMessageDiv(content){
 	$('#message').html(content);
-	$('#message').show(4000);
-	$('#message').hide(4000);
+	$('#message').show("slow");
+	$('#message').hide("slow");
 }
 
 // Add event handler on todo description
@@ -201,16 +217,22 @@ function addEventHandlerOnTodoDescription(todo_id){
 
     $('#input_todo_description' + todo_id).click(function() {
 	$('#input_todo_description' + todo_id).addClass('editable');
-	$('#delete').hide();
+	$('#delete').empty();
     });
 
     $('#input_todo_description' + todo_id).blur(function() {
 	$('#input_todo_description' + todo_id).removeClass('editable');
     });
 
-    $('#input_todo_description' + todo_id).mouseenter(function(evt) {
-	showTodoDeleteDiv(todo_id, evt);
+    $('#update_todo_description' + todo_id).mouseenter(function() {
+	showTodoDeleteDiv(todo_id);
     });
+
+/*
+    $('#' + todo_id).mouseout(function(){
+	$('#delete' + id).remove();
+    });
+*/
 
     $('#update_todo_description' + todo_id).submit(function() {
         // Update todo description
