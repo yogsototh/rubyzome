@@ -75,7 +75,7 @@ a:active {
 
 #content input.editable {
     border: none;
-    background: #ffffff;
+    background-color: #ffffff;
 }
 
 #content input.tododescription {
@@ -94,6 +94,13 @@ a:active {
     clear: both;
     margin-top:3em;
     margin-bottom:3em;
+}
+
+#delete {
+    width: 5em;
+    background-color: #320;
+    position: absolute;
+    display: none;
 }
 
 .list {
@@ -136,8 +143,15 @@ a:active {
     width: 5em;
 }
 
-#alert {
-    margin: auto auto;
+#message {
+    position: absolute;
+    width: 10em;
+    height: 7em;
+    margin-left: auto;
+    margin-rigth: auto;
+    background-color: #db9;
+    border: solid 1px #320;
+    display: none;
 }
 
 /* tables */

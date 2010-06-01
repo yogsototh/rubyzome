@@ -36,9 +36,6 @@ $(document).ready(function(){
 		// Add event handler on list title for renaming
 		addEventHandlerOnTodolistTitle(obj.id);
 
-		// Add event handler while clicking on list's delete image
-		addEventHandlerOnTodolistDeleteImage(obj.id);
-
 		// Add text input for new todo and add to list
    		$('#' + obj.id).append(buildNewTodoInput(obj.id));
 
@@ -64,7 +61,7 @@ $(document).ready(function(){
 // Build list
 
 function buildTodolist(id, title){
-   list = $('<div id="' + id + '" class="list"><img id="img_delete_list' + id + '" src="../img/delete.gif"/><form id="update_list_title' + id + '"><input id="input_list_title' + id + '" type="text" class="listtitle" value="' + title + '"/></form></div>');
+   list = $('<div id="' + id + '" class="list"><form id="update_list_title' + id + '"><input id="input_list_title' + id + '" type="text" class="listtitle" value="' + title + '"/></form></div>');
    return list;
 }
 
@@ -77,7 +74,7 @@ function buildNewTodoInput(list_id){
 
 // Build todo
 function buildTodo(list_id, todo_id, todo_description){
-    td = $('<div id="' + todo_id  + '"><img id="img_delete_todo' + todo_id + '" src="../img/delete.gif"/><form id="update_todo_description' + todo_id + '"><input type="text" id="input_todo_description' + todo_id + '" class="tododescription" value="' + todo_description + '"/><input type="checkbox" id="input_todo_checkbox' + todo_id + '"/></form></div>');
+    td = $('<div id="' + todo_id  + '"><form id="update_todo_description' + todo_id + '"><input type="text" id="input_todo_description' + todo_id + '" class="tododescription" value="' + todo_description + '"/><input type="checkbox" id="input_todo_checkbox' + todo_id + '"/></form></div>');
     $('#' + list_id).append(td);
 }
 
@@ -95,53 +92,7 @@ function getListOfTodos(list_id){
 
             // Add event handler on todo checkbox
             addEventHandlerOnTodoCheckbox(todo['id']);
-
-	    // Add event handler on todo's delete image
-	    addEventHandlerOnTodoDeleteImage(todo['id']);
         });
-    });
-}
-
-// Add event handler on list's delete image
-
-function addEventHandlerOnTodolistDeleteImage(list_id){
-
-    $('#img_delete_list' + list_id).click(function() {
-        // Update description
-	$.ajax({type: "POST",
-		url: '/todolists/' + list_id + '.json',
-                data: {_method: "DELETE"},
-                success: function(data, textStatus, XMLHttpRequest){
-			$('#' + list_id).remove();
-			tdl_nbr--;
-                },
-	        error: function (xhr, ajaxOptions, thrownError){
-	           alert(xhr.status);
-                   alert(ajaxOptions);
-                   alert(thrownError);
-	        }
-         });
-    });
-}
-
-// Add event handler on todo's delete image
-
-function addEventHandlerOnTodoDeleteImage(todo_id){
-
-    $('#img_delete_todo' + todo_id).click(function() {
-        // Update description
-	$.ajax({type: "POST",
-		url: '/todos/' + todo_id + '.json',
-                data: {_method: "DELETE"},
-                success: function(data, textStatus, XMLHttpRequest){
-			$('#' + todo_id).remove();
-                },
-	        error: function (xhr, ajaxOptions, thrownError){
-	           alert(xhr.status);
-                   alert(ajaxOptions);
-                   alert(thrownError);
-	        }
-         });
     });
 }
 
@@ -150,20 +101,24 @@ function addEventHandlerOnTodoDeleteImage(todo_id){
 function addEventHandlerOnTodolistTitle(list_id){
     $('#input_list_title' + list_id).click(function() {
 	$('#input_list_title' + list_id).addClass('editable');
+	$('#delete').hide();
     });
 
     $('#input_list_title' + list_id).blur(function() {
 	$('#input_list_title' + list_id).removeClass('editable');
     });
 
+    $('#input_list_title' + list_id).mouseenter(function(evt) {
+	showListDeleteDiv(list_id, evt);
+    });
+
     $('#update_list_title' + list_id).submit(function() {
-        alert('List shoud be renamed (but still dont work...)');
-        // Update description
+        // Update todolist title
 	$.ajax({type: "PUT",
 		url: '/todolists/' + list_id + '.json',
-                data: {title: "NEW TITLE"},
+                data: {title: $('#input_list_title' + list_id).val()},
                 success: function(data, textStatus, XMLHttpRequest){
-			alert('updated');
+			showMessageDiv("Title updated");
                 },
 	        error: function (xhr, ajaxOptions, thrownError){
 	           alert(xhr.status);
@@ -177,27 +132,93 @@ function addEventHandlerOnTodolistTitle(list_id){
     });
 }
 
+// Deletion div
+
+function showListDeleteDiv(id,evt){
+	$('#delete').css({ top: evt.pageY + 3, left: evt.pageX + 3}).show();
+
+        $('#delete').mouseleave(function(){
+		$('#delete').hide();
+	});
+
+       // Delete todo
+       $('#delete').click(function(){
+           $.ajax({type: "POST",
+		url: '/todolists/' + id + '.json',
+                data: {_method: "DELETE"},
+                success: function(data, textStatus, XMLHttpRequest){
+			$('#' + id).remove();
+			tdl_nbr--;
+			showMessageDiv("List deleted");
+                },
+	        error: function (xhr, ajaxOptions, thrownError){
+	           /*alert(xhr.status);
+                   alert(ajaxOptions);
+                   alert(thrownError);
+		   */
+	        }
+           });
+      });
+}
+
+function showTodoDeleteDiv(id, evt){
+	$('#delete').css({ top: evt.pageY + 3, left: evt.pageX + 3}).show();
+
+        $('#delete').mouseleave(function(){
+		$('#delete').hide();
+	});
+
+       // Delete todo
+       $('#delete').click(function(){
+           $.ajax({type: "POST",
+		url: '/todos/' + id + '.json',
+                data: {_method: "DELETE"},
+                success: function(data, textStatus, XMLHttpRequest){
+			$('#' + id).remove();
+			showMessageDiv("Todo entry deleted");
+                },
+	        error: function (xhr, ajaxOptions, thrownError){
+	           /*alert(xhr.status);
+                   alert(ajaxOptions);
+                   alert(thrownError);
+		   */
+	        }
+           });
+      });
+}
+
+// Message div
+
+function showMessageDiv(content){
+	$('#message').html(content);
+	$('#message').show(4000);
+	$('#message').hide(4000);
+}
+
 // Add event handler on todo description
 
 function addEventHandlerOnTodoDescription(todo_id){
 
     $('#input_todo_description' + todo_id).click(function() {
 	$('#input_todo_description' + todo_id).addClass('editable');
+	$('#delete').hide();
     });
 
     $('#input_todo_description' + todo_id).blur(function() {
 	$('#input_todo_description' + todo_id).removeClass('editable');
     });
 
+    $('#input_todo_description' + todo_id).mouseenter(function(evt) {
+	showTodoDeleteDiv(todo_id, evt);
+    });
+
     $('#update_todo_description' + todo_id).submit(function() {
-        // Update description
-        alert('Todo shoud be renamed (but still dont work...)');
-        // Update description
+        // Update todo description
 	$.ajax({type: "PUT",
 		url: '/todos/' + todo_id + '.json',
-                data: {description: "NEW DESCRIPTION"},
+                data: {description: $('#input_todo_description' + todo_id).val()},
                 success: function(data, textStatus, XMLHttpRequest){
-			alert('updated');
+			showMessageDiv('Description updated');
                 },
 	        error: function (xhr, ajaxOptions, thrownError){
 	           alert(xhr.status);
@@ -255,9 +276,6 @@ function addEventHandlerOnNewTodo(list_id){
                    // Add event handler on todo checkbox
                    addEventHandlerOnTodoCheckbox(data['id']);
 
-		   // Add event handler on todo's delete image
-		   addEventHandlerOnTodoDeleteImage(data['id']);
-
 		   // Remove focus from input
                    $('input[id="todo_' + list_id + '"]').blur();
                },
@@ -296,9 +314,6 @@ function addEventHandlerOnNewTodolist(){
 
 		   // Add event handler on list title for renaming
 		   addEventHandlerOnTodolistTitle(list_id);
-
-		   // Add event handler while clicking on list's delete image
-		   addEventHandlerOnTodolistDeleteImage(list_id);
 
 		   // Make new todo input inactive
                    inputNewTodoField('#todo_' + list_id);
