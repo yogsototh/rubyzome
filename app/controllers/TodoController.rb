@@ -2,16 +2,22 @@ require 'rubyzome/controllers/RestController.rb'
 include Rubyzome
 class TodoController < RestController
 
-    # provide get_todolist and get_todo
-    require 'app/controllers/include/glue.rb'
-    include Glue
+    # provide get_resource("todolist") and get_todo
+    require 'rubyzome/controllers/helpers/glue.rb'
+    include ResourcesFromRequest
+
+    @@access={ :resource_name => "todolist", :db_key => :uid }
 
     def index
-        get_todolist.todos.all
+        keys=[ :id, :description, :done, :taken ]
+        { 
+            :keys =>  keys,
+            :values => get_resource(@@access).todos.map { |todo| keys.map { |k| todo[k] } }
+        }
     end
 
     def create
-        todolist=get_todolist
+        todolist=get_resource( @@access )
         new_todo=Todo.new
         new_todo.attributes = clean_hash([:description])
         new_todo.todolist = todolist
