@@ -93,16 +93,26 @@ module Rubyzome
             ]
         end
 
-        def internal_error(e)
+        def internal_error(e, hash=nil)
             if e.is_a?(Error) and not e.code.nil?
                 code=e.code
             else
                 code=500
             end
-            [ code, @view.head, @view.httpContent({:error => code, :exception => e}) ]
+            if hash.nil?
+                hash={:error => code, :exception => e}
+            else
+                hash=hash.merge({:error => code, :exception => e})
+            end
+            [ code, @view.head, @view.httpContent(hash) ]
         end
 
-        def general_error(e)
+        def general_error(e, hash=nil)
+            if hash.nil?
+                hash={:error => 500, :exception => e}
+            else
+                hash=hash.merge({:error => 500, :exception => e})
+            end
             [ 500, @view.head, @view.httpContent({:error => 500, :exception => e}) ]
         end
 
@@ -149,9 +159,9 @@ module Rubyzome
                 begin
                     body = Kernel.const_get(controller_name).new(request).send function_name
                 rescue Error => e
-                    return internal_error e
+                    return internal_error(e, {:controller_name => controller_name, :function_name => function_name } )
                 rescue Exception => e
-                    return general_error e
+                    return general_error(e, {:controller_name => controller_name, :function_name => function_name } ) 
                 end
 
                 # had the request object to the view if possible
