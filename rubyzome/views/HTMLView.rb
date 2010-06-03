@@ -42,6 +42,25 @@ module Rubyzome
             return true
         end
 
+        def index_to_HTML(object) 
+            res=''
+            keys = object[:keys]
+            values = object[:values]
+            res <<= '<tr>'
+            keys.each { |k| res <<= '<th>' +  html_repr(k) + '</th>' }
+            res <<= '</tr>'
+            parity_class=0
+            values.each do |v|
+                parity_class=( parity_class+1 ) % 2
+                res <<= %{<tr class="r#{parity_class}">}
+                v.each do |field| 
+                    res<<= %{<td>#{html_repr( field )}</td>}
+                end
+            end
+            res <<= '</tr>'
+            '<table>'+res+'</table>'
+        end
+
         # An Array to HTML table
         def array_to_HTML(object)
             res=''
@@ -88,7 +107,12 @@ module Rubyzome
         def html_repr(object)
             case object
             when Array then return array_to_HTML(object)
-            when Hash  then return hash_to_HTML(object)
+            when Hash  then 
+                if object[:keys].nil? or object[:values].nil?
+                    return hash_to_HTML(object)
+                else
+                    return index_to_HTML(object)
+                end
             else return object.to_s
             end
         end
