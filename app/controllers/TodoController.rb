@@ -6,18 +6,18 @@ class TodoController < RestController
     require 'rubyzome/controllers/helpers/glue.rb'
     include ResourcesFromRequest
 
-    @@access={ :resource_name => "todolist", :db_key => :uid }
+    @@todolist_ref={ :resource_name => "todolist", :db_key => :uid }
 
     def index
         keys=[ :id, :description, :done, :taken ]
         { 
             :keys =>  keys,
-            :values => get_resource(@@access).todos.map { |todo| keys.map { |k| todo[k] } }
+            :values => get_resource(@@todolist_ref).todos.map { |todo| keys.map { |k| todo[k] } }
         }
     end
 
     def create
-        todolist=get_resource( @@access )
+        todolist=get_resource( @@todolist_ref )
         new_todo=Todo.new
         new_todo.attributes = clean_hash([:description])
         new_todo.todolist = todolist
