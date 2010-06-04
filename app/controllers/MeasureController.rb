@@ -10,7 +10,7 @@ class MeasureController < Rubyzome::RestController
             'to'		=> measures[-1].date,
             'max'		=> measures.map{ |m| m.consumption }.max,
             'interval'	=> interval.to_i,
-            'data'		=> measures.map{ |x| clean_id(x.attributes) },
+            'data'		=> measures.map{ |x| x.consumption },
         }
     end
 
