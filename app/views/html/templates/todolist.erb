@@ -32,25 +32,8 @@
             <input name="newtododescription" type="text" id="newtododescription" value="Describe here a new thing to do" class="inactive" />
         </form>
 
-        <% if not @object[:todos].nil? and @object[:todos].length > 0 %>
         <table id="todolist">
-            <% @object[:todos].each do |t| %>
-                <tr id="task_<%=t[:id]%>">
-                    <% if t[:done] %>
-                    <td class="done" onclick="undone(<%=t[:id] %>)">&#x2611;</td>
-                    <% else %>
-                    <td class="done" onclick="done(<%=t[:id] %>)">&#x2610;</td>
-                    <% end %>
-                    <% if t[:taken] %>
-                    <td class="taken" onclick="untake(<%=t[:id] %>)">free</td>
-                    <% else %>
-                    <td class="taken" onclick="take(<%=t[:id] %>)">take</td>
-                    <% end %>
-                    <td class="description"><%= t[:description] %></td>
-                </tr>
-            <% end %>
         </table>
-        <% end %>
     </div>
 
     <div id="bottom">
@@ -60,7 +43,7 @@
             <a href="/">Logout</a>
         </div>
     <div id="gprefs">
-    2009 GridPocket© SAS All Rights Reserved
+    2010 Rubyzome
     </div>
     <div id="promotion">
     Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.net">Luc Juggery</a>.
