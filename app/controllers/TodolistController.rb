@@ -40,7 +40,11 @@ class TodolistController < RestController
         todolist=get_resource({ :resource_name => "todolist", 
                                 :db_key => :uid})
         res=todolist.attributes 
-        res[:todos] = todolist.todos.map{ |t| t.attributes }
+        keys=[ :id, :description, :done, :taken ]
+        res[:todos] = { 
+            :keys =>  keys,
+            :values => todolist.todos.map { |todo| keys.map { |k| todo[k] } }
+        }
         res
     end
 
