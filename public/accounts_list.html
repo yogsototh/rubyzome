@@ -1,0 +1,32 @@
+        <div id="actions">
+            <div>Edit here to create a new user.</div>
+            <table>
+                <tr>
+                    <th>nickname</th>
+                    <td><input type="text" id="newnickname"  value=""/></td>
+                </tr>
+                <tr>
+                    <th>password</th>
+                    <td><input type="text" id="newpw"  value="guest"/></td>
+                </tr>
+                <tr>
+                    <th>status</th>
+                    <td><input type="text" id="newmsg" value="Welcome new user"/></td>
+                </tr>
+            </table>
+            <div id="actionbutton">
+            <span class="button" onclick="create_resource('account');return false;">add new user</span>
+            </div>
+        </div>
+        <hr/>
+
+        <table id="accounts">
+            <tr>
+                <th>nickname</th>
+                <th>password</th>
+                <th>status</th>
+                <th>update</th>
+                <th>remove</th>
+            </tr>
+        </table>
+    </div>

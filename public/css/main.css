@@ -129,7 +129,7 @@ table tr th {
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    opacity: .8;
+    opacity: .9;
 }
 #info div {
     padding: .5em;
@@ -168,4 +168,12 @@ table input {
 #message {
     margin: 1em;
     font-size: 1.4em;
+}
+
+#graph {
+   width: 45em; 
+   height: 25em; 
+   text-align: center;
+   margin-left: auto;
+   margin-right: auto;
 }
