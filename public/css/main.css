@@ -63,6 +63,11 @@ body, #info {
     font-size: 1.5em;
 }
 
+.editable {
+	border: none;
+	background: #ffffff;
+}
+
 a,
 a:link,
 a:visited {

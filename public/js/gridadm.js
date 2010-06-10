@@ -47,7 +47,6 @@ $(document).ready(function(){
 		user = $('[name=l]').val();
 		password = $('[name=p]').val();
 		showUsersList();
-		showMenu();
 		return false;
         });
 });
@@ -58,18 +57,12 @@ function showList(type){
 }
 
 function showUsersList(){
-/*
-	$.getJSON('/users.json',
-		{l: user, p: password},
-		function(data){
-		    buildUsersList(data);
-		    return false;
-	        });
-*/
 	$.ajax({url: '/users.json',
 	        data: {l: user, p: password},
 		success: function(data){
 		    buildUsersList(data);
+		    showMenu();
+		    showTitle();
 		    return false;
 	        },
 	  	error: function(a,b,c){
@@ -80,86 +73,82 @@ function showUsersList(){
 }
 
 function buildUsersList(data){
-	$('#content').empty();
+	// Load template
+	$('#content').load("html/users_list.html",function(){
+		parity = 0;
+		var nickname, message;
+		$.each(data, function(k,v){
+			nickname = v['nickname'];
+			message = v['status'];
+			parity = (parity + 1)%2;
 
-        // Buil table
-	tab =  $('<table><tr><th>nickname</th><th>status</th><th>update</th><th>remove</th></tr>');
+			tr = $('<tr class="r' + parity + '" id="line' + nickname + '"><td><a id="user' + nickname + '" href="" onclick="showUserConsumption(\'' + nickname + '\');return false;">' +nickname  +'</a></td> <td><input type="text" id="msg' + nickname + '" value="' + message +'"/></td> <td><span class="button" onclick="update_resource(\'user\',\'' + nickname + '\')">update</span></td> <td><span class="button" onclick="delete_resource(\'user\',\'' + nickname + '\')">remove</span></td></tr>');
 
-	parity = 0;
-        var nickname, message;
-	$.each(data, function(k,v){
-		nickname = v['nickname'];
-		message = v['status'];
-		parity = (parity + 1)%2;
-
-		tr = $('<tr class="r' + parity + '" id="line' + nickname + '"><td><a id="user' + nickname + '" href="" onclick="showUserConsumption(\'' + nickname + '\');return false;">' +nickname  +'</a></td> <td><input type="text" id="msg' + nickname + '" value="' + message +'"/></td> <td><span class="button" onclick="update_resource(\'user\',\'' + nickname + '\')">update</span></td> <td><span class="button" onclick="delete_resource(\'user\',\'' + nickname + '\')">remove</span></td></tr>');
-
-		tab.append(tr);
+			$('#users').append(tr);
+		});
+		return false;
 	});
-
-	$('#content').append(tab);
-	return false;
-}	
+}
 
 function showUserConsumption(username){
 	// Load template
-	$('#content').load("user_consumption.html");
+	$('#content').load("html/user_consumption.html",function(){
+		// Add data
+		$('#username strong').html(username);
 
-	// Add data
-	alert($('#username'));
-	//$('#content #username strong').html(nickname);
-	$('#username strong').html(username);
-	
-            var params = getUrlVars();
-            var prefix_url='/users/'+username+'/sensors';
-            var login_param = { "l": user, "p" : password };
+		var params = getUrlVars();
+		var prefix_url='/users/'+username+'/sensors';
+		var login_param = { "l": user, "p" : password };
 
-            $.getJSON(prefix_url+'.json', 
-                login_param , 
-                function(json){
-                    // only for first sensor
-                    sensor=json[0]["sensor_hr"];
-                    var last_measure_param = { "l": user, "p" : password };
-                    var last_day_measure_param = { "l": user, "p" : password, "from" : one_day_ago.toString(), "to": now.toString(), interval: 1800 };
-                $.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
-                    draw_graphic( measure );
-                });
-                $.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
-                        var len=measure["data"].length;
-                        var last=measure["data"][len-1];
-                        var cons=last["consumption"]
-                        var KWH_COST=0.082;
-                        var HOURLY_COST_MULTI = 0.001;
-                        var DAILY_COST_MULTI = 0.024;
-                        var MONTHLY_COST_MULTI = 0.720;
-                        $('#instantconsumptionvalue').html( cons + ' Watts' );
-                        $('#instanthourlycostvalue').html( (cons * KWH_COST * HOURLY_COST_MULTI).toFixed(2) + " €");
-                        $('#instantdailycostvalue').html( (cons * KWH_COST * DAILY_COST_MULTI).toFixed(2) + " €");
-                        $('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
-                    });
-            });
+		$.getJSON('/users/' + username + '.json',
+			  login_param,
+			  function(usr){
+				$('#content #message strong').html(usr["status"]);
+			  }
+		);
 
-	return false;	
+		$.getJSON(prefix_url+'.json', 
+			login_param , 
+			function(json){
+				// only for first sensor
+				sensor=json[0]["sensor_hr"];
+				var last_measure_param = { "l": user, "p" : password };
+				var last_day_measure_param = { "l": user, "p" : password, "from" : one_day_ago.toString(), "to": now.toString(), interval: 1800 };
+				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
+					draw_graphic( measure );
+				});
+				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
+					var len=measure["data"].length;
+					var last=measure["data"][len-1];
+					//var cons=last["consumption"];
+					var cons=last;
+					var KWH_COST=0.082;
+					var HOURLY_COST_MULTI = 0.001;
+					var DAILY_COST_MULTI = 0.024;
+					var MONTHLY_COST_MULTI = 0.720;
+					$('#instantconsumptionvalue').html( cons + ' Watts' );
+					$('#instanthourlycostvalue').html( (cons * KWH_COST * HOURLY_COST_MULTI).toFixed(2) + " €");
+					$('#instantdailycostvalue').html( (cons * KWH_COST * DAILY_COST_MULTI).toFixed(2) + " €");
+					$('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
+				});
+			});
+			return false;	
+		});
 }
 
 function showAccountsList(){
 	// Load template
-	$('#content').load("accounts_list.html");
-
-	$.getJSON('/accounts.json',
-		{l: user, p: password},
-		function(data){
-		buildAccountsList(data);
-		return false;
+	$('#content').load("html/accounts_list.html", function(){
+		$.getJSON('/accounts.json',
+			{l: user, p: password},
+			function(data){
+				buildAccountsList(data);
+				return false;
+			});
 	});
-	// Add data
 }
 
 function buildAccountsList(data){
-	$('#content').empty();
-	$('#content').load("accounts_list.html");
-	alert('ok');
-
 	parity = 0;
         var nickname, password, message;
 	$.each(data, function(k,v){
@@ -168,9 +157,8 @@ function buildAccountsList(data){
 		message = v['status'];
 		parity = (parity + 1)%2;
 
-                tr = $('<tr class="r' + parity + '" id="line' + nickname + '"><td><input type="text" id="' + nickname + '"  value="' + nickname + '"/></td><td><input type="text" id="pw' + nickname + '"  value="' + password + '"/></td> <td><input type="text" id="msg' + nickname + '" value="' + message + '"/></td> <td><span class="button" onclick="update_resource(\'account\',\'' + nickname + '\')">update</span></td> <td><span class="button" onclick="delete_resource(\'account\', \'' + nickname + '\')">remove</span></td></tr>');
+                tr = $('<tr class="r' + parity + '" id="line' + nickname + '"><td><input type="text" id="' + nickname + '"  value="' + nickname + '"/></td><td><input type="text" class="editable" id="pw' + nickname + '"  value="' + password + '"/></td> <td><input type="text" class="editable" id="msg' + nickname + '" value="' + message + '"/></td> <td><span class="button" onclick="update_resource(\'account\',\'' + nickname + '\')">update</span></td> <td><span class="button" onclick="delete_resource(\'account\', \'' + nickname + '\')">remove</span></td></tr>');
 
-//alert(tr);
 		$('#accounts').append(tr);
 	});
 
@@ -178,13 +166,12 @@ function buildAccountsList(data){
 }
 
 function showMenu(){
-	$('#menu').empty();
-	$('#menu').append('<a href="" onclick="showAccountsList();return false;">Accounts list</a>');
-	$('#menu').append(' ');
-	$('#menu').append('<a href="" onclick="showUsersList();return false;">Users list</a>');
-	$('#menu').append(' ');
-	$('#menu').append('<a href="/">Logout</a>');
+	$('#menu').load('html/menu.html');
 }	
+
+function showTitle(){
+	$('#titles h1').html('Hello ' + user);
+}
 
 var num=0;
 
@@ -216,7 +203,9 @@ function delete_resource(type, nickname) {
 	    _method: 'DELETE'
 	},
 	function() {
-		showList(type);
+		$('#line'+nickname).remove();
+		$("#info").prepend('<div id="delete">'+type+' '+nickname+' deleted!</div>');
+		setTimeout(function(){$('#delete').remove()},1500);
 	});
 }
 
@@ -290,18 +279,17 @@ Date.prototype.setISO8601 = function (string) {
 
 function draw_graphic( data ) {
     // draw something inside $('#graph')
-    var datatabs=new Array();
-    $.each(data["data"],function(index, value) {
-	if (index) {
-	    recupdate=new Date();
-	    recupdate.setISO8601(value["date"]);
-	    datatabs[index]=[ recupdate.getTime(), value["consumption"] ];
-	}
-    });
     var from=new Date();
     var to=new Date();
     from.setISO8601(data["from"]);
     to.setISO8601(data["to"]);
+    var datatabs=new Array();
+    var interval = data["interval"];
+    $.each(data["data"],function(index, value) {
+	if (index) {
+	    datatabs[index]=[ from.getTime() + (index*interval*1000), value ];
+	}
+    });
     $.plot($('#graph'), [ datatabs ], { xaxis: {
 	    mode: "time",
 	    min: from.getTime(),
