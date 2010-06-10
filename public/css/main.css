@@ -63,6 +63,11 @@ body, #info {
     font-size: 1.5em;
 }
 
+.editable {
+	border: none;
+	background: #ffffff;
+}
+
 a,
 a:link,
 a:visited {
@@ -163,4 +168,12 @@ table input {
 #message {
     margin: 1em;
     font-size: 1.4em;
+}
+
+#graph {
+   width: 45em;
+   height: 25em;
+   text-align: center;
+   margin-left: auto;
+   margin-right: auto;
 }
