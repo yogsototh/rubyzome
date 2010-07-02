@@ -1,5 +1,7 @@
+data_objects
 dm-core
-do-sqlite3
-sqlite3-ruby
-do-mysql
-hpricot
+do_postgresql
+erubis
+mime-types
+rack
+rake
