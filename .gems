@@ -1,8 +1,13 @@
 data_objects
+date
 dm-core
 dm-postgres-adapter
 erubis
+faker
+json
 mime-types
+nokigiri
 rack
 rake
-nokigiri
+set
+time
