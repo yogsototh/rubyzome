@@ -1,6 +1,6 @@
 data_objects
 dm-core
-do_postgresql
+dm-postgres-adapter
 erubis
 mime-types
 rack
