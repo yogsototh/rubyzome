@@ -5,3 +5,4 @@ erubis
 mime-types
 rack
 rake
+nokigiri
