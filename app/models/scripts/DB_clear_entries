@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'dm-core'
+require 'dm-migrations'
 require 'benchmark'
 require 'date.rb'
 
