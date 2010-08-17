@@ -13,3 +13,4 @@ $db_admin_user='rubyzomeadmin'
 $db_admin_password='rubyzomeadmin'
 $db_host='mysql_rubyzome_server'
 $db_database='rubyzome'
+$db_url=ENV['DATABASE_URL']
