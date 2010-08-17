@@ -1,7 +1,5 @@
 require 'rubyzome/controllers/RestController.rb'
 class UserController < Rubyzome::RestController
-    include Helpers
-
     # Not available
     def index
         action_not_available
