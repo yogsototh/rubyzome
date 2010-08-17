@@ -83,21 +83,35 @@ module Rubyzome
         end
 
         # Nice html error (404 by default)
-        def htmlError(e, controller_name, function_name) 
-            pref="<tr><td><code>"
-            suff="</tr></td></code>"
+        def html_error(e, controller_name=nil, function_name=nil) 
+            view=$view['HTMLView'].new
             [   404, 
-                {'Content-Type' => 'text/html', 'charset'=>'UTF-8'}, 
-                $views['HTMLView'].new.httpContent( 
-                                                   {
-                :html_title => '404', 
-                :html_subtitle => %{<code>#{controller_name}::#{function_name}</code>}, 
-            :html_content => %{<h3>Exception</h3>
-                    <code>#{e.message}</code>
-                  <h3>Backtrace</h3>
-                  <table>#{pref}#{e.backtrace.join(suff+pref)}#{suff}</table>} 
-            } )
+                $views['HTMLView'].head, 
+                $views['HTMLView'].new.httpContent( { :error => 404, :exception => e })
             ]
+        end
+
+        def internal_error(e, hash=nil)
+            if e.is_a?(Error) and not e.code.nil?
+                code=e.code
+            else
+                code=500
+            end
+            if hash.nil?
+                hash={:error => code, :exception => e}
+            else
+                hash=hash.merge({:error => code, :exception => e})
+            end
+            [ code, @view.head, @view.httpContent(hash) ]
+        end
+
+        def general_error(e, hash=nil)
+            if hash.nil?
+                hash={:error => 500, :exception => e}
+            else
+                hash=hash.merge({:error => 500, :exception => e})
+            end
+            [ 500, @view.head, @view.httpContent({:error => 500, :exception => e}) ]
         end
 
         # Fonction triggered for each HTTP request 
@@ -116,54 +130,41 @@ module Rubyzome
 
             # Call right method on right controller
             # (if request is HTTP GET, body is the result of the 'get' method of the controller)
-            begin 
-
-                # If no view selected, try to load the file associated to the path
-                if @view.nil?
-                    begin
-                        # third choice, prefer loading file
-                        file=File.new('/public'+path,'r')
-                        # load the content of the file in memory 
-                        # may be not the best way to do that
-                        # TODO: caching issue for file who didn't changed
-                        #       may be pushing all file content into memory
-                        #       for faster usage is the first naive method
-                        content = file.collect
-                        file.close
-                        # MIME Type get
-                        head={ 'Content-Type' => MIME::Types.of('file')[0].to_s }
-                        return [200, head, content ] 
-                    rescue
-                        return [404, 
-                            @view['HTMLView'].head, 
-                            @view.httpContent({
-                            :html_title => '404', 
-                            :html_subtitle => 'File not found',
-                            :html_content => %{file #{path} not found! You should dig arround.}})]
-                    end
-                else
-                    # Controller creation and init with current request
-                    # Call requested function
-                    begin
-                        body = Kernel.const_get(controller_name).new(request).send function_name
-                    rescue Error => e
-                        return [500, 
-                            @view.head, 
-                            @view.httpContent({
-                            :html_title => '500', 
-                            :html_subtitle => e.message,
-                            :html_content => e.message})]
-                    end
-
-                    if @view.respond_to?(:request)
-                        @view.request=request
-                    end
-                    return [200, @view.head, @view.httpContent(body) ]
+            # If no view selected, try to load the file associated to the path
+            if @view.nil?
+                begin
+                    # third choice, prefer loading file
+                    file=File.new('/public'+path,'r')
+                    # load the content of the file in memory 
+                    # may be not the best way to do that
+                    # TODO: caching issue for file who didn't changed
+                    #       may be pushing all file content into memory
+                    #       for faster usage is the first naive method
+                    content = file.collect
+                    file.close
+                    # MIME Type get
+                    head={ 'Content-Type' => MIME::Types.of('file')[0].to_s }
+                    return [200, head, content ] 
+                rescue Exception => e
+                    return html_error(e)
+                end
+            else
+                # Controller creation and init with current request
+                # Call requested function
+                begin
+                    body = Kernel.const_get(controller_name).new(request).send function_name
+                rescue Error => e
+                    return internal_error(e, {:controller_name => controller_name, :function_name => function_name } )
+                rescue Exception => e
+                    return general_error(e, {:controller_name => controller_name, :function_name => function_name } ) 
                 end
 
-                # Resource not found
-            rescue Exception => e
-                htmlError(e, controller_name, function_name)
+                # had the request object to the view if possible
+                if @view.respond_to?(:request)
+                    @view.request=request
+                end
+
+                return [200, @view.head, @view.httpContent(body) ]
             end
         end
 
