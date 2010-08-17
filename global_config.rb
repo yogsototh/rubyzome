@@ -6,7 +6,10 @@
 $directory_of_website='/website'
 
 # db configuration
+$db_type='mysql'
 $db_user='rubyzome'
 $db_password='rubyzome'
+$db_admin_user='rubyzomeadmin'
+$db_admin_password='rubyzomeadmin'
 $db_host='mysql_rubyzome_server'
 $db_database='rubyzome'

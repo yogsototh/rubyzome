@@ -5,8 +5,7 @@ require 'dm-core'
 # Include all models
 Dir["app/models/*.rb"].each { |file| require file }
 # Connect to DB 
-require "rubyzome/lib/db.rb"
-DataMapper.setup( :default, Rubyzome::DB_Conf::dbstring_from_globalconf )
+DataMapper.setup(:default, %{#{$db_type}://#{$db_admin_user}:#{$db_admin_password}@#{$db_host}/#{$db_database}})
 # Reset tables
 DataMapper.auto_migrate!
 
