@@ -17,9 +17,5 @@ module Rubyzome
     # Include all models
     Dir["app/models/*.rb"].each { |file| require file }
    
-    if $db_url != ""
-        DataMapper.setup(:default,$db_url)
-    else
-        DataMapper.setup(:default, %{#{$db_type}://#{$db_user}:#{$db_password}@#{$db_host}/#{$db_database}})
-    end
+    DataMapper.setup(:default,$db_url)
 end

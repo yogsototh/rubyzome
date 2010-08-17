@@ -10,7 +10,7 @@ include "global_config.rb"
 Dir["app/models/*.rb"].each { |file| require file }
 # connexion à la base de donnée
 require "rubyzome/lib/db.rb"
-DataMapper.setup(:default, Rubyzome::dbstring_from_globalconf)
+DataMapper.setup(:default, $db_url)
 
 # Comment that could be added by admin, based on user average consumption
 comments =         {
