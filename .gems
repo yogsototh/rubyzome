@@ -1,0 +1,6 @@
+dm-core
+dm-postgres-adapter
+erubis
+json
+nokogiri
+rack
