@@ -5,7 +5,7 @@ require 'dm-core'
 # Include all models
 Dir["app/models/*.rb"].each { |file| require file }
 # Connect to DB 
-DataMapper.setup(:default, %{#{$db_type}://#{$db_admin_user}:#{$db_admin_password}@#{$db_host}/#{$db_database}})
+DataMapper.setup(:default, $db_url)
 # Reset tables
 DataMapper.auto_migrate!
 

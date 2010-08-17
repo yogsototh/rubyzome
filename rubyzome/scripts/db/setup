@@ -2,6 +2,9 @@
 
 for info in $( egrep '\$db_.*=' global_config.rb ); do
     print $info[2,-1]
+    if print $info[2,-1] | egrep '^db_url' >/dev/null; then
+        continue
+    fi
     eval $info[2,-1]
 done
 

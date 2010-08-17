@@ -6,10 +6,17 @@
 $directory_of_website='/website'
 
 # db configuration
-$db_type='mysql'
-$db_user='rubyzome'
-$db_password='rubyzome'
-$db_admin_user='rubyzomeadmin'
-$db_admin_password='rubyzomeadmin'
-$db_host='mysql_rubyzome_server'
-$db_database='rubyzome'
+$db_type='sqlite3'
+$db_user=''
+$db_password=''
+$db_admin_user=''
+$db_admin_password=''
+$db_host='localhost'
+$db_database='db/main.db'
+
+constructed_db_url="#{$db_type}://"
+constructed_db_url<<="#{$db_user}:"        if not $db_user.nil?
+constructed_db_url<<="#{$db_password}"     if not $db_password.nil?
+constructed_db_url<<="@#{$db_host}/"       if not $db_host.nil?
+constructed_db_url<<="@#{$db_database}"    if not $db_database.nil?
+$db_url=ENV['DATABASE_URL'] || constructed_db_url
