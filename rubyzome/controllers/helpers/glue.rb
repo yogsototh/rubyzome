@@ -76,7 +76,7 @@ module ResourcesFromRequest
 
         # raise an error if no ressource is found
         if(ressource.nil?) then
-            raise Error, "Todolist #{ressource_id} does not exist"
+            raise Error, "#{ressource_id} does not exist"
         end
         return ressource
     end
