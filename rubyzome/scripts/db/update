@@ -9,5 +9,5 @@ DataMapper.setup(:default, $db_url)
 Dir["app/models/*.rb"].each { |file| require file }
 # Reset tables
 DataMapper.finalize
-DataMapper.auto_migrate!
+DataMapper.auto_upgrade!
 

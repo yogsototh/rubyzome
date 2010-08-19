@@ -7,6 +7,12 @@ for info in $( egrep '\$db_.*=' global_config.rb ); do
     fi
     eval $info[2,-1]
 done
+
+if [[ $db_type != "mysql" ]]; then
+    print -- "Script for mysql database only" >&2
+    exit 1
+fi
+
 print "Enter your mysql root password"
 mysql -u root -p <<END
 DROP DATABASE ${db_database};
