@@ -8,13 +8,16 @@ Ruby Restful Mobile oriented framework.
 
 ## Install
 
-1. git clone git@github.com:yogsototh/rubyzome.git rubyzome
-2. cd rubyzome
-3. mkdir db
-4. gem install dm-core dm-sqlite-adapter erubis json nokogiri rack rack-rewrite unicorn
-5. unicorn
-6. ???
-7. profit
+1. open a terminal and write
+
+  > git clone git@github.com:yogsototh/rubyzome.git rubyzome
+  > cd rubyzome
+  > mkdir db
+  > gem install dm-core dm-sqlite-adapter dm-migrations erubis json nokogiri rack rack-rewrite unicorn
+  > unicorn
+
+2. ???
+3. profit
 
 ## Docs
 
