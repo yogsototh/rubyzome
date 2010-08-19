@@ -14,8 +14,8 @@ module Rubyzome
         $views['/'+typename+'/'+viewname]=Kernel.const_get(viewname)
     end
     
+    DataMapper.setup(:default,$db_url)
     # Include all models
     Dir["app/models/*.rb"].each { |file| require file }
-   
-    DataMapper.setup(:default,$db_url)
+    DataMapper.finalize
 end
