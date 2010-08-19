@@ -3,12 +3,15 @@
 
 require 'rubygems'
 require 'rack'
+require 'rack-rewrite'
 
 require 'global_config.rb'
 
 require 'rubyzome/rubyzome.rb'
 
-use Rack::Static, :urls => ["/css", "/js", "/img"], :root => "public"
-
+use Rack::Rewrite do
+    rewrite '/','/static/index.html'
+end
+use Rack::Static, :urls => ["/css", "/js", "/img", "/static"], :root => "public"
 run Rubyzome::RestfulDispatcher.new
 
