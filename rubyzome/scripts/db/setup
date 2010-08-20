@@ -1,12 +1,20 @@
-name=grid;
-mysql -u root -p <<END
-CREATE DATABASE $name;
-CREATE USER '${name}admin'@'localhost' IDENTIFIED BY '${name}admin';
-CREATE USER '${name}admin'@'127.0.0.1' IDENTIFIED BY '${name}admin' ;
-GRANT ALL on $name.* TO '${name}admin'@'localhost' ;
-GRANT ALL on $name.* TO '${name}admin'@'127.0.0.1' ;
-CREATE USER '$name'@'localhost' IDENTIFIED BY '$name' ;
-CREATE USER '$name'@'127.0.0.1' IDENTIFIED BY '$name' ;
-GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP on $name.* TO '$name'@'localhost';
-GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP on $name.* TO '$name'@'127.0.0.1';
+#!/usr/bin/env zsh
+
+for info in $( egrep '\$db_.*=' global_config.rb ); do
+    print $info[2,-1]
+    if print $info[2,-1] | egrep '^db_url' >/dev/null; then
+        continue
+    fi
+    eval $info[2,-1]
+done
+
+if [[ $db_type == "mysql" ]]; then
+    print "Enter your mysql root password"
+    mysql -u root -p <<END
+    CREATE DATABASE ${db_database};
+    CREATE USER '${db_admin_user}'@'${db_host}' IDENTIFIED BY '${db_admin_password}';
+    GRANT ALL on ${db_database}.* TO '${db_admin_user}'@'${db_host}' ;
+    CREATE USER '${db_user}'@'${db_host}' IDENTIFIED BY '${db_password}';
+    GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP on ${db_database}.* TO '${db_user}'@'${db_host}';
 END
+fi
