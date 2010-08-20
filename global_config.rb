@@ -20,5 +20,3 @@ constructed_db_url<<="#{$db_password}"     if not $db_password.nil?
 constructed_db_url<<="@#{$db_host}/"       if not $db_host.nil?
 constructed_db_url<<="@#{$db_database}"    if not $db_database.nil?
 $db_url=ENV['DATABASE_URL'] || constructed_db_url
-
-puts $db_url
