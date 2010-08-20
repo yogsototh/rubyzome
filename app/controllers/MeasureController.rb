@@ -4,6 +4,16 @@ class MeasureController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 
+    def encapsulate_deprecated(measures, interval = 0 )
+        {
+            'from'		=> measures[0].date,
+            'to'		=> measures[-1].date,
+            'max'		=> measures.map{ |m| m.consumption }.max,
+            'interval'	=> interval.to_i,
+            'data'		=> measures.map{ |x| clean_id(x.attributes) },
+        }
+    end
+
     def encapsulate(measures, interval = 0 )
         {
             'from'		=> measures[0].date,
@@ -27,12 +37,20 @@ class MeasureController < Rubyzome::RestController
 
         # return last measure if from not given
         if from.nil?
-            return encapsulate( [ Measure.last({:sensor => sensor, :date.lt => DateTime.now} )])
+            if @request[:v] == '2'
+                return encapsulate( [ Measure.last({:sensor => sensor, :date.lt => DateTime.now} )])
+            else
+                return encapsulate_deprecated( [ Measure.last({:sensor => sensor, :date.lt => DateTime.now} )])
+            end
         end
 
         # if only from is given return all values from 'from'
         if to.nil?
-            return encapsulate(Measure.all({:sensor => sensor, :date.gt => from}))
+            if @request[:v] == '2'
+                return encapsulate(Measure.all({:sensor => sensor, :date.gt => from}))
+            else
+                return encapsulate_deprecated(Measure.all({:sensor => sensor, :date.gt => from}))
+            end
         end
 
         # Get time for "from" and "to" strings
@@ -47,7 +65,11 @@ class MeasureController < Rubyzome::RestController
 
         # if from and to given but not interval
         if interval.nil? or interval.to_i <= 0
-            return encapsulate(Measure.all({:sensor => sensor, :date.gt => from, :date.lt => to}))
+            if @request[:v] == '2'
+                return encapsulate(Measure.all({:sensor => sensor, :date.gt => from, :date.lt => to}))
+            else
+                return encapsulate_deprecated(Measure.all({:sensor => sensor, :date.gt => from, :date.lt => to}))
+            end
         end
 
         # Make sure timeframe (from..to) is wider than an interval
@@ -90,7 +112,11 @@ class MeasureController < Rubyzome::RestController
 
             interval_from_sec = interval_to_sec
         end
-        encapsulate(measures, interval)
+        if @request[:v] == 2
+            encapsulate(measures, interval)
+        else
+            encapsulate_deprecated(measures, interval)
+        end
     end
 
     # Create a new measure for a sensor
