@@ -32,4 +32,4 @@ For now, just know it has something to do with populating the `/app` directory.
 
 ## Status
 
-Orientation and satus of the current project to define.
+Orientation and status of the current project to define.
