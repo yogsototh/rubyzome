@@ -1,11 +1,9 @@
 # encoding: utf-8
 
-module Rubyzome
-
-    # La classe pour renvoyer les valeurs en HTML
-    require 'erubis'
-    require 'rubyzome/views/RestView.rb'
-    class HTMLView < RestView
+# La classe pour renvoyer les valeurs en HTML
+require 'erubis'
+require 'rubyzome/classes/RestView.rb'
+class HTMLView < RestView
         attr_accessor :request
 
         # make @template a class variable and not
@@ -145,10 +143,9 @@ module Rubyzome
             @object=object
             render_error
         end 
-    end
+end
 
     # TODO: think to create a Rubyzome contant Rubyzome::Views::TemplateDir
-    HTMLView.template=File.read('rubyzome/views/html/templates/main.erb')
-    HTMLView.error_template=File.read('rubyzome/views/html/templates/error.erb')
+    # HTMLView.template=File.read('rubyzome/views/html/templates/main.erb')
+    # HTMLView.error_template=File.read('rubyzome/views/html/templates/error.erb')
     # TODO: create three standard sub-template: header, content and footer. Most of time, only content should vary.
-end

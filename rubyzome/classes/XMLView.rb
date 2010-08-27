@@ -1,12 +1,11 @@
 # encoding: utf-8
 
-module Rubyzome
+require 'nokogiri'
+require 'rubyzome/classes/RestView.rb'
 
-    require 'nokogiri'
-    require 'rubyzome/views/RestView.rb'
+# Class used to send back XML 
+class XMLView < RestView
 
-    # Class used to send back XML 
-    class XMLView < RestView
         def initialize
             @head = {'Content-Type' => 'text/xml', 'charset' => 'UTF-8' }
         end
@@ -67,5 +66,5 @@ module Rubyzome
             end
             xml_item
         end
-    end
+
 end

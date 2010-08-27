@@ -5,8 +5,7 @@ require 'rubygems'
 require 'rack'
 require 'rack-rewrite'
 
-require 'global_config.rb'
-
+require 'rubyzome/conf/config.rb'
 require 'rubyzome/rubyzome.rb'
 
 use Rack::Rewrite do

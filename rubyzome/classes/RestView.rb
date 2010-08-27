@@ -1,7 +1,6 @@
 # encoding: utf-8
 
-module Rubyzome
-    class RestView
+class RestView
         attr_accessor :head
         attr_accessor :code_return
         def init_code_return_from_object(object)
@@ -23,5 +22,4 @@ module Rubyzome
                 return self.content(object)
             end
         end
-    end
 end

@@ -3,11 +3,8 @@
 # The code in this file is part of the Rubyzome framework
 # Rubyzome framework belongs to Luc Juggery and Yann Esposito
 
-module Rubyzome
-
-    # The RestfulDispatcher class handle the automatic routing of the
-    # application using filename and classname.
-    class RestfulDispatcher
+# Classe handling incoming requests
+class RestfulDispatcher
         @view = nil
 
         # Select the view to be used to render the object
@@ -252,6 +249,4 @@ module Rubyzome
             end
             return modelname, classname, function_name
         end
-    end
-
 end
