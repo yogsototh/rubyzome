@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'global_config'
 require 'dm-core'
 require 'dm-migrations'
+require 'rubyzome/config.rb'
 
 # Connect to DB 
 DataMapper.setup(:default, $db_url)
