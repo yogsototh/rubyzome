@@ -3,9 +3,12 @@
 
 # write here the list of format you want your application to output
 $viewsToLoad=["JSON","XML","HTML"]
+$directory_of_website='/website'
 
-# Remove if you don't need Rest
-require 'rubyzome/config.rb'
+# the DB URL default is an sqlite db file: datas.db 
+# if the env variable DATABASE_URL is set it is the one choosen
+# With this it works seemlessly with heroku
+$db_url=ENV['DATABASE_URL'] || %{sqlite3://#{Dir.pwd}/datas.db}
 
 # ----------------------------------------------------------------
 # DO NOT MODIFY AFTER THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING
@@ -17,6 +20,6 @@ require 'rubyzome/rubyzome.rb'
 use Rack::Rewrite do
     rewrite '/','/static/index.html'
 end
-use Rack::Static, :urls => ["/css", "/js", "/img", "/static"], :root => "public"
+use Rack::Static, :urls => ["/css", "/js", "/img", "/static", $directory_of_website], :root => "public"
 run Rubyzome::RestfulDispatcher.new
 
