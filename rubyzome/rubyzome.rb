@@ -7,6 +7,7 @@ module Rubyzome
     # Include all rubyzome classes
     require "rubyzome/classes/Error.rb"
     require "rubyzome/classes/RestfulDispatcher.rb"
+
     def self.const_missing(c)
         Object.const_get(c)
     end
@@ -18,11 +19,6 @@ module Rubyzome
         viewname=File.basename(file,File.extname(file))
         require file
         $views[viewname]=Rubyzome.const_get(viewname)
-    end
-
-    $controllersToLoad.each do |view|
-        file="rubyzome/classes/#{view}Controller.rb"
-        require file
     end
 
     # Include all application specific classes
