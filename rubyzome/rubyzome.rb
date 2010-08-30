@@ -5,17 +5,24 @@ module Rubyzome
     require 'dm-core'
 
     # Include all rubyzome classes
-    Dir["rubyzome/classes/*.rb"].each { |file| require file }
+    require "rubyzome/classes/Error.rb"
+    require "rubyzome/classes/RestfulDispatcher.rb"
     def self.const_missing(c)
         Object.const_get(c)
     end
 
     # Load all rubyzome standard views
     $views = {} unless defined? $views
-    Dir["rubyzome/classes/*View.rb"].each do |file| 
-        next if file == "/rubyzome/views/RestView.rb"
+    $viewsToLoad.each do |view|
+        file="rubyzome/classes/#{view}View.rb"
         viewname=File.basename(file,File.extname(file))
+        require file
         $views[viewname]=Rubyzome.const_get(viewname)
+    end
+
+    $controllersToLoad.each do |view|
+        file="rubyzome/classes/#{view}Controller.rb"
+        require file
     end
 
     # Include all application specific classes

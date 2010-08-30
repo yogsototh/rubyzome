@@ -5,7 +5,9 @@ require 'rubygems'
 require 'rack'
 require 'rack-rewrite'
 
-require 'rubyzome/conf/config.rb'
+require 'rubyzome/config.rb'
+$viewsToLoad=["JSON","XML","HTML"]
+$controllersToLoad=["Rest","ServiceRest"]
 require 'rubyzome/rubyzome.rb'
 
 use Rack::Rewrite do
