@@ -11,6 +11,7 @@ class HTMLView < RestView
         class << self
             attr_accessor :template
             attr_accessor :error_template
+            attr_accessor :head
         end
         def template
             self.class.template
@@ -146,6 +147,6 @@ class HTMLView < RestView
 end
 
     # TODO: think to create a Rubyzome contant Rubyzome::Views::TemplateDir
-    # HTMLView.template=File.read('rubyzome/views/html/templates/main.erb')
-    # HTMLView.error_template=File.read('rubyzome/views/html/templates/error.erb')
+HTMLView.template=File.read('rubyzome/views/html/templates/main.erb')
+HTMLView.error_template=File.read('rubyzome/views/html/templates/error.erb')
     # TODO: create three standard sub-template: header, content and footer. Most of time, only content should vary.
