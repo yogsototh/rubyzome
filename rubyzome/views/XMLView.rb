@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 require 'nokogiri'
-require 'rubyzome/classes/RestView.rb'
+require 'rubyzome/views/RestView.rb'
 
 # Class used to send back XML 
 class XMLView < RestView

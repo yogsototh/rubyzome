@@ -5,7 +5,7 @@ module Rubyzome
     require 'dm-core'
 
     # Include all rubyzome classes
-    Dir["rubyzome/classes/*.rb"].each { |file| require file }
+    Dir["rubyzome/lib/*.rb"].each { |file| require file }
 
     def self.const_missing(c)
         Object.const_get(c)

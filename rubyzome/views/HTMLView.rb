@@ -2,7 +2,7 @@
 
 # La classe pour renvoyer les valeurs en HTML
 require 'erubis'
-require 'rubyzome/classes/RestView.rb'
+require 'rubyzome/views/RestView.rb'
 class HTMLView < RestView
         attr_accessor :request
 
