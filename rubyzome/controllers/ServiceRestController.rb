@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'rubyzome/classes/RestController.rb'
+require 'rubyzome/controllers/RestController.rb'
 class ServiceRestController < RestController
 
         def service_name
