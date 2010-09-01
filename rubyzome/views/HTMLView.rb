@@ -11,7 +11,6 @@ class HTMLView < RestView
         class << self
             attr_accessor :template
             attr_accessor :error_template
-            attr_accessor :head
         end
         def template
             self.class.template
