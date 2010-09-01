@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 require 'json'
-require 'rubyzome/classes/RestView.rb'
+require 'rubyzome/views/RestView.rb'
 class JSONView < RestView
 	def initialize
 	    @head = {'Content-Type' => 'application/json', 'charset' => 'UTF-8' }
