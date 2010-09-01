@@ -12,6 +12,6 @@ require 'rubyzome/rubyzome.rb'
 use Rack::Rewrite do
     rewrite '/','/static/index.html'
 end
-use Rack::Static, :urls => ["/css", "/js", "/img", "/static", $directory_of_website], :root => "public"
+use Rack::Static, :urls => [$static_files_directory], :root => "public"
 run Rubyzome::RestfulDispatcher.new
 
