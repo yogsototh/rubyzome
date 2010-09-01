@@ -11,7 +11,7 @@ class RestfulDispatcher
         def selectView(model,path)
 
             # If it is a file of a website which is required then use the file load
-            if path.empty? or path =~ /^#{$directory_of_website}\//
+            if path.nil? or path.empty?
                 return nil?
             end
 
