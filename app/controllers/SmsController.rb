@@ -1,4 +1,4 @@
-require 'rubyzome/classes/ServiceRestController'
+require 'rubyzome/controllers/ServiceRestController'
 class SmsController < Rubyzome::ServiceRestController
    require 'time'
    require 'app/controllers/include/Helpers.rb'
