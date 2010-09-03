@@ -7,9 +7,13 @@ html, body {
     left: 0;
 }
 body, #info {
-    background-color: #320;
-    color: #ca8;
-    font-size: 1.2em;
+    background-color: #07c;
+    color: #fff;
+}
+#content b, 
+#content strong,
+#content em {
+    color: #07c;
 }
 #entete {
     background-color: #07c;
