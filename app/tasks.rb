@@ -141,4 +141,38 @@ namespace "db" do
 		end
 	end
     end
+
+    task :add_history do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	require 'time'
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	now=Time.now
+	# One measure every 5 minutes
+	step=5
+	(-1000..100).each do |minutes|
+		# Get current date
+		current_date = DateTime.parse( (now + minutes * 60 * step).to_s )
+
+		# Loop through list of sensors
+		Sensor.all.each do |sensor|
+			# Create random number between 1000 and 3000
+			consumption = rand(3000)
+
+			# Create measure
+			measure = Measure.new(:date                => current_date,
+					      :consumption         => consumption,
+					      :sensor              => sensor)
+			measure.save
+		end
+	end
+    end
+
 end
