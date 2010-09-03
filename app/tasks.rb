@@ -26,6 +26,12 @@ namespace "db" do
             puts sensor.attributes.values.join(' ; ')
         end
         puts %{---}
+        puts %{Measures for John Doe first sensor: johndoe_1}
+	sensor = Sensor.first({:sensor_hr => %{johndoe_1}})
+        Measure.all({:sensor => sensor}).each do |measure|
+            puts measure.attributes.values.join(' ; ')
+        end
+        puts %{---}
     end
 
     task :populate do
@@ -65,6 +71,16 @@ namespace "db" do
 
 		firstname = Faker::Name.first_name
 		lastname  = Faker::Name.last_name
+
+		# Add 2 easy to remember users for testing purposes
+		if user_nb == 1 then
+			firstname= "John"
+			lastname = "Doe"
+		elsif user_nb == 2 then
+			firstname = "Jack"
+			lastname = "Blue"
+		end
+
 		nickname  = "#{firstname.downcase}#{lastname.downcase}"
 
 		user_hash = {:nickname => "#{nickname}",
