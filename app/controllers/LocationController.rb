@@ -1,3 +1,4 @@
+require 'rubyzome/controllers/RestController.rb'
 require 'time'
 class LocationController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'

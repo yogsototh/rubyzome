@@ -1,3 +1,4 @@
+require 'rubyzome/controllers/RestController.rb'
 class AccountController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
