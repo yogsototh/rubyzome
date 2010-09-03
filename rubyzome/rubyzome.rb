@@ -7,10 +7,6 @@ module Rubyzome
     # Include all rubyzome classes
     Dir["rubyzome/lib/*.rb"].each { |file| require file }
 
-    def self.const_missing(c)
-        Object.const_get(c)
-    end
-
     # Load all rubyzome standard views
     $views = {} unless defined? $views
     $viewsToLoad.each do |view|
@@ -18,6 +14,11 @@ module Rubyzome
         viewname=File.basename(file,File.extname(file))
         require file
         $views[viewname]=Rubyzome.const_get(viewname)
+    end
+
+    # Make sure classes are available through Rubyzome namaspace
+    def self.const_missing(c)
+        Object.const_get(c)
     end
 
     # Include all application specific classes
