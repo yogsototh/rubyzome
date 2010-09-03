@@ -3,18 +3,15 @@
 # The code in this file is part of the Rubyzome framework
 # Rubyzome framework belongs to Luc Juggery and Yann Esposito
 
-module Rubyzome
-
-    # The RestfulDispatcher class handle the automatic routing of the
-    # application using filename and classname.
-    class RestfulDispatcher
+# Classe handling incoming requests
+class RestfulDispatcher
         @view = nil
 
         # Select the view to be used to render the object
         def selectView(model,path)
 
             # If it is a file of a website which is required then use the file load
-            if path.empty? or path =~ /^#{$directory_of_website}\//
+            if path.nil? or path.empty?
                 return nil?
             end
 
@@ -84,7 +81,7 @@ module Rubyzome
 
         # Nice html error (404 by default)
         def html_error(e, controller_name=nil, function_name=nil) 
-            view=$view['HTMLView'].new
+            view=$views['HTMLView'].new
             [   404, 
                 $views['HTMLView'].head, 
                 $views['HTMLView'].new.httpContent( { :error => 404, :exception => e })
@@ -252,6 +249,4 @@ module Rubyzome
             end
             return modelname, classname, function_name
         end
-    end
-
 end

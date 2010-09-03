@@ -1,32 +1,12 @@
-namespace "db" do
-    task :std_db_action, [:action] do |t,args|
-        require 'rubygems'
-        require 'global_config'
-        require 'dm-core'
-        require 'dm-migrations'
-        
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        # Reset tables
-        DataMapper.finalize
-        if args.action == 'migrate'
-            DataMapper.auto_migrate!
-            puts 'migration finished'
-        elsif args.action == 'upgrade'
-            DataMapper.auto_upgrade!
-            puts 'upgrade finished'
-        else
-            puts 'std_db_action [migrate|upgrade]'
-        end
-    end
-
-    task :migrate do
-        Rake.application.invoke_task("db:std_db_action[migrate]")
-    end
-
-    task :upgrade do
-        Rake.application.invoke_task("db:std_db_action[upgrade]")
-    end
+# We recommand do use the app/tasks.rb file to add your
+# custom rake tasks.
+ 
+# The code in this file is part of the Rubyzome framework
+# Rubyzome framework belongs to Luc Juggery and Yann Esposito
+# ----------------------------------------------------------------
+#      DO NOT MODIFY UNLESS YOU KNOW WHAT YOU ARE DOING
+# ----------------------------------------------------------------
+require 'rubyzome/tasks.rb'
+if FileTest.exists?('app/tasks.rb')
+    require 'app/tasks.rb'
 end

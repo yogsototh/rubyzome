@@ -1,19 +1,39 @@
 # encoding: utf-8
 
-# Rubyzome central file which load all submodules
-# and subclasses
+# Rubyzome central file which load all submodules and subclasses
 module Rubyzome
     require 'dm-core'
 
     # Include all rubyzome classes
-    require 'rubyzome/lib.rb'
-    require 'rubyzome/controllers.rb'
-    require 'rubyzome/views.rb'
-    require 'rubyzome/models.rb'
+    Dir["rubyzome/lib/*.rb"].each { |file| require file }
 
-    # load the classes for the defined application
-    require 'rubyzome/load_local_app.rb'
+    # Load all rubyzome standard views
+    $views = {} unless defined? $views
+    $viewsToLoad.each do |view|
+        file="rubyzome/views/#{view}View.rb"
+        viewname=File.basename(file,File.extname(file))
+        require file
+        $views[viewname]=Rubyzome.const_get(viewname)
+    end
 
-    # load the class that will handle server requests
-    require 'rubyzome/RestfulDispatcher.rb'
+    # Make sure classes are available through Rubyzome namaspace
+    def self.const_missing(c)
+        Object.const_get(c)
+    end
+
+    # Include all application specific classes
+    Dir["app/models/*.rb"].each { |file| require file }
+    Dir["app/controllers/*.rb"].each { |file| require file }
+
+    # Load all application specific views
+    Dir["app/views/*/*.rb"].each do |file| 
+      require file 
+      viewname=File.basename(file,File.extname(file))
+      typename=File.basename(File.dirname(file))
+       $views['/'+typename+'/'+viewname]=Kernel.const_get(viewname)
+    end
+
+    # Set Datamapper stuff
+    DataMapper.setup(:default,$db_url)
+    DataMapper.finalize
 end

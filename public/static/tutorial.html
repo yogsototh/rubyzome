@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+    <title>Rubyzome</title>
+</head>
+<body>
+    <div id="entete">
+        <h1>Rubyzome's Tutorial</h1>
+    </div>
+
+    <div id="middle">
+        <div id="content">
+            <h3>Back to basis</h3>
+            <p>To have a working API, just populate the <code>app</code> directory.</p>
+            <ul>
+                <li><code>app/models</code> will contains model classes.</li>
+                <li><code>app/controllers</code> will contains controller classes.</li>
+                <li><code>app/views</code> will contains custom views.</li>
+            </ul>
+            <h3>Usages</h3>
+            <p>Beware the name of the files <b>MUST</b> follow some rules.</p>
+            <ul>
+                <li>Controllers must be named <code><em>Name</em>Controller.rb</code></li>
+                <li>Views must be named <code><em>Type</em>View.rb</code></li>
+                <li>Then you can access your controller using the URI: <code>http://host/<em>name</em>s/id.<em>type</em></code>.</li>
+            </ul>
+            <p>For example, creating a <code><em>User</em>Controller.rb</code> in <code>app/controllers</code> will provide the URI: <code>http://host/<em>user</em>s/johndoe.<em>json</em></code></p>
+            <p>More precisely, calling this URI will execute the <code>UserController::show</code> with <code>@request[:user]="johndoe"</code>. Then the returned object is given to the <code>JSONView</code> provided by Rubyzome.</p>
+        </div>
+    </div>
+
+    <div id="bottom">
+    <div id="promotion">
+    Designed by <a href="http://yannesposito.com">Yann Esposito</a> &amp; <a href="http://lucarea.com">Luc Juggery</a>.
+    </div>
+    </div>
+</body>
+</html>

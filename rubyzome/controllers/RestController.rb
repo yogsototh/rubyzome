@@ -1,8 +1,6 @@
 # encoding: utf-8
 
-module Rubyzome
-    class RestController
-
+class RestController
         # ajoute un attribut Request
         # contenant les détails des requêtes
         attr_accessor :request
@@ -45,5 +43,4 @@ module Rubyzome
                 end
             end
         end
-    end
 end
