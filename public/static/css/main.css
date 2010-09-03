@@ -28,21 +28,14 @@ body, #info {
 }
 .flush { clear: both; }
 
-#middle {
-    border-top: 1px solid #db8;
-    border-bottom: 1px solid #eda;
-    background-color: #ca8;
-    color: #320;
+content {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
+    background-color: #fff;
+    color: #333;
     text-align: center;
     padding-top: 3em;
     padding-bottom: 3em;
-}
-
-#content {
-    margin-left: auto;
-    margin-right: auto;
-    width: 32em;
-    text-align: left;
 }
 
 #content a,
