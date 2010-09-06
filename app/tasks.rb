@@ -160,6 +160,7 @@ namespace "db" do
 	step=5
 	(-288..0).each do |minutes|
 		# Get current date
+		puts %{date: #{(now + minutes * 60 * step).to_s}}
 		current_date = DateTime.parse( (now + minutes * 60 * step).to_s )
 
 		# Loop through list of sensors
