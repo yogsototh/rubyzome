@@ -142,6 +142,7 @@ namespace "db" do
 	end
     end
 
+    # Add one day history (measures every 5 minutes for 24 hours => 288 measures per sensor)
     task :add_history do
         require 'rubygems'
         require 'dm-core'
@@ -157,7 +158,7 @@ namespace "db" do
 	now=Time.now
 	# One measure every 5 minutes
 	step=5
-	(-1000..100).each do |minutes|
+	(-288..0).each do |minutes|
 		# Get current date
 		current_date = DateTime.parse( (now + minutes * 60 * step).to_s )
 
@@ -172,6 +173,24 @@ namespace "db" do
 					      :sensor              => sensor)
 			measure.save
 		end
+	end
+    end
+
+    task :delete_measures do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	require 'time'
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	# Delete measures
+	Measure.all.each do |measure|
+		measure.destroy
 	end
     end
 
