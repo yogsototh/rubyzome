@@ -158,7 +158,7 @@ namespace "db" do
 	now=Time.now
 	# One measure every 5 minutes
 	step=5
-	(-1000..1000).each do |i|
+	(-2000..2000).each do |i|
 		# Get current date
 		puts %{#{i} - #{(now + i * 60 * step).to_s}}
 		current_date = DateTime.parse( (now + i * 60 * step).to_s )
