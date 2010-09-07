@@ -57,7 +57,7 @@ namespace "db" do
 	}
 
 	# User creation
-	nb_users=10
+	nb_users=2
 	(1..nb_users).each do |user_nb|
 		# Get dummy 
 		# - firstname
@@ -158,10 +158,10 @@ namespace "db" do
 	now=Time.now
 	# One measure every 5 minutes
 	step=5
-	(-288..0).each do |minutes|
+	(-1000..1000).each do |i|
 		# Get current date
-		puts %{date: #{(now + minutes * 60 * step).to_s}}
-		current_date = DateTime.parse( (now + minutes * 60 * step).to_s )
+		puts %{#{i} - #{(now + i * 60 * step).to_s}}
+		current_date = DateTime.parse( (now + i * 60 * step).to_s )
 
 		# Loop through list of sensors
 		Sensor.all.each do |sensor|
