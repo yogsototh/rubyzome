@@ -32,7 +32,6 @@ class MobileController < Rubyzome::ServiceRestController
         interval    = @request[:interval]
 
         @version=2
-        @client_offset=DateTime.parse(from).offset
 
         # Get status
         status = User.first({:nickname => nickname}).status;
@@ -43,6 +42,7 @@ class MobileController < Rubyzome::ServiceRestController
         end
 
         # if only from is given return all values from 'from'
+        @client_offset=DateTime.parse(from).offset
         if to.nil?
             return show_measure_from(sensor,from).merge({:status=>status})
         end

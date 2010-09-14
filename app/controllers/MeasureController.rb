@@ -21,12 +21,12 @@ class MeasureController < Rubyzome::RestController
         to	 	    = @request[:to]
         interval 	= @request[:interval]
 
-        @client_offset=DateTime.parse(from).offset
-
         # return last measure if from not given
         if from.nil?
             return show_last_measure(sensor)
         end
+
+        @client_offset=DateTime.parse(from).offset
 
         # if only from is given return all values from 'from'
         if to.nil?
