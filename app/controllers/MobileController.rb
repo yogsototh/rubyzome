@@ -25,6 +25,8 @@ class MobileController < Rubyzome::ServiceRestController
         sensor = get_sensor
         check_ownership_user_sensor(user,sensor)
 
+        @fetch_limit=200
+
         # Get filter params
         nickname    = @request[:l]
         from        = @request[:from]

@@ -6,6 +6,7 @@ class MeasureController < Rubyzome::RestController
 	require 'app/controllers/include/MeasureHelpers.rb'
     include MeasureHelpers
 
+
     # Get all measure for a given sensor
     # curl -i -d'l=login&p=password' -XGET http://gpadm.loc/sensors/main_home/measures
     def index
@@ -15,6 +16,8 @@ class MeasureController < Rubyzome::RestController
 		check_ownership_requestor_user(requestor,user)
 		sensor = get_sensor
 		check_ownership_user_sensor(user,sensor)
+
+        @fetch_limit=200
 
         # Get filter params
         from		= @request[:from]
@@ -34,8 +37,8 @@ class MeasureController < Rubyzome::RestController
         end
 
         # Get time for "from" and "to" strings
-        from = DateTime.parse(from)
-        to = DateTime.parse(to)
+        from = Time.parse(from)
+        to = Time.parse(to)
 
         # Make sure from date is older than to date
         if(from > to) then

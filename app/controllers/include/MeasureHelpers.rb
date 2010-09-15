@@ -11,7 +11,7 @@ module MeasureHelpers
             if not @request[:v].nil?
                 @version=@request[:v].to_i
             else
-                version=1
+                @version=1
             end
         end
         if @version>1
@@ -38,11 +38,11 @@ module MeasureHelpers
     end
 
     def show_measure_from(sensor, from) 
-        return encapsulate(Measure.all({:sensor => sensor, :date.gt => from}))
+        return encapsulate(Measure.all({:sensor => sensor, :date.gt => from, :limit => @fetch_limit}))
     end
 
     def show_measure_from_to(sensor,from,to)
-        return encapsulate(Measure.all({:sensor => sensor, :date.gt => from, :date.lt => to}))
+        return encapsulate(Measure.all({:sensor => sensor, :date.gt => from, :date.lt => to, :limit => @fetch_limit}))
     end
 
     def show_measure_from_to_with_interval(sensor,from,to,interval)
@@ -70,7 +70,8 @@ module MeasureHelpers
             avg = 0
             ms =  Measure.all({ :sensor => sensor,
                               :date.gt => interval_from_date,
-                              :date.lt => interval_to_date})
+                              :date.lt => interval_to_date,
+                              :limit => @fetch_limit})
 
             # Make sure list of measures is not emtpy
             # if it is, return -1 as consumption
