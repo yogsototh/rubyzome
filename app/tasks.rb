@@ -5,6 +5,7 @@ namespace "test" do
 
     task :all do
         Rake.application.invoke_task("test:measures")
+        Rake.application.invoke_task("test:mobiles")
     end
 
     def uri_test(descr, uri)
@@ -25,6 +26,26 @@ namespace "test" do
         main_uri<<="/users/#{user}"
         main_uri<<="/sensors/#{user}_1"
         main_uri<<="/measures.json"
+        main_uri<<="?l=#{user}&p=#{pass}"
+        target_uri=main_uri
+        uri_test( 'Last measure', target_uri )
+
+        target_uri=%{#{main_uri}&from=#{(DateTime.now - 1).strftime}}
+        uri_test( 'From', target_uri )
+
+        target_uri=%{#{target_uri}&to=#{(DateTime.now).strftime}}
+        uri_test( 'From To', target_uri )
+
+        target_uri=%{#{target_uri}&interval=1800}
+        uri_test( 'From To Interval', target_uri )
+    end
+
+    task :mobiles do
+        require 'open-uri'
+        main_uri=server
+        main_uri<<="/users/#{user}"
+        main_uri<<="/sensors/#{user}_1"
+        main_uri<<="/mobiles.json"
         main_uri<<="?l=#{user}&p=#{pass}"
         target_uri=main_uri
         uri_test( 'Last measure', target_uri )
