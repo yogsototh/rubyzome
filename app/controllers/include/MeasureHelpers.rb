@@ -4,8 +4,10 @@ module MeasureHelpers
             localFrom=measures[0].date.to_s
             localTo=measures[-1].date.to_s
         else
-            localFrom=DateTime.parse(measures[ 0].date.to_s).new_offset(@client_offset).strftime
-            localTo=  DateTime.parse(measures[-1].date.to_s).new_offset(@client_offset).strftime
+            localFrom=DateTime.parse(measures[ 0].date.to_s).
+                new_offset(@client_offset).strftime("%Y-%m-%dT%H:%M:%S%z")
+            localTo=  DateTime.parse(measures[-1].date.to_s).
+                new_offset(@client_offset).strftime("%Y-%m-%dT%H:%M:%S%z")
         end
         if @version.nil?
             if not @request[:v].nil?
