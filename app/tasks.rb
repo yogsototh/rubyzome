@@ -1,3 +1,45 @@
+namespace "test" do
+    server="http://localhost:8080"
+    user="johndoe"
+    pass="guest"
+
+    task :all do
+        Rake.application.invoke_task("test:measures")
+    end
+
+    def uri_test(descr, uri)
+        print %{#{descr}: }
+        content=URI.parse(uri).read
+        if /exception/.match(content)
+            puts "Failed:"
+            puts uri
+            puts content
+        else
+            puts "Passed"
+        end
+    end
+
+    task :measures do
+        require 'open-uri'
+        main_uri=server
+        main_uri<<="/users/#{user}"
+        main_uri<<="/sensors/#{user}_1"
+        main_uri<<="/measures.json"
+        main_uri<<="?l=#{user}&p=#{pass}"
+        target_uri=main_uri
+        uri_test( 'Last measure', target_uri )
+
+        target_uri=%{#{main_uri}&from=#{(DateTime.now - 1).strftime}}
+        uri_test( 'From', target_uri )
+
+        target_uri=%{#{target_uri}&to=#{(DateTime.now).strftime}}
+        uri_test( 'From To', target_uri )
+
+        target_uri=%{#{target_uri}&interval=1800}
+        uri_test( 'From To Interval', target_uri )
+    end
+end
+
 namespace "db" do
 
     task :show do
@@ -46,100 +88,102 @@ namespace "db" do
         Dir["app/models/*.rb"].each { |file| require file }
         DataMapper.finalize
 
-	# Comment that could be added by admin, based on user average consumption
-	comments =         {
-		0..500                => "Very low consumption",
-                501..1000        => "Low consumption",
-                1001..1500        => "Normal consumption",
-                1501..2000        => "Medium consumption",
-                2001..2500        => "Consumption quite high",
-                2501..3000        => "High consumption, please reduce it :-)"
-	}
+        # Comment that could be added by admin, based on user average consumption
+        comments =         {
+            0..500                => "Very low consumption",
+            501..1000        => "Low consumption",
+            1001..1500        => "Normal consumption",
+            1501..2000        => "Medium consumption",
+            2001..2500        => "Consumption quite high",
+            2501..3000        => "High consumption, please reduce it :-)"
+        }
 
-	# User creation
-	nb_users=2
-	(1..nb_users).each do |user_nb|
-		# Get dummy 
-		# - firstname
-		# - lastname
-		# - email
-		# - nickname 
-		# - country
-		# - zip code
-		# - city
-		# - street
+        # User creation
+        nb_users=2
+        (1..nb_users).each do |user_nb|
+            # Get dummy 
+            # - firstname
+            # - lastname
+            # - email
+            # - nickname 
+            # - country
+            # - zip code
+            # - city
+            # - street
 
-		firstname = Faker::Name.first_name
-		lastname  = Faker::Name.last_name
+            firstname = Faker::Name.first_name
+            lastname  = Faker::Name.last_name
 
-		# Add 2 easy to remember users for testing purposes
-		if user_nb == 1 then
-			firstname= "John"
-			lastname = "Doe"
-		elsif user_nb == 2 then
-			firstname = "Jack"
-			lastname = "Blue"
-		end
+            # Add 2 easy to remember users for testing purposes
+            if user_nb == 1 then
+                firstname= "John"
+                lastname = "Doe"
+            elsif user_nb == 2 then
+                firstname = "Jack"
+                lastname = "Blue"
+            end
 
-		nickname  = "#{firstname.downcase}#{lastname.downcase}"
+            puts %{#{firstname} #{lastname}}
 
-		user_hash = {:nickname => "#{nickname}",
-			     :status   => "" }
+            nickname  = "#{firstname.downcase}#{lastname.downcase}"
 
-		account_hash = {:firstname => "#{firstname}",
-				:lastname  => "#{lastname}",
-				:email     => "#{firstname.downcase}.#{lastname.downcase}@yahoo.com",
-				:password  => "guest",
-				:country   => "US",
-				:zip       => Faker::Address.zip_code,
-				:city      => Faker::Address.city,
-				:street    => Faker::Address.street_address}
+            user_hash = {:nickname => "#{nickname}",
+                :status   => "" }
 
-		# Create user entry
-		user = User.new(user_hash)
-		user.save
+            account_hash = {:firstname => "#{firstname}",
+                :lastname  => "#{lastname}",
+                :email     => "#{firstname.downcase}.#{lastname.downcase}@yahoo.com",
+            :password  => "guest",
+                :country   => "US",
+                :zip       => Faker::Address.zip_code,
+                :city      => Faker::Address.city,
+                :street    => Faker::Address.street_address}
 
-		# Create account entry
-		account_hash[:user] = user
-        
-		account=Account.new(account_hash)
-		account.save
+            # Create user entry
+            user = User.new(user_hash)
+            user.save
 
-		# Create sensors for each users
-		nb_sensors=3
-		(1..nb_sensors).each do |sensor_nb|
-			sensor=Sensor.new(:sensor_hr        => "#{nickname}_#{sensor_nb}",
-					  :description         => "Sensor #{sensor_nb} of #{firstname} #{lastname}",
-                                          :address         => "Same as user",
-                                          :user                 => user) 
-			sensor.save
+            # Create account entry
+            account_hash[:user] = user
 
-			# Create measure for each sensor: one measure each 30 minutes for the past 2 days
-			nb_measures=96
-			total = 0
-			(1..nb_measures).each do |measure_nb|
-				d = Time.now - measure_nb * 5 * 60
-				measure = Measure.new(:date => d,
-                                                      :consumption => rand(3000),
-                                                      :sensor => sensor)
-				measure.save
-				total = total + measure.consumption.to_f
-			end
+            account=Account.new(account_hash)
+            account.save
 
-			# Get measure average
-			average = total / nb_measures
+            # Create sensors for each users
+            nb_sensors=3
+            (1..nb_sensors).each do |sensor_nb|
+                sensor=Sensor.new(:sensor_hr        => "#{nickname}_#{sensor_nb}",
+                                  :description         => "Sensor #{sensor_nb} of #{firstname} #{lastname}",
+                                  :address         => "Same as user",
+                                  :user                 => user) 
+                sensor.save
 
-			# Set comment to  user depending upon his average consumption
-			comment = ""
-			comments.each do |k,v|
-				if k.include?(average) then
-					comment = v
-				end
-			end
-			user.status = comment
-			user.save
-		end
-	end
+                # Create measure for each sensor: one measure each 30 minutes for the past 2 days
+                nb_measures=96
+                total = 0
+                (1..nb_measures).each do |measure_nb|
+                    d = Time.now - measure_nb * 5 * 60
+                    measure = Measure.new(:date => d,
+                                          :consumption => rand(3000),
+                                          :sensor => sensor)
+                    measure.save
+                    total = total + measure.consumption.to_f
+                end
+
+                # Get measure average
+                average = total / nb_measures
+
+                # Set comment to  user depending upon his average consumption
+                comment = ""
+                comments.each do |k,v|
+                    if k.include?(average) then
+                        comment = v
+                    end
+                end
+                user.status = comment
+                user.save
+            end
+        end
     end
 
     # Add one day history (measures every 5 minutes for 24 hours => 288 measures per sensor)
