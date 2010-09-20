@@ -212,7 +212,28 @@ namespace "db" do
         require 'rubygems'
         require 'dm-core'
         require 'global'
-	require 'time'
+	    require 'time'
+
+        def min(a,b)
+            a<b ? a : b
+        end
+        def max(a,b)
+            a>b ? a : b
+        end
+
+        def gaussian_rand (n)
+            u1 = u2 = w = g1 = g2 = 0  # declare
+            begin
+                u1 = 2 * rand - 1
+                u2 = 2 * rand - 1
+                w = u1 * u1 + u2 * u2
+            end while w >= 1
+
+            w = Math::sqrt( ( -2 * Math::log(w)) / w )
+            g2 = u1 * w;
+            g1 = u2 * w;
+            return min(max(0,((g1+4)*n/8)),n)
+        end
 
         # Connect to DB 
         DataMapper.setup(:default, $db_url)
@@ -230,13 +251,14 @@ namespace "db" do
 
 		# Loop through list of sensors
 		Sensor.all.each do |sensor|
-			# Create random number between 1000 and 3000
-			consumption = rand(3000)
+			# Create random number between 1 and 3000
+			consumption = gaussian_rand(3000)
 
 			# Create measure
 			measure = Measure.new(:date                => current_date,
 					      :consumption         => consumption,
 					      :sensor              => sensor)
+            puts consumption
 			measure.save
 		end
 	end
