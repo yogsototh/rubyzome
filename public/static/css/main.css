@@ -7,6 +7,7 @@ html, body {
 body, #info {
     background-color: #320;
     color: #ca8;
+    font-size: 1.2em;
 }
 #entete {
     background-color: #320;
@@ -16,7 +17,7 @@ body, #info {
     text-shadow: 0 0 9px #100;
 }
 
-#content {
+#middle {
     border-top: 1px solid #db8;
     border-bottom: 1px solid #eda;
     background-color: #ca8;
@@ -24,6 +25,13 @@ body, #info {
     text-align: center;
     padding-top: 3em;
     padding-bottom: 3em;
+}
+
+#content {
+    margin-left: auto;
+    margin-right: auto;
+    width: 32em;
+    text-align: left;
 }
 
 #content a,
