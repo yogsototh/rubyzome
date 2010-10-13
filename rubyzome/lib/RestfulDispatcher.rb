@@ -193,23 +193,15 @@ class RestfulDispatcher
                 classname = chemin[0..-2].capitalize + 'Controller'
                 modelname = chemin[0..-2].capitalize
                 last_class_id=chemin[0..-2]+'_id'
-                if request[:_method].nil?
-                    if request.get?
-                        function_name=:index
-                    elsif request.post?
-                        function_name=:create
-                    elsif request.request_method == 'OPTIONS'
-                        function_name=:options
-                    else
-                        function_name=:bad_request
-                    end
-                else
-                    case request[:_method]
-                    when "GET"      then function_name=:index
-                    when "POST"     then function_name=:create
-                    when 'OPTIONS'  then function_name=:options
-                    else                 function_name=:bad_request
-                    end
+                method=request[:method]
+                if method.nil?
+                    method=request.request_method
+                end
+                case method
+                when "GET"      then function_name=:_index
+                when "POST"     then function_name=:_create
+                when 'OPTIONS'  then function_name=:_options
+                else                 function_name=:_bad_request
                 end
             else
                 # on ajoute la valeur dans les paramètre
@@ -218,31 +210,16 @@ class RestfulDispatcher
                 request[last_class_id]=chemin
                 # dispatche la fonction a appeler en fonction
                 # du type de requête.
-                if request[:_method].nil?
-                    if request.get?
-                        function_name=:show
-                    elsif request.put?
-                        function_name=:update
-                    elsif request.delete?
-                        function_name=:delete
-                    elsif request.request_method == 'OPTIONS'
-                        function_name=:options
-                    else
-                        function_name=:bad_request
-                    end
-                else
-                    case request[:_method]
-                    when 'GET'  
-                        function_name=:show
-                    when 'PUT'  
-                        function_name=:update
-                    when 'DELETE'   
-                        function_name=:delete
-                    when 'OPTIONS'  
-                        function_name=:options
-                    else            
-                        function_name=:bad_request
-                    end
+                method=request[:method]
+                if method.nil?
+                    method=request.request_method
+                end
+                case method
+                when 'GET'      then function_name=:_show
+                when 'PUT'      then function_name=:_update
+                when 'DELETE'   then function_name=:_delete
+                when 'OPTIONS'  then function_name=:_options
+                else            function_name=:_bad_request
                 end
             end
             i+=1
