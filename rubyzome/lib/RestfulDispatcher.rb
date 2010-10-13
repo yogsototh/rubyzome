@@ -96,10 +96,10 @@ class RestfulDispatcher
 
     # Nice html error (404 by default)
     def html_error(e, controller_name=nil, function_name=nil) 
-        view=$views['HTMLView'].new
+        view=$views[$defaultView+'View'].new
         [   404, 
-            $views['HTMLView'].head, 
-            $views['HTMLView'].new.httpContent( { :error => 404, :exception => e })
+            $views[$defaultView+'View'].head, 
+            $views[$defaultView+'View'].new.httpContent( { :error => 404, :exception => e })
         ]
     end
 

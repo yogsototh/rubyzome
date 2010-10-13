@@ -1,6 +1,7 @@
 # Global configuration file
 
 # write here the list of format you want your application to output
+$defaultView='HTML'
 $viewsToLoad=["JSON","XML","HTML"]
 $static_files_directory='/static'
 
