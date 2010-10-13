@@ -95,7 +95,7 @@ class RestfulDispatcher
     end
 
     # Nice html error (404 by default)
-    def html_error(e, controller_name=nil, function_name=nil) 
+    def default_error_response(e, controller_name=nil, function_name=nil) 
         view=$views[$defaultView+'View'].new
         [   404, 
             $views[$defaultView+'View'].head, 
@@ -158,7 +158,7 @@ class RestfulDispatcher
                 head={ 'Content-Type' => MIME::Types.of('file')[0].to_s }
                 return [200, head, content ] 
             rescue Exception => e
-                return html_error(e)
+                return default_error_response(e)
             end
         else
             # Controller creation and init with current request
