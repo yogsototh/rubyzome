@@ -5,6 +5,67 @@ class RestController
     # contenant les détails des requêtes
     attr_accessor :request
 
+    # default functions
+    def previous_filter
+    end
+
+    def after_filter
+    end
+
+    def _index
+        previous_filter
+        index
+        after_filter
+    end
+    def index
+	    action_not_available
+    end
+
+    def _create
+        previous_filter
+        create
+        after_filter
+    end
+    def create
+	    action_not_available
+    end
+
+    def _show
+        previous_filter
+        show
+        after_filter
+    end
+    def show
+	    action_not_available
+    end
+
+    def _update
+        previous_filter
+        update
+        after_filter
+    end
+    def update
+	    action_not_available
+    end
+
+    def _delete
+        previous_filter
+        delete
+        after_filter
+    end
+    def delete
+	    action_not_available
+    end
+
+    def _options
+        previous_filter
+        delete
+        after_filter
+    end
+    def options
+	    action_not_available
+    end
+
     # on initialise avec un objet requête
     def initialize(req)
         @request=req
