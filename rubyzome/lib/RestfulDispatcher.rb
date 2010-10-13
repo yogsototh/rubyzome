@@ -7,6 +7,10 @@
 class RestfulDispatcher
     @view = nil
 
+    def log str
+        puts str
+    end
+
     # Select the view to be used to render the object
     def selectView(model,path)
 
@@ -34,20 +38,20 @@ class RestfulDispatcher
             #           /app/views/xml/HistoryStatXMLView
             specific_object=File.basename(path, ".#{type}").capitalize
             view_name<<=%{#{specific_object}#{model}#{type.upcase}View}
-                puts %{try view = #{view_name}} 
+                log %{try view = #{view_name}} 
                 if $views.has_key?(view_name)
                     @view=$views[view_name].new
-                    puts %{selected view = #{view_name}} 
+                    log %{selected view = #{view_name}} 
                     return
                 end
                 # check Ressource Type Specific View
                 # eg: /stats.xml will render using
                 #           app/views/xml/StatXMLView
                 view_name=%{/#{type.downcase}/#{model}#{type.upcase}View}
-                puts %{try view = #{view_name}} 
+                log %{try view = #{view_name}} 
                 if $views.has_key?(view_name)
                     @view=$views[view_name].new
-                    puts %{selected view = #{view_name}} 
+                    log %{selected view = #{view_name}} 
                     return
                 end
         else
@@ -55,10 +59,10 @@ class RestfulDispatcher
             # eg: /stats.xml will render using
             #           app/views/xml/StatsXMLView
             view_name<<=%{#{model}s#{type.upcase}View}
-                puts %{try view = #{view_name}} 
+                log %{try view = #{view_name}} 
                 if $views.has_key?(view_name)
                     @view=$views[view_name].new
-                    puts %{selected view = #{view_name}} 
+                    log %{selected view = #{view_name}} 
                     return
                 end
         end
@@ -67,14 +71,14 @@ class RestfulDispatcher
         # eg: /users.xml will render using 
         #           app/view/XMLView
         view_name = %{#{type.upcase}View}
-            puts %{try view = #{view_name}} 
+            log %{try view = #{view_name}} 
             if $views.has_key?(view_name)
                 @view=$views[view_name].new
-                puts %{selected view = #{view_name}} 
+                log %{selected view = #{view_name}} 
                 return
             end
 
-            puts %{no view selected} 
+            log %{no view selected} 
             # No view found...
             return nil
     end
