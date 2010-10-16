@@ -127,7 +127,11 @@ class MeasureController < Rubyzome::RestController
         sensor = get_sensor
 
         begin
-            measure = Measure.new( clean_hash([:consumption])  )
+            if @request[:date].nil?
+                measure = Measure.new( clean_hash([:consumption]) << {:date => DateTime.now } )
+            else
+                measure = Measure.new( clean_hash([:consumption,:date])  )
+            end
             measure.sensor = sensor
             measure.save
         rescue Exception => e
