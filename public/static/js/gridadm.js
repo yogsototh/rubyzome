@@ -112,7 +112,7 @@ function showUserConsumption(username){
 			function(json){
 				// only for first sensor
 				sensor=json[0]["sensor_hr"];
-				var last_measure_param = { "l": user, "p" : password };
+				var last_measure_param = { "l": user, "p" : password, "v": 2 };
 				var last_day_measure_param = { "l": user, "p" : password, "from" : one_day_ago.toString(), "to": now.toString(), interval: 1800, "v": 2 };
 				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
 					draw_graphic( measure );
