@@ -1,8 +1,7 @@
 # encoding: utf-8
 
-module Rubyzome
-    require 'rubyzome/controllers/RestController.rb'
-    class ServiceRestController < RestController
+require 'rubyzome/controllers/RestController.rb'
+class ServiceRestController < RestController
 
         def service_name
             @request[ (self.class.to_s.gsub(/Controller/,'').downcase + '_id' ).intern ].intern
@@ -40,5 +39,4 @@ module Rubyzome
             return {}
         end
 
-    end
 end
