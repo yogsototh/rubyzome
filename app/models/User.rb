@@ -9,7 +9,7 @@ class User
 
         # Associations
         has 1, :account,        :model => "Account"
-        # has n, :sensors,     :model => "Sensor"
-
+        has 1, :twitter,        :model => "Twitter"
+        has 1, :facebook,       :model => "Facebook"
 end
 
