@@ -1,4 +1,4 @@
-class Twitter
+class TwitterAccount
         # Includes
         include DataMapper::Resource
 

@@ -1,4 +1,4 @@
-class Facebook
+class FacebookAccount
         # Includes
         include DataMapper::Resource
 

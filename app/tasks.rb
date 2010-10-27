@@ -283,3 +283,59 @@ namespace "db" do
     end
 
 end
+
+namespace "cron" do
+    task :twitter do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	require 'twitter'
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	# Get all entry in Twitter table
+	TwitterAccount.all.each do |twitterAccount|
+		# Get keys
+		consumer_token=twitterAccount.consumer_token
+		consumer_secret=twitterAccount.consumer_secret
+		access_token=twitterAccount.access_token
+		access_secret=twitterAccount.access_secret
+
+		# OAuth connect
+		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
+		oauth.authorize_from_access(access_token, access_secret)
+		client = Twitter::Base.new(oauth)
+
+		# Update timeline
+		client.update("Test using twitter gem")
+	end
+    end
+    task :facebook do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	require 'koala'
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	# Get all entry in Facebook table
+	FacebookAccount.all.each do |facebookAccount|
+		# Get key
+		access_token=facebookAccount.access_token
+
+		# Connect
+		graph = Koala::Facebook::GraphAPI.new(access_token)
+
+		# Update wall
+		graph.put_object("me", "feed", :message => "Test using koala")
+	end
+    end
+end

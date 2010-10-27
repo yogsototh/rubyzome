@@ -1,5 +1,5 @@
 require 'rubyzome/controllers/RestController.rb'
-class TwitterController < Rubyzome::RestController
+class TwitteraccountController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 
@@ -17,12 +17,13 @@ class TwitterController < Rubyzome::RestController
 	# Get consumer and access token
 	begin
 		twitter_keys = clean_hash([:consumer_token, :consumer_secret, :access_token, :access_secret])
-		twitter = Twitter.new(twitter_keys)
-		twitter.save
-		user.twitter = twitter
+		twitterAccount = TwitterAccount.new(twitter_keys)
+		twitterAccount.save
+		user.twitterAccount = twitterAccount
 		user.save
+		clean_id(twitterAccount.attributes.merge(user.attributes))
 	rescue Exception => e
-		raise Rubyzome::Error, "Cannot create twitter object: #{e.message}"
+		raise Rubyzome::Error, "Cannot create twitterAccount object: #{e.message}"
 	end
     end
 

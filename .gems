@@ -7,3 +7,5 @@ faker
 nokogiri
 rack
 rack-rewrite
+twitter
+koala

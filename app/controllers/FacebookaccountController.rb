@@ -1,5 +1,5 @@
 require 'rubyzome/controllers/RestController.rb'
-class FacebookController < Rubyzome::RestController
+class FacebookaccountController < Rubyzome::RestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
 
@@ -17,12 +17,13 @@ class FacebookController < Rubyzome::RestController
 	# Get access token
 	begin
 		facebook_key = clean_hash([:access_token])
-		facebook = Twitter.new(facebook_key)
-		facebook.save
-		user.facebook = facebook
+		facebookAccount = FacebookAccount.new(facebook_key)
+		facebookAccount.save
+		user.facebookAccount = facebookAccount
 		user.save
+		clean_id(facebookAccount.attributes.merge(user.attributes))
 	rescue Exception => e
-		raise Rubyzome::Error, "Cannot create facebook object: #{e.message}"
+		raise Rubyzome::Error, "Cannot create facebookAccount object: #{e.message}"
 	end
     end
 
@@ -42,12 +43,14 @@ class FacebookController < Rubyzome::RestController
 	check_ownership_user_account(user,account)
 
 	begin
-		# TODO
+		facebookAccount = user.facebookAccount
+		facebook_key = clean_hash([:access_token])
+		facebookAccount << facebook_key
+		facebookAccount.save
+		clean_id(facebookAccount.attributes.merge(user.attributes))
 	rescue Exception => e
 		raise Rubyzome::Error,"Cannot update facebook object: #{e.message}"
 	end
-
-	clean_id(account.attributes.merge(account.user.attributes))
     end
 
     def delete
