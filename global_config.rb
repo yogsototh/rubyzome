@@ -19,4 +19,8 @@ constructed_db_url<<="#{$db_user}:"        if not $db_user.nil?
 constructed_db_url<<="#{$db_password}"     if not $db_password.nil?
 constructed_db_url<<="@#{$db_host}/"       if not $db_host.nil?
 constructed_db_url<<="@#{$db_database}"    if not $db_database.nil?
-$db_url=ENV['DATABASE_URL'] || constructed_db_url
+if ENV['GPENV'] == "PRODUCTION"
+    $db_url="f5lxx1zz5pnorynqglhzmsp34@ec2-184-72-239-7.compute-1.amazonaws.com"
+else
+    $db_url=ENV['DATABASE_URL'] || constructed_db_url
+end
