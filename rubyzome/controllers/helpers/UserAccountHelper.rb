@@ -3,16 +3,6 @@ module Rubyzome
 
         ### AUTHENTICATION ###
 
-        def check_admin_authentication
-            if @request[:l] != 'adm' then
-                raise Error, "Only admin is authorized to perform this action"
-            end
-
-            if @request[:p] != 'adm' then
-                raise Error, "Authentication failed, please check your login and password"
-            end
-        end
-
         def check_authentication
             user=User.first({:nickname => @request[:l]})
             if user.nil?
@@ -55,34 +45,6 @@ module Rubyzome
             return user
         end
 
-        ### SENSOR STUFF ###
-
-        def get_sensor(id=:sensor_id)
-            sensor_id = @request[id]
-            if(sensor_id.nil?) then
-                raise Error, "No sensor provided"
-            end
-            sensor = Sensor.first({:sensor_hr => sensor_id})
-            if(sensor.nil?) then
-                raise Error,"Sensor #{sensor_id} does not exist"
-            end
-            return sensor
-        end
-
-        ### MEASURE STUFF ###
-
-        def get_measure(id=:measure_id)
-            measure_id = @request[id]
-            if(measure_id.nil?) then
-                raise Error, "No measure provided"
-            end
-            measure = Measure.first({:measure_hr => measure_id})
-            if(measure.nil?) then
-                raise Error,"Measure #{measure_id} does not exist"
-            end
-            return measure
-        end
-
         ### OWNERSHIP ###
 
         def check_ownership_user_account(user,account)
@@ -90,20 +52,6 @@ module Rubyzome
                 raise Error, "Account is not linked to user #{user.nickname}"
             end
         end
-
-        def check_ownership_user_sensor(user,sensor)
-            if sensor.user != user then
-                raise Error, "Sensor #{sensor.sensor_hr} does not belong to User #{user.nickname}"
-            end
-        end
-
-        def check_ownership_sensor_measure(sensor,measure)
-            if measure.sensor != sensor then
-                raise Error, "Measure #{measure.measure_hr} does not belong to Sensor #{sensor.sensor_hr}"
-            end
-        end
-
-        ### ONLY USED IN USER PART ###
 
         def check_ownership_requestor_user(requestor,user)
             if requestor.nickname != user.nickname
@@ -118,17 +66,7 @@ module Rubyzome
             hash.delete(:id)
             hash.delete(:user_id)
             hash.delete(:account_id)
-            hash.delete(:sensor_id)
             hash
-        end
-
-        ### STAT PURPOSES ###
-
-        def get_start_date
-            days_nbr = 1
-            days_nbr = @request[:days_nbr] if not @request[:days_nbr].nil?
-            start_date = DateTime.now - days_nbr.to_i
-            return start_date
         end
     end
 end
