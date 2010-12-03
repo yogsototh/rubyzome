@@ -1,8 +1,6 @@
 # encoding: utf-8
 
-module Rubyzome
-    class RestController
-
+class RestController
         # ajoute un attribut Request
         # contenant les détails des requêtes
         attr_accessor :request
@@ -16,6 +14,7 @@ module Rubyzome
             raise Error, "Bad request, please refer to options"
         end
 
+        # TODO: rename it as pruned_request for example
         def clean_hash( tab )
             hash={}
             tab.each do |t| 
@@ -44,5 +43,4 @@ module Rubyzome
                 end
             end
         end
-    end
 end

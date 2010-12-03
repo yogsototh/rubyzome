@@ -1,0 +1,11 @@
+dm-core
+dm-migrations
+dm-postgres-adapter
+erubis
+json
+faker
+nokogiri
+rack
+rack-rewrite
+twitter
+koala

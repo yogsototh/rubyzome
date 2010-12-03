@@ -1,12 +1,11 @@
 # encoding: utf-8
 
-module Rubyzome
+require 'nokogiri'
+require 'rubyzome/views/RestView.rb'
 
-    require 'nokogiri'
-    require 'rubyzome/views/RestView.rb'
+# Class used to send back XML 
+class XMLView < RestView
 
-    # Class used to send back XML 
-    class XMLView < RestView
         def initialize
             @head = {'Content-Type' => 'text/xml', 'charset' => 'UTF-8' }
         end
@@ -51,6 +50,10 @@ module Rubyzome
             return  document.to_s.gsub(/\\n/,"")
         end 
 
+        def error(object)
+            content(object)
+        end
+
         # Build item that will be inserted in the tree structure
         def build_item(item,doc)
             xml_item = Nokogiri::XML::Node.new("item",doc)
@@ -63,5 +66,5 @@ module Rubyzome
             end
             xml_item
         end
-    end
+
 end

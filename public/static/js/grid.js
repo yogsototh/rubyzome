@@ -6,10 +6,14 @@ function getUserFromCookie() {
     user = $.cookie('user');
     if (user) {
         password = $.cookie('password'); 
-        $('#username').val(user).become_active();
-        $('#password').val(password).become_active();
-        return false;
+        return true;
     }
+    return false;
+}
+
+function logout() {
+    $.cookie('user',null);
+    return true; // in order not to disable the link
 }
 
 function become_active() {
@@ -23,33 +27,38 @@ function select_and_active() {
 
 // after document loaded
 $(document).ready(function(){ 
-	getUserFromCookie();
-
-	$("#username").click(function() { $(this).select(); $(this).removeClass('inactive'); });
-	$("#username").focus(function() { $(this).select(); $(this).removeClass('inactive'); });
-	$("#password").click(function() { $(this).select(); $(this).removeClass('inactive'); });
-	$("#password").focus(function() { $(this).select(); $(this).removeClass('inactive'); });
-
-	$('#username').change(function(){
-		if ( $(this).val() == '' || $(this).val() == 'User Name') {
-			$(this).val('User Name');
-			$(this).addClass('inactive');
-		}
-	});
-
-	$('#password').change(function(){
-		if ( $(this).val() == '' ) {
-			$(this).val('password');
-			$(this).addClass('inactive');
-		}
-	});
-
-	$('form[name=login_form]').submit(function (){
-		user = $('[name=l]').val();
-		password = $('[name=p]').val();
+	if ( getUserFromCookie() ) {
 		showUserConsumption();
-		return false;
-        });
+    } else {
+	    $("#username").click(function() { $(this).select(); $(this).removeClass('inactive'); });
+	    $("#username").focus(function() { $(this).select(); $(this).removeClass('inactive'); });
+	    $("#password").click(function() { $(this).select(); $(this).removeClass('inactive'); });
+	    $("#password").focus(function() { $(this).select(); $(this).removeClass('inactive'); });
+
+	    $('#username').change(function(){
+	    	if ( $(this).val() == '' || $(this).val() == 'User Name') {
+	    		$(this).val('User Name');
+	    		$(this).addClass('inactive');
+	    	}
+	    });
+
+	    $('#password').change(function(){
+	    	if ( $(this).val() == '' ) {
+	    		$(this).val('password');
+	    		$(this).addClass('inactive');
+	    	}
+	    });
+
+	    $('form[name=login_form]').submit(function (){
+	    	user = $('[name=l]').val();
+	    	password = $('[name=p]').val();
+            $.cookie('user',user);
+            $.cookie('password',password);
+	    	showUserConsumption();
+	    	return false;
+            });
+    }
+    $('#blackpage').fadeOut();
 });
 
 function showUserConsumption(){
@@ -62,7 +71,7 @@ function showUserConsumption(){
 	$.ajax({url: prefix_url+'.json', 
 		data: login_param , 
 		success: function(json){
-			$('#content').load("html/user_consumption.html",function(){
+			$('#content').load("/static/html/user_consumption.html",function(){
 				$('#username strong').html(user);
 
 				$.getJSON('/users/' + user + '.json',
@@ -75,8 +84,8 @@ function showUserConsumption(){
 
 				// only for first sensor
 				sensor=json[0]["sensor_hr"];
-				var last_measure_param = { "l": user, "p" : password };
-				var last_day_measure_param = { "l": user, "p" : password, "from" : one_day_ago.toString(), "to": now.toString(), interval: 1800 };
+				var last_measure_param = { "l": user, "p" : password, "v": 2 };
+				var last_day_measure_param = { "l": user, "p" : password, "from" : one_day_ago.toString(), "v": 2, "to": now.toString(), interval: 1800 };
 				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
 					draw_graphic( measure );
 				});
@@ -107,7 +116,7 @@ function showUserConsumption(){
 }
 
 function showUserAccount(){
-	$('#content').load('html/user_account.html', function(){
+	$('#content').load('/static/html/user_account.html', function(){
 		tr = $('<tr class="r0" id="line' + user + '"><td>' + user + '</td><td><input type="text" id="pw' + user + '"  value="' + password + '"/></td> <td>' + stat + '</td> <td><span class="button" onclick="update_resource(\'account\',\'' + user + '\')">update</span></td></tr>');
 
                 $('#account').append(tr);
@@ -125,7 +134,7 @@ function showUserAccount(){
 }
 
 function showMenu(){
-	$('#menu').load('html/menu.html');
+	$('#menu').load('/static/html/menu.html');
 }	
 
 function showTitle(){
