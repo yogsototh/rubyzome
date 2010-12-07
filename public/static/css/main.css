@@ -1,5 +1,5 @@
 html, body { 
-    font-family: sans-serif;
+    font-family: "Helvetica", sans-serif;
     font-size: .9em;
     margin: 0; 
     padding: 0;
@@ -7,24 +7,26 @@ html, body {
     left: 0;
 }
 body, #info {
-    background-color: #07c;
-    color: #fff;
+    background-color: #010101;
+    color: #888;
 }
 #content {
-    background-color: #FFF;
-    color: #000;
+    line-height: 1.4em;
+    font-size: 1.2em;
+    background-color: #111;
+    color: #DDD;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
     padding: 2em;
+    min-height: 500px;
 }
 #content b, 
 #content strong,
 #content em {
-    color: #07c;
+    color: #111;
 }
 #entete {
-    background-color: #07c;
     margin: 1.5em;
     padding: 1em;
     text-align: center;
@@ -37,13 +39,15 @@ body, #info {
 #titles {
     float: left;
     margin-left: 2em;
+    color: #CFF;
+    text-shadow: 0 0 8px #00F;
 }
 .flush { clear: both; }
 
 content {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #eee;
-    background-color: #fff;
+    background-color: #888;
     color: #333;
     text-align: center;
     padding-top: 3em;
@@ -56,14 +60,12 @@ content {
         color: #333; }
 #content a:hover,
 #content a:active {
-    color: #07c; }
+    color: #111; }
 
 #bottom {
     font-size: .8em;
     text-align: center;
     padding-top: 3em;
-    background-color: #07c;
-    color: #fff;
     padding-bottom: 3em;
 }
 
@@ -73,7 +75,7 @@ content {
 
 .editable {
 	border: none;
-	background: #ffffff;
+	background: #888fff;
 }
 
 a,
@@ -82,12 +84,8 @@ a:visited {
     color: #ddd; }
 a:hover,
 a:active {
-    color: #fff; }
+    color: #888; }
 
-#gprefs {
-    font-size: 1.2em;
-    margin: 1em;
-}
 #promotion {
     font-size: .8em;
 }
@@ -95,7 +93,7 @@ a:active {
 
 /* input */
 #content input {
-    color: #000;
+    color: #333;
     margin: .5em;
     font-size: 1.5em;
 }
@@ -107,8 +105,8 @@ a:active {
     font-size: 1em;
 }
 .button {
-    background-color: #07c;
-    color: #fff;
+    background-color: #111;
+    color: #888;
     padding: .5em;
     border-radius: 3px;
     -moz-border-radius: 3px;
@@ -124,15 +122,15 @@ a:active {
 
 /* tables */
 table {
-    color: #000;
+    color: #333;
     font-weight: bold;
     margin-left: auto;
     margin-right: auto;
     text-align: left; }
 table tr th {
     margin: 7px;
-    color: #fff;
-    background-color: #07c;
+    color: #888;
+    background-color: #111;
 }
 
 #info {
@@ -156,11 +154,11 @@ table tr th {
     padding: 1.5em; }
 table tr td {
     padding: .8em;
-    border: solid 1px #000; }
+    border: solid 1px #333; }
 table tr.r0 td {
     background-color: #def; }
 table tr.r1 td {
-    background-color: #fff; }
+    background-color: #888; }
 table input {
     background-color: transparent;
     border: none;
@@ -203,3 +201,11 @@ table input {
   cursor: wait; }
   #blackpage img { background: none border: none }
   #blackpage a { cursor: pointer }
+
+.button {
+    background-color: #777;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    cursor: pointer;
+}
