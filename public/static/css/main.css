@@ -24,7 +24,7 @@ body, #info {
 #content b, 
 #content strong,
 #content em {
-    color: #111;
+    color: #CFF;
 }
 #entete {
     margin: 1.5em;
@@ -54,13 +54,14 @@ content {
     padding-bottom: 3em;
 }
 
-#content a,
-#content a:link,
-#content a:visited {
-        color: #333; }
-#content a:hover,
-#content a:active {
-    color: #111; }
+a,
+a:link,
+a:visited {
+        color: #CFF; }
+a:hover,
+a:active {
+    color: #F88;
+    text-shadow: 0 0 2px #D00; }
 
 #bottom {
     font-size: .8em;
@@ -77,14 +78,6 @@ content {
 	border: none;
 	background: #888fff;
 }
-
-a,
-a:link,
-a:visited {
-    color: #ddd; }
-a:hover,
-a:active {
-    color: #888; }
 
 #promotion {
     font-size: .8em;
