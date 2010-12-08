@@ -5,9 +5,9 @@ class Location
         # Properties
         property :id,           Serial
         property :date,                DateTime
-        property :longitude,  Float
-        property :latitude,  Float
-        property :altitude,  Float
+        property :longitude,  String
+        property :latitude,  String
+        property :altitude,  String
 
         # Associations
         belongs_to :tracker,     :model => "Tracker"

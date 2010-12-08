@@ -51,9 +51,10 @@ class SmsController < Rubyzome::ServiceRestController
 	puts $2 if $2
 	puts '---'
         	if $1.eql?("lat") || $1.eql?("latitude") || $1.eql?("Latitude") then
-			latitude = $2.to_f
+puts "$1 is lat or latitude or Latitude: $2=#{$2}"
+			latitude = $2
 		elsif $1.eql?("long") || $1.eql?("longitude") || $1.eql?("Longitude") then
-			longitude = $2.to_f
+			longitude = $2
 		elsif $1.eql?("T") || $1.eql?("GMT") then
 			# Check date format and create DateTime object
 			# TODO
