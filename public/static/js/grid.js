@@ -213,12 +213,13 @@ function draw_graphic( data ) {
 	    datatabs[index]=[ from.getTime() + (index*interval*1000), value ];
 	}
     });
-    $.plot($('#graph'), [ datatabs ], { xaxis: {
-	    mode: "time",
-	    min: from.getTime(),
-	    max: to.getTime()
-	},
-	yaxis: { min: 0, max: 3000 } });
+    $.plot($('#graph'), [{color: "#CFF", data: datatabs, lines: {show: true, fill: true}}], {  
+            xaxis: {
+	            mode: "time",
+	            min: from.getTime()+interval*1000,
+	            max: to.getTime()
+	        },
+	        yaxis: { min: 0, max: 3000 } });
 }
 
 var now=new Date
