@@ -46,7 +46,7 @@ namespace "db" do
         DataMapper.finalize
 
         # User creation
-        nb_users=5
+        nb_users=1
         (1..nb_users).each do |user_nb|
             # Get dummy 
             # - firstname
@@ -88,10 +88,11 @@ namespace "db" do
             account.save
 
             # Create trackers for each users
-            nb_trackers=rand(3)+1
+            # nb_trackers=rand(3)+1
+            nb_trackers=1
             (1..nb_trackers).each do |tracker_nb|
                 tracker = Tracker.new(  :tracker_hr          => "#{nickname}_#{tracker_nb}",
-                                      :phoneNumber         => "0123456789",
+                                      :phoneNumber         => "219568206674564",
                                       :user                => user) 
                 tracker.save
                 # Create location for each tracker
