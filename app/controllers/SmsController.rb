@@ -46,6 +46,10 @@ class SmsController < Rubyzome::ServiceRestController
 	# 
 
 	message.gsub(/(^[^:]*):(.*)$/).each do |i| 
+	puts i 
+	puts $1 if $1
+	puts $2 if $2
+	puts '---'
         	if $1.eql?("lat") || $1.eql?("latitude") || $1.eql?("Latitude") then
 			latitude = $2.to_f
 		elsif $1.eql?("long") || $1.eql?("longitude") || $1.eql?("Longitude") then
