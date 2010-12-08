@@ -1,14 +1,38 @@
+require 'date'
 module MeasureHelpers
-    def encapsulate(measures, interval = 0 )
-        if @client_offset.nil?
-            localFrom=measures[0].date.to_s
-            localTo=measures[-1].date.to_s
-        else
-            localFrom=DateTime.parse(measures[ 0].date.to_s).
-                new_offset(@client_offset).strftime("%Y-%m-%dT%H:%M:%S%z")
-            localTo=  DateTime.parse(measures[-1].date.to_s).
-                new_offset(@client_offset).strftime("%Y-%m-%dT%H:%M:%S%z")
+
+    def server_offset
+        if @server_offset.nil?
+            @server_offset=DateTime.now.offset
         end
+        return @server_offset
+    end
+
+    def client_to_server_timezone(date)
+        if @client_offset.nil?
+            return date
+        end
+        hour_offset=(@client_offset - server_offset)*24
+        time=Time.parse( DateTime.parse(date.to_s).to_s )
+        return DateTime.parse( ( time - (hour_offset*60*60) ).to_s )
+    end
+
+    def to_client_timezone(date)
+        if @client_offset.nil?
+            return date.to_s
+        else
+            # hour_offset=(@client_offset - server_offset)*24
+            # time=Time.parse( DateTime.parse(date.to_s).to_s )
+            # res=DateTime.parse( ( time - (hour_offset*60*60) ).to_s )
+            # res=res.new_offset(@client_offset)
+            #return res.strftime("%Y-%m-%dT%H:%M:%S%z")
+            return DateTime.parse(date.to_s).new_offset(@client_offset).strftime("%Y-%m-%dT%H:%M:%S%z")
+        end
+    end
+
+    def encapsulate(measures, interval = 0 )
+        localFrom=to_client_timezone(measures[0].date)
+        localTo=to_client_timezone(measures[-1].date)
         if @version.nil?
             if not @request[:v].nil?
                 @version=@request[:v].to_i
@@ -40,15 +64,22 @@ module MeasureHelpers
     end
 
     def show_measure_from(sensor, from) 
+        from=client_to_server_timezone(from)
         return encapsulate(Measure.all({:sensor => sensor, :date.gt => from, :limit => @fetch_limit}))
     end
 
     def show_measure_from_to(sensor,from,to)
+        from=client_to_server_timezone(from)
+        to=client_to_server_timezone(to)
         return encapsulate(Measure.all({:sensor => sensor, :date.gt => from, :date.lt => to, :limit => @fetch_limit}))
     end
 
     def show_measure_from_to_with_interval(sensor,from,to,interval)
         # Make sure timeframe (from..to) is wider than an interval
+        from=client_to_server_timezone(from)
+        to=client_to_server_timezone(to)
+        to=Time.parse( to.to_s )
+        from=Time.parse( from.to_s )
         if(to.to_i - from.to_i < interval.to_i) then
             raise Rubyzome::Error, "timeframe is not wide enough to fit an interval"
         end
