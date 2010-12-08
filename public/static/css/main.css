@@ -96,6 +96,7 @@ a:active {
 }
 #content table input {
     font-size: 1em;
+    color: #888
 }
 .button {
     background-color: #111;
@@ -149,11 +150,12 @@ table tr td {
     padding: .8em;
     border: solid 1px #333; }
 table tr.r0 td {
-    background-color: #def; }
+    background-color: #111; }
 table tr.r1 td {
-    background-color: #888; }
+    background-color: #222; }
 table input {
     background-color: transparent;
+    color: #AAA;
     border: none;
     margin: 0;
 }
@@ -196,7 +198,9 @@ table input {
   #blackpage a { cursor: pointer }
 
 .button {
-    background-color: #777;
+    background-color: #333;
+    color: #888;
+    border: 2px #555;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
