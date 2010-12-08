@@ -36,7 +36,6 @@ body, #info {
 }
 #logo {
     float: right;
-    margin-top: .5em;
 }
 #titles {
     float: left;
@@ -208,3 +207,15 @@ table input {
     -webkit-border-radius: 5px;
     cursor: pointer;
 }
+#presentationimage {
+    border: 1px solid #888;
+    background-color: #111;
+    padding: 8px
+}
+
+#titles {
+   border: 1px solid #888;
+   background-color: #111;
+   padding: 8px;
+}
+
