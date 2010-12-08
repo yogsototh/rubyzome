@@ -26,6 +26,11 @@ namespace "db" do
             puts tracker.attributes.values.join(' ; ')
         end
         puts %{---}
+        puts %{Location (#{Location.all.length})}
+        Location.all.each do |location|
+            puts location.attributes.values.join(' ; ')
+        end
+        puts %{---}
     end
 
     task :populate do

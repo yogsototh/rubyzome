@@ -17,6 +17,7 @@ class SmssXMLView
 
     # Create XML file expected by orange api
     # Exemple:
+    # <?xml version="1.0" encoding="UTF-8" ?>
     # <receivesms>
     #    <status>ok</status>
     #    <response>oki guys</response>
