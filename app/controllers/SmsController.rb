@@ -16,7 +16,7 @@ class SmsController < Rubyzome::ServiceRestController
 	# Get params
         from            = @request[:from]
         to              = @request[:to]
-        message         = @request[:message]
+        message         = @request[:content]
 
 	puts "About to handle SMS: from:#{from}, to:#{to}, message:#{message}"
 
