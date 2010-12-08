@@ -95,17 +95,17 @@ namespace "db" do
                                       :user                => user) 
                 tracker.save
                 # Create location for each tracker
-                nb_location=10
-                total = 0
-                (1..nb_location).each do |location_nb|
-                    d = Time.now - location_nb * 5 * 60
-                    location = Location.new(:date => d,
-                                            :latitude => 21.3,
-                                            :longitude => 2.4,
-                                            :altitude => 300.4,
-                                            :tracker => tracker)
-                    location.save
-                end	
+                # nb_location=10
+                # total = 0
+                # (1..nb_location).each do |location_nb|
+                #     d = Time.now - location_nb * 5 * 60
+                #    location = Location.new(:date => d,
+                #                            :latitude => 21.3,
+                #                            :longitude => 2.4,
+                #                            :altitude => 300.4,
+                #                            :tracker => tracker)
+                #    location.save
+                # end	
             end	
         end	
     end
