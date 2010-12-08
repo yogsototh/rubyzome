@@ -46,7 +46,7 @@ class SmsController < Rubyzome::ServiceRestController
 	# 
 
 	message.gsub(/(^[^:]*):(.*)$/).each do |i| 
-	puts i 
+	puts "### #{i} ###"
 	puts $1 if $1
 	puts $2 if $2
 	puts '---'
