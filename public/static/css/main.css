@@ -115,7 +115,6 @@ a:active {
 
 /* tables */
 table {
-    color: #333;
     font-weight: bold;
     margin-left: auto;
     margin-right: auto;
@@ -123,7 +122,8 @@ table {
 table tr th {
     margin: 7px;
     color: #888;
-    background-color: #111;
+    background-color: #222;
+    text-shadow: 0 1px #000;
 }
 
 #info {
