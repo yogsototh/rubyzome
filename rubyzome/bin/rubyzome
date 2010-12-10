@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+rootDir="$(dirname $(dirname $(dirname $0)))"
+
+FORCE=0; [[ $1 = '-f' ]] && { FORCE=1; shift }
+
+(($#<1)) && {
+    print -- "usage: $0:t [-f] project_name"
+    exit 1
+}>&2
+
+projectName=$1
+
+((FORCE==1)) && {
+    [[ -e $projectName ]] && { \rm -rf $projectName }
+}
+
+[[ -e $projectName ]] && {
+    print -- "$projectName already exists"
+    exit 1
+}>&2
+
+mkdir $projectName
+
+cp -r $rootDir/* $projectName
+(($?)) && {
+    print -- "something went wrong (tried to copy $fic)"
+}>&2
+mkdir $projectName/app
+
+print -- 'Congratulation, your project is created'
+print -- 'Now you should begin by populating the app/ directory'
