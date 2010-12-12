@@ -236,7 +236,7 @@ function draw_graphic( data ) {
 	            },
                 yaxis: { min: 0, max: 3000}, 
                 grid: {
-                    color: '#333',
+                    color: '#888',
                     backgroundColor: {
                         colors: ['#011111','#010101']} 
                 } 
