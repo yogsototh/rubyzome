@@ -86,9 +86,7 @@ function showUserConsumption(){
 				sensor=json[0]["sensor_hr"];
 				var last_measure_param = { "l": user, "p" : password, "v": 2 };
 				var last_day_measure_param = { "l": user, "p" : password, "from" : one_day_ago.toString(), "v": 2, "to": now.toString(), interval: 300 };
-				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
-					draw_graphic( measure );
-				});
+                update_graphic(prefix_url, user, password, sensor, last_day_measure_param);
                 update_instant_consumption(prefix_url, user, password, sensor, last_measure_param);
 				showMenu();
 				showTitle();
@@ -102,6 +100,14 @@ function showUserConsumption(){
 	});
 }
 
+function update_graphic(prefix_url, user, password, sensor, last_day_measure_param) {
+        if ( $('#instantconsumptionvalue').length > 0 ) {
+				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
+					draw_graphic( measure );
+				});
+            setTimeout(function() {update_graphic(prefix_url,user,password,sensor,last_day_measure_param);}, 300000);
+        }
+}
 function update_instant_consumption(prefix_url, user, password, sensor, last_measure_param) {
         if ( $('#instantconsumptionvalue').length > 0 ) {
 				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
