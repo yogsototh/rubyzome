@@ -89,7 +89,7 @@ function showUserConsumption(){
 				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
 					draw_graphic( measure );
 				});
-                update_instant_consumption(prefix, user, password, sensor, last_measure_param);
+                update_instant_consumption(prefix_url, user, password, sensor, last_measure_param);
 				showMenu();
 				showTitle();
 				return false;	
@@ -102,7 +102,7 @@ function showUserConsumption(){
 	});
 }
 
-function update_instant_consumption(prefix, user, password, sensor, last_measure_param) {
+function update_instant_consumption(prefix_url, user, password, sensor, last_measure_param) {
         if ( $('#instantconsumptionvalue').length > 0 ) {
 				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
 					var len=measure["data"].length;
