@@ -89,6 +89,21 @@ function showUserConsumption(){
 				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
 					draw_graphic( measure );
 				});
+                update_instant_consumption(prefix, user, password, sensor, last_measure_param);
+				showMenu();
+				showTitle();
+				return false;	
+			});
+		},
+		error: function(){
+	    		$("#info").prepend('<div id="error">Authentication failed</div>');
+	    		setTimeout(function(){$('#error').remove()},2000);
+		}
+	});
+}
+
+function update_instant_consumption(prefix, user, password, sensor, last_measure_param) {
+        if ( $('#instantconsumptionvalue').length > 0 ) {
 				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
 					var len=measure["data"].length;
 					var last=measure["data"][len-1];
@@ -103,18 +118,9 @@ function showUserConsumption(){
 					$('#instantdailycostvalue').html( (cons * KWH_COST * DAILY_COST_MULTI).toFixed(2) + " €");
 					$('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
 				});
-				showMenu();
-				showTitle();
-				return false;	
-			});
-		},
-		error: function(){
-	    		$("#info").prepend('<div id="error">Authentication failed</div>');
-	    		setTimeout(function(){$('#error').remove()},2000);
-		}
-	});
+            setTimeout(function() {update_instant_consumption(prefix,user,password,sensor,last_measure_param);}, 1000);
+        }
 }
-
 function showUserAccount(){
 	$('#content').load('/static/html/user_account.html', function(){
 		tr = $('<tr class="r0" id="line' + user + '"><td>' + user + '</td><td><input type="text" id="pw' + user + '"  value="' + password + '"/></td> <td>' + stat + '</td> <td><span class="button" onclick="update_resource(\'account\',\'' + user + '\')">update</span></td></tr>');
