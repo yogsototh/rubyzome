@@ -234,7 +234,7 @@ function draw_graphic( data ) {
 	                min: from.getTime()+interval*1000,
 	                max: to.getTime()
 	            },
-                yaxis: { min: 0, max: 3000}, 
+                yaxis: { min: 0, max: 6000}, 
                 grid: {
                     color: '#888',
                     backgroundColor: {
