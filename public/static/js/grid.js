@@ -118,7 +118,7 @@ function update_instant_consumption(prefix_url, user, password, sensor, last_mea
 					$('#instantdailycostvalue').html( (cons * KWH_COST * DAILY_COST_MULTI).toFixed(2) + " €");
 					$('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
 				});
-            setTimeout(function() {update_instant_consumption(prefix,user,password,sensor,last_measure_param);}, 1000);
+            setTimeout(function() {update_instant_consumption(prefix_url,user,password,sensor,last_measure_param);}, 1000);
         }
 }
 function showUserAccount(){
