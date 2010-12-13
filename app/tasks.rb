@@ -63,6 +63,77 @@ end
 
 namespace "db" do
 
+    task :compress do
+        require 'rubygems'
+        require 'dm-core'
+        # configuration of DB
+        require 'global'
+
+        interval=300
+        decal=5*60
+        # nb_data_keep 10x per second
+        fetch_limit=10*interval
+        puts "Interval = #{interval}, Uncompressed last #{decal} second"
+
+        # Connect to DB 
+        puts 'Connect to DB' 
+        DataMapper.setup(:default, $db_url)
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+        Sensor.all.each do |sensor|
+            sensor_name=sensor.sensor_hr
+            sensor.last_cleaned
+            if sensor.last_cleaned.nil?
+                from=Time.parse( Measure.last({:sensor => sensor, :order => [:date.desc]}).date.to_s)
+            else
+                from=Time.parse( sensor.last_cleaned.to_s )
+            end
+            to=Time.new - 5*60
+            puts "[#{sensor_name}]: #{from} => #{to}"
+
+            if(to.to_i - from.to_i < interval) then
+                puts "timeframe is not wide enough to fit an interval"
+                next
+            end
+            timeframe = (from.to_i..to.to_i)
+            interval_from_sec = timeframe.first
+            timeframe.step(interval) do |interval_to_sec|
+                # Do not take first value into account
+                next if interval_to_sec == timeframe.first
+                # Make sure current "from" to current "to" is wider than an interval
+                next if interval_to_sec - interval_from_sec < interval.to_i
+
+                # Convert interval_from_sec and interval_to_sec into DateTime
+                interval_from_date = Time.at(interval_from_sec)
+                interval_to_date = Time.at(interval_to_sec)
+                puts "#{sensor_name} => #{interval_to_date}"
+
+                tot = 0
+                avg = 0
+                ms =  Measure.all({ :sensor => sensor,
+                                  :date.gt => interval_from_date,
+                                  :date.lt => interval_to_date,
+                                  :limit => fetch_limit})
+
+                # Make sure list of measures is not emtpy
+                # if it is, return -1 as consumption
+                if ms.length == 0
+                    m = Measure.new({:date => interval_from_date, :consumption => nil})
+                else
+                    ms.each { |m| tot = tot + m.consumption }
+                    avg = tot / ms.length 
+                    m = Measure.new({:date => interval_from_date, :consumption => avg})
+                end
+
+                m.save
+                ms.destroy
+                sensor.attributes= { :last_cleaned => interval_to_date }
+                sensor.save
+            end
+        end
+    end
+
     task :show do
         require 'rubygems'
         require 'dm-core'
