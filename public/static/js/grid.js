@@ -260,5 +260,5 @@ function draw_graphic( data ) {
 var now=new Date;
 var one_day_ago=new Date((new Date).getTime() - 24 * 3600000);
 var preceeding_midnight=new Date(one_day_ago.getFullYear(), one_day_ago.getMonth(), one_day_ago.getDay(), 0, 0, 0, 0);
-var last_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDay(), 0, 0, 0, 0);
-var next_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDay(), 23, 59, 59, 999);
+var last_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+var next_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
