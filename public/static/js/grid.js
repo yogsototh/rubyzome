@@ -271,8 +271,8 @@ function draw_graphic(interval) {
     var to=next_midnight;
 
     $.plot($('#graph'), [ 
-            { color: "#CFF", data: todayData, lines: {show: true, fill: true} },
-            { color: "#555", data: yesterdayData, lines: {show: true, fill: false} }
+            { color: "#CFF", data: todayData, lines: {show: true, fill: true}, label: "Today" },
+            { color: "#555", data: yesterdayData, lines: {show: true, fill: false}, label: "Yesterday" }
                             ], 
             {  
                 xaxis: {
