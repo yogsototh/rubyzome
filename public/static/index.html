@@ -26,12 +26,16 @@
     </div>
 
     <div id="content">
-        <form name="login_form"> 
+        <form name="login_form" id="login_form"> 
             <div id="usernameblock">
                 <input name="l" type="text" id="username" value="User Name" class="inactive" />
             </div>
             <div id="passwordblock">
-                <input name="p" type="password" id="password" value="password" class="inactive" />
+                <input name="p" type="password" id="password" value="" class="inactive" />
+            </div>
+            <div id="remembercheckboxlabel">
+            <input type="checkbox" name="remember" id="remember" />
+            <label for="remember" >Remember me <span style="color: #FCC; font-size: .7em;"><i>Do not click on public computer</i></span></label>
             </div>
             <div id="signinbutton">
                 <input name="signin" type="submit" id="signin" value="Sign in" />

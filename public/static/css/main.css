@@ -89,7 +89,9 @@ a:active {
 #content input {
     color: #333;
     margin: .5em;
-    font-size: 1.5em;
+    font-size: 2.5em;
+    background-color: #FFF;
+    -webkit-border-radius: .2em;
 }
 
 #content input.inactive {
@@ -219,3 +221,11 @@ table input {
    padding: 8px;
 }
 
+#login_form {
+    width: 28em;
+    text-align: center;
+    margin: auto;
+}
+#remembercheckboxlabel {
+    text-align: left;
+}
