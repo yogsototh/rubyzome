@@ -96,7 +96,9 @@ function showUserConsumption(){
 				sensor=json[0]["sensor_hr"];
 				var last_measure_param = { "l": user, "p" : password, "v": 2 };
 				var last_day_measure_param = { "l": user, "p" : password, "from" : last_midnight.toString(), "v": 2, "to": next_midnight.toString(), interval: 300 };
-                update_graphic(prefix_url, user, password, sensor, last_day_measure_param);
+				var past_day_measure_param = { "l": user, "p" : password, "from" : preceeding_midnight.toString(), "v": 2, "to": last_midnight.toString(), interval: 300 };
+                update_today_graphic(prefix_url, user, password, sensor, last_day_measure_param);
+                update_yesterday_graphic(prefix_url, user, password, sensor, past_day_measure_param);
                 update_instant_consumption(prefix_url, user, password, sensor, last_measure_param);
 				showMenu();
 				showTitle();
@@ -110,10 +112,18 @@ function showUserConsumption(){
 	});
 }
 
-function update_graphic(prefix_url, user, password, sensor, last_day_measure_param) {
+function update_today_graphic(prefix_url, user, password, sensor, last_day_measure_param) {
         if ( $('#instantconsumptionvalue').length > 0 ) {
 				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
-					draw_graphic( measure );
+					initTodayData( measure );
+				});
+            setTimeout(function() {update_graphic(prefix_url,user,password,sensor,last_day_measure_param);}, 300000);
+        }
+}
+function update_yesterday_graphic(prefix_url, user, password, sensor, past_day_measure_param) {
+        if ( $('#instantconsumptionvalue').length > 0 ) {
+				$.getJSON(prefix_url+'/'+sensor+'/measures.json', past_day_measure_param, function(measure) {
+					initYesterdayData( measure );
 				});
             setTimeout(function() {update_graphic(prefix_url,user,password,sensor,last_day_measure_param);}, 300000);
         }
@@ -222,26 +232,49 @@ Date.prototype.setISO8601 = function (string) {
     this.setTime(Number(time));
 }
 
-function draw_graphic( data ) {
-    // draw something inside $('#graph')
-    var from=new Date();
-    var to=new Date();
-    from.setISO8601(data["from"]);
-    to.setISO8601(data["to"]);
-    var datatabs=new Array();
+var todayData=[];
+var yesterdayData=[];
+var maxToday=3000;
+var maxYesterday=3000;
+
+function initYesterdayData(data) {
     var interval=data["interval"];
+    var oneDayInMillisecond=24*60*60*1000;
+    var from=last_midnight;
+    var to=next_midnight;
+    yesterdayData=[];
     $.each(data["data"],function(index, value) {
-	if (index) {
-        if ( value != -1 ) {
-	        datatabs[index]=[ from.getTime() + (index*interval*1000), value ];
-        } else {
-	        datatabs[index]=[ from.getTime() + (index*interval*1000), null ];
-        }
-	}
+	    if (index) {
+            yesterdayData.push( [ from.getTime() + (index*interval*1000) + oneDayInMillisecond, value==-1?null:value ] );
+	    }
     });
-    $.plot($('#graph'), [ { color: "#CFF", 
-                             data: datatabs, 
-                            lines: {show: true, fill: true} } ], 
+    maxYesterday=data["max"];
+    draw_graphic(interval);
+}
+
+function initTodayData(data) {
+    var interval=data["interval"];
+    var from=last_midnight;
+    var to=next_midnight;
+    todayData=[];
+    $.each(data["data"],function(index, value) {
+	    if (index) {
+            todayData[index]=[ from.getTime() + (index*interval*1000), value==-1?null:value ];
+	    }
+    });
+    maxToday=data["max"];
+    draw_graphic(interval);
+}
+
+function draw_graphic(interval) {
+    // draw something inside $('#graph')
+    var from=last_midnight;
+    var to=next_midnight;
+
+    $.plot($('#graph'), [ 
+            { color: "#CFF", data: todayData, lines: {show: true, fill: true} },
+            { color: "#CCC", data: yesterdayData, lines: {show: true, fill: true} }
+                            ], 
             {  
                 xaxis: {
 	                mode: "time",
@@ -258,7 +291,8 @@ function draw_graphic( data ) {
 }
 
 var now=new Date;
-var one_day_ago=new Date((new Date).getTime() - 24 * 3600000);
-var preceeding_midnight=new Date(one_day_ago.getFullYear(), one_day_ago.getMonth(), one_day_ago.getDay(), 0, 0, 0, 0);
+var one_day_ago=new Date((new Date).getTime() - 24*60*60*1000);
+var preceeding_midnight=new Date(one_day_ago.getFullYear(), one_day_ago.getMonth(), one_day_ago.getDate(), 0, 0, 0, 0);
+var yesterday_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
 var last_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
 var next_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
