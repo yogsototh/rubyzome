@@ -144,7 +144,7 @@ function update_instant_consumption(prefix_url, user, password, sensor, last_mea
 					$('#instantdailycostvalue').html( (cons * KWH_COST * DAILY_COST_MULTI).toFixed(2) + " €");
 					$('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
 				});
-            setTimeout(function() {update_instant_consumption(prefix_url,user,password,sensor,last_measure_param);}, 1000);
+            setTimeout(function() {update_instant_consumption(prefix_url,user,password,sensor,last_measure_param);}, 3000);
         }
 }
 function showUserAccount(){
@@ -239,13 +239,12 @@ var maxYesterday=3000;
 
 function initYesterdayData(data) {
     var interval=data["interval"];
-    var oneDayInMillisecond=24*60*60*1000;
     var from=last_midnight;
     var to=next_midnight;
     yesterdayData=[];
     $.each(data["data"],function(index, value) {
 	    if (index) {
-            yesterdayData.push( [ from.getTime() + (index*interval*1000) + oneDayInMillisecond, value==-1?null:value ] );
+            yesterdayData.push( [ from.getTime() + (index*interval*1000), value==-1?null:value ] );
 	    }
     });
     maxYesterday=data["max"];
