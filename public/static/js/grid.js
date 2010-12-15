@@ -285,7 +285,15 @@ function draw_graphic(interval) {
                     color: '#888',
                     backgroundColor: {
                         colors: ['#011111','#010101']} 
-                } 
+                },
+                legend: {
+                    labelBoxBorderColor: '#000',
+                    position: 'nw',
+                    margin: 0,
+                    backgroundColor: '#222',
+                    backgroundOpacity: 0.9 
+                }
+
             });
 }
 
