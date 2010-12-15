@@ -272,7 +272,7 @@ function draw_graphic(interval) {
 
     $.plot($('#graph'), [ 
             { color: "#CFF", data: todayData, lines: {show: true, fill: true} },
-            { color: "#333", data: yesterdayData, lines: {show: true, fill: true} }
+            { color: "#555", data: yesterdayData, lines: {show: true, fill: false} }
                             ], 
             {  
                 xaxis: {
