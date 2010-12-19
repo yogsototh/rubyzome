@@ -103,6 +103,8 @@ a:active {
 }
 .button {
     background-color: #111;
+    text-align: center;
+    margin: .1em;
     color: #888;
     padding: .5em;
     border-radius: 3px;
@@ -111,6 +113,22 @@ a:active {
     }
     .button:hover {
         cursor: pointer;
+    }
+    .button.short {
+        border: solid 2px #444;
+        margin-left: 1em;
+        width: 5em;
+        float: right;
+    }
+    .button.short:hover {
+        color: #CFF;
+        border-color: #CFF;
+        background-color: #588;
+    }
+    .button.short.selected {
+        color: #578;
+        background-color: #011;
+        border-color: #578;
     }
 
 #signin {
@@ -172,22 +190,7 @@ table input {
     margin-top: 0;
     font-size: 1.2em;
 }
-#instantconsumption {
-    margin: 1em;
-    font-size: 1.5em;
-}
-#message {
-    margin: 1em;
-    font-size: 1.4em;
-}
 
-#graph {
-   width: 45em;
-   height: 25em;
-   text-align: center;
-   margin-left: auto;
-   margin-right: auto;
-}
 #blackpage {
   top: 0;
   left: 0;
@@ -233,4 +236,41 @@ table input {
 }
 #remembercheckboxlabel {
     text-align: left;
+}
+
+/* Instant Consumption Block */
+#instantconsumption {
+    margin: 1em;
+    font-size: 1.5em;
+}
+#message {
+    margin: 1em;
+    font-size: 1.4em;
+}
+#instantinformations {
+    margin-left: auto;
+    margin-right: auto;
+    float: left;
+    width: 40em;
+}
+
+/* Charts */
+#longterminformations {
+    float: left;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: right;
+    width: 40em; 
+}
+#graph {
+   width: 35em;
+   height: 25em;
+   text-align: center;
+   margin-left: auto;
+   margin-right: auto;
+}
+#graphcommands {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }

@@ -82,7 +82,7 @@ function showUserConsumption(){
 		data: login_param , 
 		success: function(json){
 			$('#content').load("/static/html/user_consumption.html",function(){
-				$('#username strong').html(user);
+				// $('#username strong').html(user);
 
 				$.getJSON('/users/' + user + '.json',
 					  login_param,
@@ -95,7 +95,10 @@ function showUserConsumption(){
 				// only for first sensor
 				sensor=json[0]["sensor_hr"];
 				var last_measure_param = { "l": user, "p" : password, "v": 2 };
+
+                update_dates();
 				var last_day_measure_param = { "l": user, "p" : password, "from" : last_midnight.toString(), "v": 2, "to": next_midnight.toString(), interval: 300 };
+
 				var past_day_measure_param = { "l": user, "p" : password, "from" : preceeding_midnight.toString(), "v": 2, "to": last_midnight.toString(), interval: 300 };
                 update_today_graphic(prefix_url, user, password, sensor, last_day_measure_param);
                 update_yesterday_graphic(prefix_url, user, password, sensor, past_day_measure_param);
@@ -133,6 +136,7 @@ function update_instant_consumption(prefix_url, user, password, sensor, last_mea
 				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
 					var len=measure["data"].length;
 					var last=measure["data"][len-1];
+
 					//var cons=last["consumption"]
 					var cons=last;
 					var KWH_COST=0.082;
@@ -300,9 +304,21 @@ function draw_graphic(interval) {
             });
 }
 
-var now=new Date;
-var one_day_ago=new Date((new Date).getTime() - 24*60*60*1000);
-var preceeding_midnight=new Date(one_day_ago.getFullYear(), one_day_ago.getMonth(), one_day_ago.getDate(), 0, 0, 0, 0);
-var yesterday_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-var last_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-var next_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+var now;
+var one_day_ago;
+var preceeding_midnight;
+var yesterday_midnight;
+var last_midnight;
+var next_midnight;
+
+function update_dates() {
+    now=new Date;
+    one_day_ago=new Date((new Date).getTime() - 24*60*60*1000);
+    preceeding_midnight=new Date(one_day_ago.getFullYear(), one_day_ago.getMonth(), one_day_ago.getDate(), 0, 0, 0, 0);
+    yesterday_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    last_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    next_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+}
+
+update_dates();
+

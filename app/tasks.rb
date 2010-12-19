@@ -313,8 +313,8 @@ namespace "db" do
         DataMapper.finalize
 
 	now=Time.now
-	# One measure every 5 minutes
-	step=5
+	# One measure every 1 minutes
+	step=1
 	(-2000..2000).each do |i|
 		# Get current date
 		puts %{#{i} - #{(now + i * 60 * step).to_s}}
@@ -329,7 +329,7 @@ namespace "db" do
 			measure = Measure.new(:date                => current_date,
 					      :consumption         => consumption,
 					      :sensor              => sensor)
-            puts consumption
+            # puts consumption
 			measure.save
 		end
 	end
