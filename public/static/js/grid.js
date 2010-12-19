@@ -270,6 +270,9 @@ function draw_graphic(interval) {
     var from=last_midnight;
     var to=next_midnight;
 
+    var maximum = maxToday>maxYesterday ? maxToday : maxYesterday;
+    maximum=Math.ceil(maximum/1000) * 1000;
+
     $.plot($('#graph'), [ 
             { color: "#CFF", data: todayData, lines: {show: true, fill: true}, label: "Today" },
             { color: "#555", data: yesterdayData, lines: {show: true, fill: false}, label: "Yesterday" }
@@ -280,7 +283,7 @@ function draw_graphic(interval) {
 	                min: from.getTime()+interval*1000,
 	                max: to.getTime()
 	            },
-                yaxis: { min: 0, max: 6000}, 
+                yaxis: { min: 0, max: maximum}, 
                 grid: {
                     color: '#888',
                     backgroundColor: {
