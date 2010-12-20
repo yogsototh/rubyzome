@@ -103,6 +103,7 @@ function showUserConsumption(){
                 update_today_graphic(prefix_url, user, password, sensor, last_day_measure_param);
                 update_yesterday_graphic(prefix_url, user, password, sensor, past_day_measure_param);
                 update_instant_consumption(prefix_url, user, password, sensor, last_measure_param);
+                $('#dayButton').addClass('selected');
 				showMenu();
 				showTitle();
 				return false;	

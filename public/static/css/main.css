@@ -122,12 +122,12 @@ a:active {
     }
     .button.short:hover {
         color: #CFF;
-        border-color: #CFF;
+        border-color: #ACC;
         background-color: #588;
     }
     .button.short.selected {
-        color: #578;
-        background-color: #011;
+        color: #8AA;
+        background-color: #245;
         border-color: #578;
     }
 
