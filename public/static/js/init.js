@@ -41,8 +41,11 @@ function setDefaultInput(elem, defaultValue) {
 }
 
 
-function showLoginView() {
-    $('#content').load("/static/html/login.html",function(){
+// after document loaded
+$(document).ready(function(){ 
+	if ( getUserFromCookie() ) {
+		showUserConsumption();
+    } else {
 	    $("#username").click(clearInput);
 	    $("#username").focus(clearInput);
 	    $("#username").blur( function() {setDefaultInput(this,"User Name");});
@@ -64,15 +67,6 @@ function showLoginView() {
 	    	showUserConsumption();
 	    	return false;
             });
-    });
-}
-
-// after document loaded
-$(document).ready(function(){ 
-	if ( getUserFromCookie() ) {
-		showUserConsumption();
-    } else {
-        showLoginView();
     }
     $('#blackpage').fadeOut();
 });
@@ -109,7 +103,6 @@ function showUserConsumption(){
                 update_today_graphic(prefix_url, user, password, sensor, last_day_measure_param);
                 update_yesterday_graphic(prefix_url, user, password, sensor, past_day_measure_param);
                 update_instant_consumption(prefix_url, user, password, sensor, last_measure_param);
-                $('#dayButton').addClass('selected');
 				showMenu();
 				showTitle();
 				return false;	
