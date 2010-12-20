@@ -4,7 +4,8 @@ var LoginView = function() {
 
 LoginView.prototype.show = function() {
     var self=this;
-    $('#content').load("/static/html/login.html",self.htmlLoaded);
+    $('#content').load("/static/html/login.html",
+                       function() { self.htmlLoaded(self) });
 }
 
 LoginView.prototype.submitForm = function() {
@@ -27,30 +28,31 @@ LoginView.prototype.test = function () {
     alert('Prototype test');
 }
 
+LoginView.prototype.clear = function() {
+    this.value='';
+    this.select();
+    $(this).removeClass('inactive');
+}
+LoginView.prototype.inputDefaultValue = function(o,defaultValue) {
+    console.log('inputDefaultValue: '+defaultValue);
+    if (o.value == '') {
+        o.value=defaultValue; 
+        $(o).addClass('inactive')
+    }
+}
+
+LoginView.prototype.autoclear = function(id,defaultValue) {
+    var self=this;
+    $('#'+id).click( self.clear );
+    $('#'+id).focus( self.clear );
+    // this designe l'input alors que self designe la classe dans la sous fonction
+    $('#'+id).blur( function() { self.inputDefaultValue(this,defaultValue) } );
+}
+
 LoginView.prototype.htmlLoaded = function() {
     var self=this;
-    console.log('htmlLoaded [typeof this='+typeof(this)+']');
-    console.log('[typeof this.test='+typeof(this.test)+']');
-    // self.autoclear('username','User Name');
-    // self.autoclear('password','');
-    /*
-    $("#username").click(
-            function() { 
-                this.value=''; 
-                this.select(); 
-                $(this).removeClass('inactive'); });
-    $("#username").focus(function() { 
-            this.value=''; 
-            this.select(); 
-            $(this).removeClass('inactive'); });
-    $("#username").blur(
-            function(){ if ( this.value == '' ) {
-                this.value='User Name'; $(this).addClass('inactive');}
-            });
-
-    $("#password").click(self.autoclear);
-    $("#password").focus(self.autoclear);
-    */
+    self.autoclear('username','User Name');
+    self.autoclear('password','');
     $('form[name=login_form]').submit(function(){self.submitForm()});
 }
 

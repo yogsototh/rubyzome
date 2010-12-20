@@ -11,16 +11,16 @@ var MainApplication = function () {
         }
         return false;
     }
+
     this.logout = function () {
         $.cookie('user',null);
         $.cookie('password',null);
         $.cookie('remember',null);
         return true; // in order not to disable the link
     }
+
     this.run = function() {
 	    if ( self.getUserFromCookie() ) {
-            console.log('User = ' + self.user);
-            console.log('Pass = ' + self.password);
 	    	self.showUserConsumption();
         } else {
             self.showLoginView();
@@ -29,30 +29,11 @@ var MainApplication = function () {
     }
 
     this.showUserConsumption = function() {
-        /*
-        if ( typeof(self.consumptionView) = "undefined" ) {
-            $.getScript('/static/js/views/consumption.js',function(){
-                    self.consumptionView = new ConsumptionView();
-                    self.consumptionView.show();
-                });
-        } else {
-            self.loginView.show();
-        }
-        */
         self.showView('consumption');
     }
 
     this.showLoginView = function() {
-        if ( typeof(self.loginView) == "undefined" ) {
-            $.getScript('/static/js/views/login.js',function(){
-                    self.loginView = new LoginView();
-                    self.loginView.show();
-                });
-        } else {
-            self.loginView.show();
-        }
-        // self.showView("login");
-
+        self.showView("login");
     }
 
     // Add capitalize function to String objects
@@ -60,6 +41,11 @@ var MainApplication = function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
     }
 
+    // This function enable a nice shortcut to show a view
+    // self.showView('login')
+    // will load the /static/js/view/login.js file dynamically (if needed)
+    // then create an instance of LoginView class named loginView
+    // and finally launch the loginView.show() method
     this.showView = function(viewName) {
         viewObjectName=viewName+"View";
         viewClassName=viewName.capitalize()+"View";
