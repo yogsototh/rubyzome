@@ -118,7 +118,7 @@ a:active {
         border: solid 2px #444;
         margin-left: 1em;
         width: 5em;
-        float: right;
+        display: inline-block;
     }
     .button.short:hover {
         color: #CFF;
@@ -242,32 +242,59 @@ table input {
 #instantconsumption {
     margin: 1em;
     font-size: 1.5em;
+    background-color: #111;
+    border: 1px solid #333;
+    color: #888;
+    margin: 1em;
+    padding: 1em;
 }
 #message {
     margin: 1em;
     font-size: 1.4em;
+    background-color: #111;
+    border: 1px solid #333;
+    color: #888;
+    margin: 1em;
+    padding: 1em;
 }
 #instantinformations {
     margin-left: auto;
     margin-right: auto;
+    width: 30em;
     float: left;
-    width: 40em;
+    border: solid 1px #333;
+}
+#instantconsumptionvalue {
+    font-weight: bold;
+    margin: .5em;
+    padding: .5em;
+    color: #CFF;
 }
 
 /* Charts */
 #longterminformations {
-    float: left;
     margin-left: auto;
     margin-right: auto;
     text-align: right;
-    width: 40em; 
+    width: 35em; 
+    float: right;
+    padding: 1.5em;
+    border: solid 1px #333;
 }
 #graph {
-   width: 35em;
+   width: 33em;
    height: 25em;
    text-align: center;
    margin-left: auto;
    margin-right: auto;
+}
+#graphinfo {
+    text-align: center;
+    background-color: #111;
+    border: 1px solid #333;
+    color: #888;
+    margin: 1em;
+    padding: 1em;
 }
 #graphcommands {
     text-align: center;

@@ -41,8 +41,11 @@ function setDefaultInput(elem, defaultValue) {
 }
 
 
-function showLoginView() {
-    $('#content').load("/static/html/login.html",function(){
+// after document loaded
+$(document).ready(function(){ 
+	if ( getUserFromCookie() ) {
+		showUserConsumption();
+    } else {
 	    $("#username").click(clearInput);
 	    $("#username").focus(clearInput);
 	    $("#username").blur( function() {setDefaultInput(this,"User Name");});
@@ -64,15 +67,6 @@ function showLoginView() {
 	    	showUserConsumption();
 	    	return false;
             });
-    });
-}
-
-// after document loaded
-$(document).ready(function(){ 
-	if ( getUserFromCookie() ) {
-		showUserConsumption();
-    } else {
-        showLoginView();
     }
     $('#blackpage').fadeOut();
 });
