@@ -1,5 +1,4 @@
 var LoginView = function() {
-    this.self=this;
 }
 
 LoginView.prototype.show = function() {
@@ -20,7 +19,15 @@ LoginView.prototype.submitForm = function() {
         $.cookie('password',null);
         $.cookie('remember',true,null);
     }
-    mainApplication.showUserConsumption();
+
+    $ajax({url: '/users/'+mainApplication.user+'.json',
+        login_param: {l: mainApplication.user, p: mainApplication.password},
+        success: function() { mainApplication.showUserConsumption(); },
+        error: function(){
+	    		$("#info").prepend('<div id="error">Authentication failed</div>');
+	    		setTimeout(function(){$('#error').remove()},2000);
+            });
+
     return false;
 }
 
