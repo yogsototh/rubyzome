@@ -247,6 +247,9 @@ table input {
     color: #888;
     margin: 1em;
     padding: 1em;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
 }
 #message {
     margin: 1em;
@@ -256,6 +259,9 @@ table input {
     color: #888;
     margin: 1em;
     padding: 1em;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
 }
 #instantinformations {
     margin-left: auto;
@@ -266,9 +272,13 @@ table input {
 }
 #instantconsumptionvalue {
     font-weight: bold;
-    margin: .5em;
+    margin-top: 1em;
     padding: .5em;
-    color: #CFF;
+    color: #111;
+    background-color: #CFF;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
 }
 
 /* Charts */
@@ -280,6 +290,9 @@ table input {
     float: right;
     padding: 1.5em;
     border: solid 1px #333;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
 }
 #graph {
    width: 33em;
