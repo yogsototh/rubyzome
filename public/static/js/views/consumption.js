@@ -2,6 +2,13 @@ var ConsumptionView = function() {
     this.user = mainApplication.user;
     this.password = mainApplication.password;
     this.login_params = { l: this.user, p: this.password, v:2 };
+    this.todayData=[];
+    this.yesterdayData=[];
+    this.now = new Date();
+    this.midnight = null;
+    this.tonight_midnight = null;
+    this.maxToday=3000;
+    this.maxYesterday=3000;
 }
 
 ConsumptionView.prototype.show = function(){
@@ -57,8 +64,10 @@ ConsumptionView.prototype.getInstantConsumptionDatas = function() {
                 )
 }
 
-ConsumptionView.prototype.showLineChartSubview() = function() {
-    $.getJSON(  '/users/'+self.user+'/sensors.json', self.login_params,
+ConsumptionView.prototype.showLineChartSubview = function() {
+    var self=this;
+    $.getJSON(  '/users/'+self.user+'/sensors.json', 
+                self.login_params,
                 function(json) {
 				    self.sensor=json[0]["sensor_hr"];
                     self.getChartDatas();
@@ -66,6 +75,76 @@ ConsumptionView.prototype.showLineChartSubview() = function() {
 }
 
 ConsumptionView.prototype.getChartDatas = function() {
+    var self=this;
+
+    self.now=new Date();
+    self.midnight=self.now.midnight();
+    tomorrow=self.now.n_days_ago(-1);
+    self.tonight_midnight=tomorrow.midnight();
+
+    var params={from:       self.midnight.toString(),
+                to:         self.tonight_midnight.toString(), 
+                interval:   300};
+    for ( key in self.login_params) { 
+        params[key]=self.login_params[key]; 
+    }
+
+    $.getJSON('/users/'+self.user+'/sensors/'+self.sensor+'/measures.json', 
+            params,
+            function(measure) { self.initTodayData( measure ); });
+}
+
+ConsumptionView.prototype.initTodayData = function (data) {
+    var self=this;
+
+    self.todayData=[];
+    var interval=data["interval"];
+
+    var from=self.midnight.getTime();
+    $.each(data["data"],function(index, value) {
+	    if (index) {
+            self.todayData[index]=
+                [ from + (index*interval*1000), value==-1?null:value ];
+	    }
+    });
+    self.maxToday=data["max"];
+    self.draw_graphic();
+}
+
+ConsumptionView.prototype.draw_graphic = function() {
+    var self=this;
+    // draw something inside $('#graph')
+    var from=self.last_midnight.getTime();
+    var to=self.next_midnight.getTime();
+
+    var maximum = self.maxToday>self.maxYesterday ? self.maxToday : self.maxYesterday;
+    maximum=Math.ceil(maximum/1000) * 1000;
+
+    $.plot($('#graph'), [ 
+            { color: "#CFF", data: self.todayData, lines: {show: true, fill: true}, label: "Today" },
+            { color: "#555", data: self.yesterdayData, lines: {show: true, fill: false}, label: "Yesterday" }
+                            ], 
+            {  
+                xaxis: {
+	                mode: "time",
+	                min: from+self.interval*1000,
+	                max: to
+	            },
+                yaxis: { min: 0, max: maximum}, 
+                grid: {
+                    color: '#888',
+                    backgroundColor: {
+                        colors: ['#011111','#010101']} 
+                },
+                legend: {
+                    labelBoxBorderColor: '#000',
+                    position: 'nw',
+                    margin: 0,
+                    backgroundColor: '#222',
+                    backgroundOpacity: 0.9 
+                }
+
+            });
 }
 
 /* AFTER THIS LINE THE CODE IS GARBLED FOR NOW */
@@ -77,7 +156,6 @@ var last_day_measure_param = { "l": user, "p" : password, "from" : last_midnight
 				var past_day_measure_param = { "l": user, "p" : password, "from" : preceeding_midnight.toString(), "v": 2, "to": last_midnight.toString(), interval: 300 };
                 update_today_graphic(prefix_url, user, password, sensor, last_day_measure_param);
                 update_yesterday_graphic(prefix_url, user, password, sensor, past_day_measure_param);
-                update_instant_consumption(prefix_url, user, password, sensor, last_measure_param);
                 $('#dayButton').addClass('selected');
 				showMenu();
 				showTitle();
@@ -181,30 +259,6 @@ function getUrlVars()
     return vars;
 }
 
-Date.prototype.setISO8601 = function (string) {
-    var regexp = "([0-9]{4})(-([0-9]{2})(-([0-9]{2})" +
-    "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\.([0-9]+))?)?" +
-    "(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?";
-    var d = string.match(new RegExp(regexp));
-
-    var offset = 0;
-    var date = new Date(d[1], 0, 1);
-
-    if (d[3]) { date.setMonth(d[3] - 1); }
-    if (d[5]) { date.setDate(d[5]); }
-    if (d[7]) { date.setHours(d[7]); }
-    if (d[8]) { date.setMinutes(d[8]); }
-    if (d[10]) { date.setSeconds(d[10]); }
-    if (d[12]) { date.setMilliseconds(Number("0." + d[12]) * 1000); }
-    if (d[14]) {
-	offset = (Number(d[16]) * 60) + Number(d[17]);
-	offset *= ((d[15] == '-') ? 1 : -1);
-    }
-
-    offset -= date.getTimezoneOffset();
-    time = (Number(date) + (offset * 60 * 1000));
-    this.setTime(Number(time));
-}
 
 var todayData=[];
 var yesterdayData=[];
@@ -225,52 +279,4 @@ function initYesterdayData(data) {
     draw_graphic(interval);
 }
 
-function initTodayData(data) {
-    var interval=data["interval"];
-    var from=last_midnight;
-    var to=next_midnight;
-    todayData=[];
-    $.each(data["data"],function(index, value) {
-	    if (index) {
-            todayData[index]=[ from.getTime() + (index*interval*1000), value==-1?null:value ];
-	    }
-    });
-    maxToday=data["max"];
-    draw_graphic(interval);
-}
-
-function draw_graphic(interval) {
-    // draw something inside $('#graph')
-    var from=last_midnight;
-    var to=next_midnight;
-
-    var maximum = maxToday>maxYesterday ? maxToday : maxYesterday;
-    maximum=Math.ceil(maximum/1000) * 1000;
-
-    $.plot($('#graph'), [ 
-            { color: "#CFF", data: todayData, lines: {show: true, fill: true}, label: "Today" },
-            { color: "#555", data: yesterdayData, lines: {show: true, fill: false}, label: "Yesterday" }
-                            ], 
-            {  
-                xaxis: {
-	                mode: "time",
-	                min: from.getTime()+interval*1000,
-	                max: to.getTime()
-	            },
-                yaxis: { min: 0, max: maximum}, 
-                grid: {
-                    color: '#888',
-                    backgroundColor: {
-                        colors: ['#011111','#010101']} 
-                },
-                legend: {
-                    labelBoxBorderColor: '#000',
-                    position: 'nw',
-                    margin: 0,
-                    backgroundColor: '#222',
-                    backgroundOpacity: 0.9 
-                }
-
-            });
-}
 */

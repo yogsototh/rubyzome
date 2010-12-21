@@ -23,7 +23,6 @@ Date.prototype.setISO8601 = function (string) {
     this.setTime(Number(time));
 }
 
-Date.prototype.now = function() { return new Date; }
 Date.prototype.n_hours_ago = function(n) {
     return new Date((new Date).getTime() - n*60*60*1000);
 }
@@ -32,7 +31,6 @@ Date.prototype.n_days_ago = function(n) { return this.n_hours_ago(24*n); }
 Date.prototype.one_day_ago = function() { return this.n_days_ago(1); }
 
 Date.prototype.midnight = function() {
-    new Date(this.getFullYear(), 
-             this.getMonth(), 
-             this.getDate(), 0, 0, 0, 0); }
+    return new Date(this.getFullYear(), 
+            this.getMonth(), this.getDate(), 0, 0, 0, 0); 
 }
