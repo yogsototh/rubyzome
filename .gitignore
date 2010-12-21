@@ -1,3 +1,4 @@
 *.swp
 datas.db
 .DS_Store
+.sass-cache

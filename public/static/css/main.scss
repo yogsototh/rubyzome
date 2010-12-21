@@ -1,0 +1,341 @@
+/* Declarations */
+
+$green: #CFC;
+$green-shadow: #0A0;
+@mixin green-highlight { color: $green; text-shadow: 0 0 8px $green-shadow; }
+
+$blue: #CFF;
+$blue-shadow: #00F;
+@mixin blue-highlight { color: $blue; text-shadow: 0 0 8px $blue-shadow; }
+
+$yellow: #FFC;
+$yellow-shadow: #FD0;
+@mixin yellow-highlight { color: $yellow; text-shadow: 0 0 8px $yellow-shadow; }
+
+$red: #F88;
+$red-shadow: #D00;
+@mixin red-highlight { color: $red; text-shadow: 0 0 8px $red-shadow; }
+
+$black: #010101;
+$dark-grey: #333;
+$grey: #666;
+$clear-grey: #888;
+$white: #DDD;
+
+$highlight: $blue;
+$shadow-highlight: $blue-shadow;
+
+$mainBackgroundColor: $black;
+$mainTextColor: $white;
+$mainBorderColor: $grey;
+
+$secondBackgroundColor: $dark-grey;
+$secondTextColor: $clear-grey;
+
+.green { color: $green; }
+.blue { color: $blue; }
+.red { color: $red; }
+.yellow { color: $yellow; }
+
+@mixin default {
+    line-height: 1.25em;
+    font-size: 1em;
+    background-color: $mainBackgroundColor;
+    color: $mainTextColor;
+}
+
+// reset
+html, body { 
+    font-family: "Helvetica", sans-serif;
+    font-size: .9em;
+    margin: 0; 
+    padding: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+a, a:link, a:visited { color: $blue; }
+a:hover, a:active { @include red-highlight;}
+
+// style
+body, #info {
+    background-color: $secondBackgroundColor;
+    color: #888;
+}
+
+#content {
+    @include default;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding: 2em;
+    min-height: 500px;
+    border-top: 1px solid $mainBorderColor;
+    border-bottom: 1px solid $mainBorderColor;
+    b, strong, em {
+        color: $highlight;
+    }
+}
+#entete {
+    margin: 1.5em;
+    padding: 1em;
+    text-align: center;
+    text-shadow: 0 0 9px #111;
+}
+#logo {
+    float: right;
+}
+#titles {
+    float: left;
+    margin-left: 2em;
+    color: #CFF;
+    text-shadow: 0 0 8px #00F;
+}
+.flush { clear: both; }
+
+#bottom { font-size: .8em; text-align: center; padding-top: 3em; padding-bottom: 3em; }
+
+#menu { font-size: 1.5em; }
+
+.editable { border: none; background: #888fff; }
+
+#promotion {
+    font-size: .8em;
+}
+
+
+/* input */
+#content input {
+    color: #333;
+    margin: .5em;
+    font-size: 2.5em;
+    background-color: #FFF;
+    -webkit-border-radius: .2em;
+}
+
+#content input.inactive {
+    color: #dddddd;
+}
+#content table input {
+    font-size: 1em;
+    color: #888
+}
+.button {
+    background-color: #111;
+    text-align: center;
+    margin: .1em;
+    color: #888;
+    padding: .5em;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    }
+    .button:hover {
+        cursor: pointer;
+    }
+    .button.short {
+        border: solid 2px #444;
+        margin-left: 1em;
+        width: 5em;
+        display: inline-block;
+    }
+    .button.short:hover {
+        color: #CFF;
+        border-color: #ACC;
+        background-color: #588;
+    }
+    .button.short.selected {
+        color: #8AA;
+        background-color: #245;
+        border-color: #578;
+    }
+
+#signin {
+    width: 10em;
+}
+
+/* tables */
+table {
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left; }
+table tr th {
+    margin: 7px;
+    color: #888;
+    background-color: #222;
+    text-shadow: 0 1px #000;
+}
+
+.legend table tr td {
+    border: none;
+    padding: 0 .3em;
+}
+
+#info {
+    font-size: 2em;
+    top: 30%;
+    left: 30%;
+    width: 40%;
+    position: fixed;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    opacity: .8;
+}
+#info div {
+    padding: .5em;
+    margin: .5em; }
+
+table tr th {
+    font-weight: bold;
+    text-align: center;
+    padding: 1.5em; }
+table tr td {
+    padding: .8em;
+    border: solid 1px #333; }
+table tr.r0 td {
+    background-color: #111; }
+table tr.r1 td {
+    background-color: #222; }
+table input {
+    background-color: transparent;
+    color: #AAA;
+    border: none;
+    margin: 0;
+}
+
+#username {
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+#blackpage {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  position: fixed;
+  text-align: center;
+  color: #666666;
+  padding-top: 10em;
+  background-color: #eeeeee;
+  z-index: 9000;
+  padding-top: 20em;
+  cursor: wait; }
+  #blackpage img { background: none; border: none }
+  #blackpage a { cursor: pointer }
+
+@mixin rounded {
+    $radius: 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.button {
+    background-color: #333;
+    color: #888;
+    border: 2px #555;
+    cursor: pointer;
+    @include rounded;
+}
+
+#presentationimage {
+    border: 1px solid #888;
+    background-color: #111;
+    padding: 8px
+}
+
+#titles {
+   border: 1px solid #888;
+   background-color: #111;
+   padding: 8px;
+}
+
+#login_form {
+    width: 28em;
+    text-align: center;
+    margin: auto;
+}
+
+#remembercheckboxlabel {
+    text-align: left;
+}
+
+@mixin rounded-block {
+    @include rounded;
+    border: 1px solid #333;
+}
+
+/* Instant Consumption Block */
+#instantconsumption, #message, 
+#instantinformations, #instantconsumptionvalue,
+#longterminformations {
+    @include rounded-block; }
+#instantconsumption {
+    margin: 1em;
+    font-size: 1.5em;
+    background-color: #111;
+    color: #888;
+    margin: 1em;
+    padding: 1em;
+}
+#message {
+    margin: 1em;
+    font-size: 1.4em;
+    background-color: #111;
+    color: #888;
+    margin: 1em;
+    padding: 1em;
+}
+#instantinformations {
+    margin-left: auto;
+    margin-right: auto;
+    width: 30em;
+    float: left;
+}
+#instantconsumptionvalue {
+    font-weight: bold;
+    margin-top: 1em;
+    padding: .5em;
+    color: #111;
+    background-color: #CFF; }
+
+/* Charts */
+#longterminformations {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: right;
+    width: 35em; 
+    float: right;
+    padding: 1.5em;
+}
+#graph {
+   width: 33em;
+   height: 25em;
+   text-align: center;
+   margin-left: auto;
+   margin-right: auto;
+}
+#graphinfo {
+    text-align: center;
+    background-color: #111;
+    border: 1px solid #333;
+    color: #888;
+    margin: 1em;
+    padding: 1em;
+}
+#graphcommands {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* Login */
+#login_form { 
+    input[type=text], 
+    input[type=password] { 
+      width: 100%; }}
