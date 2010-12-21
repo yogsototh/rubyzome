@@ -2,22 +2,14 @@ var ConsumptionView = function() {
     this.user = mainApplication.user;
     this.password = mainApplication.password;
     this.login_params = { l: this.user, p: this.password };
-
-    // dates
-    this.now;
-    this.one_day_ago;
-    this.preceeding_midnight;
-    this.yesterday_midnight;
-    this.last_midnight;
-    this.next_midnight;
-
-    this.update_dates();
 }
 
 ConsumptionView.prototype.show = function(){
     var self=this;
-    $('#content').load("/static/html/user_consumption.html",
-                        function(){ self.htmlLoaded(self);});
+    $.getScript('/static/js/date.js', function(){
+        $('#content').load("/static/html/user_consumption.html",
+                            function(){ self.htmlLoaded(self);});
+    })
 }
 
 ConsumptionView.prototype.htmlLoaded = function(self) {
@@ -28,10 +20,10 @@ ConsumptionView.prototype.htmlLoaded = function(self) {
 ConsumptionView.prototype.showInstantConsumptionSubview = function() {
     var self = this;
     $.getJSON(  '/users/'+self.user+'.json', 
-                self.logins_params,
+                self.login_params,
                 function(json){ 
                     message = json["status"];
-                    $('#content #message strong').html(stat);
+                    $('#content #message strong').html(message);
                 });
     $.getJSON(  '/users/'+self.user+'/sensors.json', self.login_params,
                 function(json) {
@@ -55,7 +47,7 @@ ConsumptionView.prototype.getChartDatas = function() {
 }
 
 /* AFTER THIS LINE THE CODE IS GARBLED FOR NOW */
-    
+   /* 
 var last_measure_param = { "l": user, "p" : password, "v": 2 };
 update_dates();
 var last_day_measure_param = { "l": user, "p" : password, "from" : last_midnight.toString(), "v": 2, "to": next_midnight.toString(), interval: 300 };
@@ -259,38 +251,4 @@ function draw_graphic(interval) {
 
             });
 }
-
-ConsumptionView.prototype.now = function() { return new Date; }
-
-ConsumptionView.prototype.hours_ago = function(n) {
-    return new Date((new Date).getTime() - n*60*60*1000);
-}
-
-ConsumptionView.prototype.one_hours_ago = function() {
-    return this.hours_ago(1);
-}
-
-ConsumptionView.prototype.one_day_ago = function() {
-    return this.hours_ago(24);
-}
-
-ConsumptionView.prototype.preceeding_midnight = function() {
-    var yesterday=this.one_day_ago();
-    new Date(yesterday.getFullYear(), 
-            yesterday.getMonth(), 
-            yesterday.getDate(), 0, 0, 0, 0);
-}
-
-ConsumptionView.prototype.last_midnight = function() {
-    var today=this.now();
-    new Date(today.getFullYear(), 
-             today.getMonth(), 
-             today.getDate(), 0, 0, 0, 0);
-}
-
-ConsumptionView.prototype.next_midnight = function() {
-    var today=this.now();
-    new Date(today.getFullYear(), 
-             today.getMonth(), 
-             today.getDate(), 23, 59, 59, 999);
-}
+*/
