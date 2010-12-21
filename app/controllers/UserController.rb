@@ -32,7 +32,24 @@ class UserController < Rubyzome::RestController
         user = get_user
 
         begin
+	    current_status = user.status
             clean_hash([:nickname,:status]).each { |key,value|
+		# Check if status has changed
+		if(key.eql?("status") && !value.eql?(current_status)) then
+			# Update Twitter and Facebook account entries for current user
+			TwitterAccount.all({:user => user}).each do |account|
+				p account
+				account.publish = true
+				account.save
+			end
+			FacebookAccount.all({:user => user}).each do |account|
+				p account
+				account.publish = true
+				account.save
+			end
+
+			# Note: cron job will update the status asynchronously
+		end
                 user.update( {key => value} )
             }
             user.save
