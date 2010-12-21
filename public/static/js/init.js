@@ -3,6 +3,9 @@ var MainApplication = function () {
     this.user="";
     this.password="";
 
+    this.setUser = function(user) { this.user = user; }
+    this.setPassword = function(password) { this.password = password; }
+
     this.getUserFromCookie = function() {
         self.user = $.cookie('user');
         if (self.user) {
@@ -29,13 +32,12 @@ var MainApplication = function () {
     }
 
     this.showUserConsumption = function() {
-        self.showView('consumption');
+        this.showView('consumption');
     }
 
     this.showLoginView = function() {
-        self.showView("login");
+        this.showView("login");
     }
-
     // Add capitalize function to String objects
     String.prototype.capitalize = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
@@ -47,6 +49,7 @@ var MainApplication = function () {
     // then create an instance of LoginView class named loginView
     // and finally launch the loginView.show() method
     this.showView = function(viewName) {
+        var self=this;
         viewObjectName=viewName+"View";
         viewClassName=viewName.capitalize()+"View";
         viewFileName=viewName+".js"
@@ -57,7 +60,7 @@ var MainApplication = function () {
                     "self."+viewObjectName+".show();" +
                 "});" +
         "} else {" +
-            "self."+viewName+"View.show();" +
+            "self."+viewObjectName+".show();" +
         "}");
     }
 }

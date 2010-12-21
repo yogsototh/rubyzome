@@ -1,15 +1,13 @@
-var LoginView = function() {
-}
+var LoginView = function() {}
 
 LoginView.prototype.show = function() {
     var self=this;
-    $('#content').load("/static/html/login.html",
-                       function() { self.htmlLoaded(self) });
+    $('#content').load( "/static/html/login.html",
+                    function() { self.htmlLoaded(self) });
 }
 
-LoginView.prototype.submitForm = function() {
-    mainApplication.setUser( $('[name=l]').val());
-    mainApplication.setPassword( $('[name=p]').val());
+LoginView.prototype.handleCookie = function() {
+    // save cookie
     if ($('#remember').attr('checked')) {
         $.cookie('user',mainApplication.user,{expires: 14});
         $.cookie('password',mainApplication.password,{expires: 14});
@@ -19,22 +17,38 @@ LoginView.prototype.submitForm = function() {
         $.cookie('password',null);
         $.cookie('remember',true,null);
     }
+}
 
-    $ajax({url: '/users/'+mainApplication.user+'.json',
-        login_param: {l: mainApplication.user, p: mainApplication.password},
-        success: function() { mainApplication.showUserConsumption(); },
-        error: function(){
-	    		$("#info").prepend('<div id="error">Authentication failed</div>');
-	    		setTimeout(function(){$('#error').remove()},2000);
-            });
+// function called when form is submited
+LoginView.prototype.submitForm = function() {
+    var self=this;
+    mainApplication.setUser( $('[name=l]').val());
+    mainApplication.setPassword( $('[name=p]').val());
+
+    self.handleCookie();
+
+    $.ajax( {
+            url: '/users/'+mainApplication.user+'.json',
+            data: { "l": mainApplication.user, "p": mainApplication.password },
+            success: function() { 
+                mainApplication.showUserConsumption(); 
+            },
+            error: function(){
+                $("#info").prepend('<div id="error">Authentication failed</div>');
+                setTimeout(function(){$('#error').remove()},2000); 
+            }});
 
     return false;
 }
 
-LoginView.prototype.test = function () {
-    alert('Prototype test');
+LoginView.prototype.htmlLoaded = function() {
+    var self=this;
+    self.autoclear('username','User Name');
+    self.autoclear('password','');
+    $('form[name=login_form]').submit( function() { return self.submitForm() });
 }
 
+//--  start: autoclear inputs  --
 LoginView.prototype.clear = function() {
     this.value='';
     this.select();
@@ -48,6 +62,7 @@ LoginView.prototype.inputDefaultValue = function(o,defaultValue) {
     }
 }
 
+// usage with id
 LoginView.prototype.autoclear = function(id,defaultValue) {
     var self=this;
     $('#'+id).click( self.clear );
@@ -55,12 +70,4 @@ LoginView.prototype.autoclear = function(id,defaultValue) {
     // this designe l'input alors que self designe la classe dans la sous fonction
     $('#'+id).blur( function() { self.inputDefaultValue(this,defaultValue) } );
 }
-
-LoginView.prototype.htmlLoaded = function() {
-    var self=this;
-    self.autoclear('username','User Name');
-    self.autoclear('password','');
-    $('form[name=login_form]').submit(function(){self.submitForm()});
-}
-
-
+//-- end: autoclear inputs  --
