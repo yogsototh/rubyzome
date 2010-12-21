@@ -2,13 +2,11 @@ var ConsumptionView = function() {
     this.user = mainApplication.user;
     this.password = mainApplication.password;
     this.login_params = { l: this.user, p: this.password, v:2 };
-    this.todayData=[];
-    this.yesterdayData=[];
-    this.now = new Date();
-    this.midnight = null;
-    this.tonight_midnight = null;
-    this.maxToday=3000;
-    this.maxYesterday=3000;
+
+    this.chartDatas=[[]];
+    this.chartDatasFrom=[null];
+    this.chartDatasTo=[null];
+    this.chartDataMax=3000;
 }
 
 ConsumptionView.prototype.show = function(){
@@ -77,37 +75,43 @@ ConsumptionView.prototype.showLineChartSubview = function() {
 ConsumptionView.prototype.getChartDatas = function() {
     var self=this;
 
-    self.now=new Date();
-    self.midnight=self.now.midnight();
-    tomorrow=self.now.n_days_ago(-1);
-    self.tonight_midnight=tomorrow.midnight();
+    var now=new Date();
 
-    var params={from:       self.midnight.toString(),
-                to:         self.tonight_midnight.toString(), 
-                interval:   300};
+    // set the ( from -> to ) parameters for charts 0
+    var chartIndex=0; 
+    self.mainFrom[chartIndex]=now.n_hours_ago(1);
+    self.mainTo[chartIndex]=now;
+    self.getChartDataForIndex(chartIndex);
+}
+
+ConsumptionView.prototype.getChartDataForIndex = function (index) {
+    var self=this;
+    var params={from:       self.mainFrom[index].toString(),
+                to:         self.mainTo[index].toString(),
+                interval:   5};
     for ( key in self.login_params) { 
         params[key]=self.login_params[key]; 
     }
-
     $.getJSON('/users/'+self.user+'/sensors/'+self.sensor+'/measures.json', 
             params,
-            function(measure) { self.initTodayData( measure ); });
+            function(measure) { 
+                self.initData( self.chartDatasFrom.getTime(), measure, index ); });
 }
 
-ConsumptionView.prototype.initTodayData = function (data) {
+ConsumptionView.prototype.initData = function (from, data, chartIndex) {
     var self=this;
 
-    self.todayData=[];
+    tab=self.chartDatas[chartIndex];
     var interval=data["interval"];
 
-    var from=self.midnight.getTime();
     $.each(data["data"],function(index, value) {
 	    if (index) {
-            self.todayData[index]=
-                [ from + (index*interval*1000), value==-1?null:value ];
+            tab[index]= [ from + (index*interval*1000), value==-1?null:value ];
 	    }
     });
-    self.maxToday=data["max"];
+    if ( data["max"] > self.dataMax ) {
+        self.chartDataMax=data["max"];
+    }
     self.draw_graphic();
 }
 
@@ -117,12 +121,12 @@ ConsumptionView.prototype.draw_graphic = function() {
     var from=self.last_midnight.getTime();
     var to=self.next_midnight.getTime();
 
-    var maximum = self.maxToday>self.maxYesterday ? self.maxToday : self.maxYesterday;
+    var maximum = self.mainDataMax>self.secondaryDataMax ? self.mainDataMax : self.secondaryDataMax;
     maximum=Math.ceil(maximum/1000) * 1000;
 
     $.plot($('#graph'), [ 
-            { color: "#CFF", data: self.todayData, lines: {show: true, fill: true}, label: "Today" },
-            { color: "#555", data: self.yesterdayData, lines: {show: true, fill: false}, label: "Yesterday" }
+            { color: "#CFF", data: self.mainData, lines: {show: true, fill: true}, label: "Today" },
+            { color: "#555", data: self.secondaryData, lines: {show: true, fill: false}, label: "Yesterday" }
                             ], 
             {  
                 xaxis: {
@@ -246,36 +250,17 @@ function update_resource(type, nickname) {
 	});
 }
 
-function getUrlVars()
-{
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-	hash = hashes[i].split('=');
-	vars.push(hash[0]);
-	vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
-
-
-var todayData=[];
-var yesterdayData=[];
-var maxToday=3000;
-var maxYesterday=3000;
-
 function initYesterdayData(data) {
     var interval=data["interval"];
     var from=last_midnight;
     var to=next_midnight;
-    yesterdayData=[];
+    secondaryData=[];
     $.each(data["data"],function(index, value) {
 	    if (index) {
-            yesterdayData.push( [ from.getTime() + (index*interval*1000), value==-1?null:value ] );
+            secondaryData.push( [ from.getTime() + (index*interval*1000), value==-1?null:value ] );
 	    }
     });
-    maxYesterday=data["max"];
+    secondaryDataMax=data["max"];
     draw_graphic(interval);
 }
 
