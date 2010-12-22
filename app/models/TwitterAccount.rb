@@ -8,6 +8,7 @@ class TwitterAccount
         property :consumer_secret,	String
         property :access_token,		String
         property :access_secret,	String
+	property :publish,		Boolean, :default => false
 
         # Associations
         belongs_to :user

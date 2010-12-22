@@ -166,6 +166,15 @@ namespace "db" do
             puts measure.attributes.values.join(' ; ')
         end
         puts %{---}
+        puts %{Twitter account}
+        TwitterAccount.all().each do |a|
+            puts a.attributes.values.join(' ; ')
+        end
+        puts %{---}
+        puts %{Facebook account}
+        FacebookAccount.all().each do |a|
+            puts a.attributes.values.join(' ; ')
+        end
     end
 
     task :populate do
@@ -191,7 +200,7 @@ namespace "db" do
         }
 
         # User creation
-        nb_users=2
+        nb_users=3
         (1..nb_users).each do |user_nb|
             # Get dummy 
             # - firstname
@@ -205,6 +214,7 @@ namespace "db" do
 
             firstname = Faker::Name.first_name
             lastname  = Faker::Name.last_name
+	    password = "guest"
 
             # Add 2 easy to remember users for testing purposes
             if user_nb == 1 then
@@ -213,6 +223,10 @@ namespace "db" do
             elsif user_nb == 2 then
                 firstname = "Jack"
                 lastname = "Blue"
+            elsif user_nb == 3 then
+                firstname = "luc"
+                lastname = ""
+		password = "luc123"
             end
 
             puts %{#{firstname} #{lastname}}
@@ -225,7 +239,7 @@ namespace "db" do
             account_hash = {:firstname => "#{firstname}",
                 :lastname  => "#{lastname}",
                 :email     => "#{firstname.downcase}.#{lastname.downcase}@yahoo.com",
-            :password  => "guest",
+                :password  => "#{password}",
                 :country   => "US",
                 :zip       => Faker::Address.zip_code,
                 :city      => Faker::Address.city,
@@ -355,7 +369,7 @@ namespace "db" do
 
 end
 
-namespace "cron" do
+namespace "nightly-cron" do
     task :twitter do
         require 'rubygems'
         require 'dm-core'
@@ -369,12 +383,43 @@ namespace "cron" do
         DataMapper.finalize
 
 	# Get all entry in Twitter table
-	TwitterAccount.all.each do |twitterAccount|
+	TwitterAccount.all.each do |account|
+		# Get user nickname / status
+		nickname = account.user.nickname
+		status = account.user.status
+
+		# Get sensor
+		sensor = Sensor.first({:sensor_hr => "#{nickname}_1"})
+
+		# Get begining of day and beginning of yesterday
+		now = DateTime.now
+		secs_to_substract = now.hour * 3600 + now.min * 60 + now.sec
+		beginning_of_day = DateTime.now - (secs_to_substract/86400.0)
+		beginning_of_yesterday = beginning_of_day - 1
+		beginning_of_yesterday_s = beginning_of_yesterday.strftime("%d/%m/%y")
+
+		# Get all measures from previous day
+		measures = %w{}
+        	Measure.all({:sensor => sensor, :date.gt => beginning_of_yesterday, :date.lt => beginning_of_day}).each do |measure|
+			measures << measure.consumption
+        	end
+
+		# Get average, min, max of measures
+		sum, min, max = 0, 999999, 0
+		measures.each do |m|
+			sum = sum + m
+		        min = m if(m<min)
+			max = m if(m>max)	
+		end
+
+		# Message
+		message = %{Date: #{beginning_of_yesterday_s} - Moyenne: #{sum/measures.size}, Min: #{min}, Max: #{max}. # #{status} #}
+
 		# Get keys
-		consumer_token=twitterAccount.consumer_token
-		consumer_secret=twitterAccount.consumer_secret
-		access_token=twitterAccount.access_token
-		access_secret=twitterAccount.access_secret
+		consumer_token=account.consumer_token
+		consumer_secret=account.consumer_secret
+		access_token=account.access_token
+		access_secret=account.access_secret
 
 		# OAuth connect
 		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
@@ -382,7 +427,7 @@ namespace "cron" do
 		client = Twitter::Base.new(oauth)
 
 		# Update timeline
-		client.update("Test using twitter gem")
+		client.update(message)
 	end
     end
     task :facebook do
@@ -398,15 +443,116 @@ namespace "cron" do
         DataMapper.finalize
 
 	# Get all entry in Facebook table
-	FacebookAccount.all.each do |facebookAccount|
+	FacebookAccount.all.each do |account|
+		# Get user nickname
+		nickname = account.user.nickname
+		status = account.user.status
+
+		# Get sensor
+		sensor = Sensor.first({:sensor_hr => "#{nickname}_1"})
+
+		# Get begining of day and beginning of yesterday
+		now = DateTime.now
+		secs_to_substract = now.hour * 3600 + now.min * 60 + now.sec
+		beginning_of_day = DateTime.now - (secs_to_substract/86400.0)
+		beginning_of_yesterday = beginning_of_day - 1
+		beginning_of_yesterday_s = beginning_of_yesterday.strftime("%d/%m/%y")
+
+		# Get all measures from previous day
+		measures = %w{}
+        	Measure.all({:sensor => sensor, :date.gt => beginning_of_yesterday, :date.lt => beginning_of_day}).each do |measure|
+			measures << measure.consumption
+        	end
+
+		# Get average, min, max of measures
+		sum, min, max = 0, 999999, 0
+		measures.each do |m|
+			sum = sum + m
+		        min = m if(m<min)
+			max = m if(m>max)	
+		end
+
+		# Message
+		message = %{Date: #{beginning_of_yesterday_s} - Moyenne: #{sum/measures.size}, Min: #{min}, Max: #{max}, # #{status} #}
+
 		# Get key
-		access_token=facebookAccount.access_token
+		access_token=account.access_token
 
 		# Connect
 		graph = Koala::Facebook::GraphAPI.new(access_token)
 
 		# Update wall
-		graph.put_object("me", "feed", :message => "Test using koala")
+		graph.put_object("me", "feed", :message => message)
+	end
+    end
+end
+
+namespace "realtime-cron" do
+    task :twitter do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	require 'twitter'
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	# Get all entry in Twitter table which need to be published
+	TwitterAccount.all({:publish => true}).each do |account|
+		# Get user nickname / status
+		nickname = account.user.nickname
+		status = account.user.status
+
+		# Message
+		message = %{Nouveau status: #{status}}
+
+		# Get keys
+		consumer_token=account.consumer_token
+		consumer_secret=account.consumer_secret
+		access_token=account.access_token
+		access_secret=account.access_secret
+
+		# OAuth connect
+		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
+		oauth.authorize_from_access(access_token, access_secret)
+		client = Twitter::Base.new(oauth)
+
+		# Update timeline
+		client.update(message)
+	end
+    end
+    task :facebook do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	require 'koala'
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	# Get all entry in Facebook table
+	FacebookAccount.all({:publish => true}).each do |account|
+		# Get user nickname
+		nickname = account.user.nickname
+		status = account.user.status
+
+		# Message
+		message = %{Nouveau status: #{status}}
+
+		# Get key
+		access_token=account.access_token
+
+		# Connect
+		graph = Koala::Facebook::GraphAPI.new(access_token)
+
+		# Update wall
+		graph.put_object("me", "feed", :message => message)
 	end
     end
 end
