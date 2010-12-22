@@ -191,16 +191,16 @@ namespace "db" do
 
         # Comment that could be added by admin, based on user average consumption
         comments =         {
-            0..500                => "Very low consumption",
+            0..500           => "Very low consumption",
             501..1000        => "Low consumption",
-            1001..1500        => "Normal consumption",
-            1501..2000        => "Medium consumption",
-            2001..2500        => "Consumption quite high",
-            2501..3000        => "High consumption, please reduce it :-)"
+            1001..1500       => "Normal consumption",
+            1501..2000       => "Medium consumption",
+            2001..2500       => "Consumption quite high",
+            2501..3000       => "High consumption, please reduce it :-)"
         }
 
         # User creation
-        nb_users=3
+        nb_users=5 # sandrine, filip, yann, luc, johndoe
         (1..nb_users).each do |user_nb|
             # Get dummy 
             # - firstname
@@ -212,29 +212,31 @@ namespace "db" do
             # - city
             # - street
 
-            firstname = Faker::Name.first_name
-            lastname  = Faker::Name.last_name
-	    password = "guest"
-
             # Add 2 easy to remember users for testing purposes
             if user_nb == 1 then
                 firstname= "John"
                 lastname = "Doe"
             elsif user_nb == 2 then
-                firstname = "Jack"
-                lastname = "Blue"
-            elsif user_nb == 3 then
-                firstname = "luc"
+                firstname = "Sandrine"
                 lastname = ""
-		password = "luc123"
+            elsif user_nb == 3 then
+                firstname = "Filip"
+                lastname = ""
+            elsif user_nb == 4 then
+                firstname = "Yann"
+                lastname = ""
+            elsif user_nb == 5 then
+                firstname = "Luc"
+                lastname = ""
             end
 
             puts %{#{firstname} #{lastname}}
 
-            nickname  = "#{firstname.downcase}#{lastname.downcase}"
+            nickname  = %{#{firstname.downcase}#{lastname.downcase}}
+	    password = %{#{nickname}123}
 
             user_hash = {:nickname => "#{nickname}",
-                :status   => "" }
+                :status   => "Welcome new user" }
 
             account_hash = {:firstname => "#{firstname}",
                 :lastname  => "#{lastname}",
@@ -256,7 +258,7 @@ namespace "db" do
             account.save
 
             # Create sensors for each users
-            nb_sensors=3
+            nb_sensors=1
             (1..nb_sensors).each do |sensor_nb|
                 sensor=Sensor.new(:sensor_hr        => "#{nickname}_#{sensor_nb}",
                                   :description         => "Sensor #{sensor_nb} of #{firstname} #{lastname}",
@@ -264,7 +266,10 @@ namespace "db" do
                                   :user                 => user) 
                 sensor.save
 
-                # Create measure for each sensor: one measure each 30 minutes for the past 2 days
+                # Create measure for johndoe_1 sensor only: one measure each 30 minutes for the past 2 days
+p sensor.sensor_hr
+		next unless(sensor.sensor_hr.eql?("johndoe_1"))
+p "measures will be created"
                 nb_measures=96
                 total = 0
                 (1..nb_measures).each do |measure_nb|
