@@ -189,45 +189,19 @@ namespace "db" do
         Dir["app/models/*.rb"].each { |file| require file }
         DataMapper.finalize
 
-        # Comment that could be added by admin, based on user average consumption
-        comments =         {
-            0..500           => "Very low consumption",
-            501..1000        => "Low consumption",
-            1001..1500       => "Normal consumption",
-            1501..2000       => "Medium consumption",
-            2001..2500       => "Consumption quite high",
-            2501..3000       => "High consumption, please reduce it :-)"
-        }
-
         # User creation
         nb_users=5 # sandrine, filip, yann, luc, johndoe
         (1..nb_users).each do |user_nb|
-            # Get dummy 
-            # - firstname
-            # - lastname
-            # - email
-            # - nickname 
-            # - country
-            # - zip code
-            # - city
-            # - street
-
-            # Add 2 easy to remember users for testing purposes
             if user_nb == 1 then
-                firstname= "John"
-                lastname = "Doe"
+                firstname, lastname = "John", "Doe"
             elsif user_nb == 2 then
-                firstname = "Sandrine"
-                lastname = ""
+                firstname, lastname = "Sandrine", ""
             elsif user_nb == 3 then
-                firstname = "Filip"
-                lastname = ""
+                firstname, lastname = "Filip", ""
             elsif user_nb == 4 then
-                firstname = "Yann"
-                lastname = ""
+                firstname, lastname = "Yann", ""
             elsif user_nb == 5 then
-                firstname = "Luc"
-                lastname = ""
+                firstname, lastname = "Luc", ""
             end
 
             puts %{#{firstname} #{lastname}}
@@ -238,6 +212,7 @@ namespace "db" do
             user_hash = {:nickname => "#{nickname}",
                 :status   => "Welcome new user" }
 
+            # Get dummy email, country, zip code, city, street
             account_hash = {:firstname => "#{firstname}",
                 :lastname  => "#{lastname}",
                 :email     => "#{firstname.downcase}.#{lastname.downcase}@yahoo.com",
@@ -261,44 +236,18 @@ namespace "db" do
             nb_sensors=1
             (1..nb_sensors).each do |sensor_nb|
                 sensor=Sensor.new(:sensor_hr        => "#{nickname}_#{sensor_nb}",
-                                  :description         => "Sensor #{sensor_nb} of #{firstname} #{lastname}",
-                                  :address         => "Same as user",
-                                  :user                 => user) 
+                                  :description      => "Sensor #{sensor_nb} of #{firstname} #{lastname}",
+                                  :address          => "Same as user",
+                                  :user             => user) 
                 sensor.save
 
-                # Create measure for johndoe_1 sensor only: one measure each 30 minutes for the past 2 days
-p sensor.sensor_hr
-		next unless(sensor.sensor_hr.eql?("johndoe_1"))
-p "measures will be created"
-                nb_measures=96
-                total = 0
-                (1..nb_measures).each do |measure_nb|
-                    d = Time.now - measure_nb * 5 * 60
-                    measure = Measure.new(:date => d,
-                                          :consumption => rand(3000),
-                                          :sensor => sensor)
-                    measure.save
-                    total = total + measure.consumption.to_f
-                end
-
-                # Get measure average
-                average = total / nb_measures
-
-                # Set comment to  user depending upon his average consumption
-                comment = ""
-                comments.each do |k,v|
-                    if k.include?(average) then
-                        comment = v
-                    end
-                end
-                user.status = comment
-                user.save
+                # Note: measure creation (for johndoe_1 sensor) should be done using db:add_measures tasks
             end
         end
     end
 
-    # Add one day history (measures every 5 minutes for 24 hours => 288 measures per sensor)
-    task :add_history do
+    # Add history to johndoe sensor_1 (measures every 5 minutes for 24 hours => 288 measures)
+    task :add_measures do
         require 'rubygems'
         require 'dm-core'
         require 'global'
@@ -331,6 +280,9 @@ p "measures will be created"
         Dir["app/models/*.rb"].each { |file| require file }
         DataMapper.finalize
 
+	# Maesures will only be added to "johndoe_1" sensor
+	sensor = Sensor.first({:sensor_hr => "johndoe_1"})
+
 	now=Time.now
 	# One measure every 5 minutes
 	step=5
@@ -339,18 +291,15 @@ p "measures will be created"
 		puts %{#{i} - #{(now + i * 60 * step).to_s}}
 		current_date = DateTime.parse( (now + i * 60 * step).to_s )
 
-		# Loop through list of sensors
-		Sensor.all.each do |sensor|
-			# Create random number between 1 and 3000
-			consumption = gaussian_rand(3000)
+		# Create random number between 1 and 3000
+		consumption = gaussian_rand(3000)
 
-			# Create measure
-			measure = Measure.new(:date                => current_date,
-					      :consumption         => consumption,
-					      :sensor              => sensor)
-            puts consumption
-			measure.save
-		end
+		# Create measure
+		measure = Measure.new(:date                => current_date,
+				      :consumption         => consumption,
+				      :sensor              => sensor)
+		puts consumption
+		measure.save
 	end
     end
 
@@ -366,8 +315,11 @@ p "measures will be created"
         Dir["app/models/*.rb"].each { |file| require file }
         DataMapper.finalize
 
+	# Get johndoe_1 sensor
+	sensor = Sensor.first({:sensor_hr => "johndoe_1"})
+
 	# Delete measures
-	Measure.all.each do |measure|
+	Measure.all({:sensor => sensor}).each do |measure|
 		measure.destroy
 	end
     end
