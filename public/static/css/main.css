@@ -13,8 +13,8 @@ body, #info {
 #content {
     line-height: 1.4em;
     font-size: 1.2em;
-    background-color: #010101;
-    color: #DDD;
+    background-color: #FFFFFF;
+    color: #333;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
@@ -26,22 +26,19 @@ body, #info {
 #content b, 
 #content strong,
 #content em {
-    color: #CFF;
+    color: #399;
 }
 #entete {
-    margin: 1.5em;
-    padding: 1em;
+    margin: 1.5em 0;
     text-align: center;
-    text-shadow: 0 0 9px #111;
 }
 #logo {
     float: right;
 }
 #titles {
     float: left;
-    margin-left: 2em;
-    color: #CFF;
-    text-shadow: 0 0 8px #00F;
+    color: #399;
+    margin-left: 0;
 }
 .flush { clear: both; }
 
@@ -58,7 +55,7 @@ content {
 a,
 a:link,
 a:visited {
-        color: #CFF; }
+        color: #399; }
 a:hover,
 a:active {
     color: #F88;
@@ -89,7 +86,7 @@ a:active {
 #content input {
     color: #333;
     margin: .5em;
-    font-size: 2.5em;
+    font-size: 1.5em;
     background-color: #FFF;
     -webkit-border-radius: .2em;
 }
@@ -102,7 +99,7 @@ a:active {
     color: #888
 }
 .button {
-    background-color: #111;
+    background-color: #EFEFEF;
     text-align: center;
     margin: .1em;
     color: #888;
@@ -121,7 +118,7 @@ a:active {
         display: inline-block;
     }
     .button.short:hover {
-        color: #CFF;
+        color: #399;
         border-color: #ACC;
         background-color: #588;
     }
@@ -176,7 +173,7 @@ table tr td {
     padding: .8em;
     border: solid 1px #333; }
 table tr.r0 td {
-    background-color: #111; }
+    background-color: #EFEFEF; }
 table tr.r1 td {
     background-color: #222; }
 table input {
@@ -219,20 +216,24 @@ table input {
 }
 #presentationimage {
     border: 1px solid #888;
-    background-color: #111;
+    background-color: #EFEFEF;
     padding: 8px
 }
 
 #titles {
    border: 1px solid #888;
-   background-color: #111;
+   background-color: #EFEFEF;
    padding: 8px;
 }
 
 #login_form {
+    padding-top: 3em;
     width: 28em;
     text-align: center;
     margin: auto;
+}
+#login_form input.checkbox {
+    width: 1em;
 }
 #remembercheckboxlabel {
     text-align: left;
@@ -242,7 +243,7 @@ table input {
 #instantconsumption {
     margin: 1em;
     font-size: 1.5em;
-    background-color: #111;
+    background-color: #EFEFEF;
     border: 1px solid #333;
     color: #888;
     margin: 1em;
@@ -254,7 +255,7 @@ table input {
 #message {
     margin: 1em;
     font-size: 1.4em;
-    background-color: #111;
+    background-color: #EFEFEF;
     border: 1px solid #333;
     color: #888;
     margin: 1em;
@@ -274,8 +275,8 @@ table input {
     font-weight: bold;
     margin-top: 1em;
     padding: .5em;
-    color: #111;
-    background-color: #CFF;
+    color: #399;
+    background-color: #EFEFEF;
     border-radius: 3px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -303,7 +304,7 @@ table input {
 }
 #graphinfo {
     text-align: center;
-    background-color: #111;
+    background-color: #EFEFEF;
     border: 1px solid #333;
     color: #888;
     margin: 1em;
@@ -317,4 +318,11 @@ table input {
 /* Login */
 #login_form input {
     width: 100%;
+}
+
+.centerblock {
+    font-size: .85em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 960px;
 }
