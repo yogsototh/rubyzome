@@ -166,6 +166,15 @@ namespace "db" do
             puts measure.attributes.values.join(' ; ')
         end
         puts %{---}
+        puts %{Twitter account}
+        TwitterAccount.all().each do |a|
+            puts a.attributes.values.join(' ; ')
+        end
+        puts %{---}
+        puts %{Facebook account}
+        FacebookAccount.all().each do |a|
+            puts a.attributes.values.join(' ; ')
+        end
     end
 
     task :populate do
@@ -180,52 +189,34 @@ namespace "db" do
         Dir["app/models/*.rb"].each { |file| require file }
         DataMapper.finalize
 
-        # Comment that could be added by admin, based on user average consumption
-        comments =         {
-            0..500                => "Very low consumption",
-            501..1000        => "Low consumption",
-            1001..1500        => "Normal consumption",
-            1501..2000        => "Medium consumption",
-            2001..2500        => "Consumption quite high",
-            2501..3000        => "High consumption, please reduce it :-)"
-        }
-
         # User creation
-        nb_users=2
+        nb_users=5 # sandrine, filip, yann, luc, johndoe
         (1..nb_users).each do |user_nb|
-            # Get dummy 
-            # - firstname
-            # - lastname
-            # - email
-            # - nickname 
-            # - country
-            # - zip code
-            # - city
-            # - street
-
-            firstname = Faker::Name.first_name
-            lastname  = Faker::Name.last_name
-
-            # Add 2 easy to remember users for testing purposes
             if user_nb == 1 then
-                firstname= "John"
-                lastname = "Doe"
+                firstname, lastname = "John", "Doe"
             elsif user_nb == 2 then
-                firstname = "Jack"
-                lastname = "Blue"
+                firstname, lastname = "Sandrine", ""
+            elsif user_nb == 3 then
+                firstname, lastname = "Filip", ""
+            elsif user_nb == 4 then
+                firstname, lastname = "Yann", ""
+            elsif user_nb == 5 then
+                firstname, lastname = "Luc", ""
             end
 
             puts %{#{firstname} #{lastname}}
 
-            nickname  = "#{firstname.downcase}#{lastname.downcase}"
+            nickname  = %{#{firstname.downcase}#{lastname.downcase}}
+	    password = %{#{nickname}123}
 
             user_hash = {:nickname => "#{nickname}",
-                :status   => "" }
+                :status   => "Welcome new user" }
 
+            # Get dummy email, country, zip code, city, street
             account_hash = {:firstname => "#{firstname}",
                 :lastname  => "#{lastname}",
                 :email     => "#{firstname.downcase}.#{lastname.downcase}@yahoo.com",
-            :password  => "guest",
+                :password  => "#{password}",
                 :country   => "US",
                 :zip       => Faker::Address.zip_code,
                 :city      => Faker::Address.city,
@@ -242,44 +233,21 @@ namespace "db" do
             account.save
 
             # Create sensors for each users
-            nb_sensors=3
+            nb_sensors=1
             (1..nb_sensors).each do |sensor_nb|
                 sensor=Sensor.new(:sensor_hr        => "#{nickname}_#{sensor_nb}",
-                                  :description         => "Sensor #{sensor_nb} of #{firstname} #{lastname}",
-                                  :address         => "Same as user",
-                                  :user                 => user) 
+                                  :description      => "Sensor #{sensor_nb} of #{firstname} #{lastname}",
+                                  :address          => "Same as user",
+                                  :user             => user) 
                 sensor.save
 
-                # Create measure for each sensor: one measure each 30 minutes for the past 2 days
-                nb_measures=96
-                total = 0
-                (1..nb_measures).each do |measure_nb|
-                    d = Time.now - measure_nb * 5 * 60
-                    measure = Measure.new(:date => d,
-                                          :consumption => rand(3000),
-                                          :sensor => sensor)
-                    measure.save
-                    total = total + measure.consumption.to_f
-                end
-
-                # Get measure average
-                average = total / nb_measures
-
-                # Set comment to  user depending upon his average consumption
-                comment = ""
-                comments.each do |k,v|
-                    if k.include?(average) then
-                        comment = v
-                    end
-                end
-                user.status = comment
-                user.save
+                # Note: measure creation (for johndoe_1 sensor) should be done using db:add_measures tasks
             end
         end
     end
 
-    # Add one day history (measures every 5 minutes for 24 hours => 288 measures per sensor)
-    task :add_history do
+    # Add history to johndoe sensor_1 (measures every 5 minutes for 24 hours => 288 measures)
+    task :add_measures do
         require 'rubygems'
         require 'dm-core'
         require 'global'
@@ -312,6 +280,9 @@ namespace "db" do
         Dir["app/models/*.rb"].each { |file| require file }
         DataMapper.finalize
 
+	# Maesures will only be added to "johndoe_1" sensor
+	sensor = Sensor.first({:sensor_hr => "johndoe_1"})
+
 	now=Time.now
 	# One measure every 1 minutes
 	step=1
@@ -320,18 +291,15 @@ namespace "db" do
 		puts %{#{i} - #{(now + i * 60 * step).to_s}}
 		current_date = DateTime.parse( (now + i * 60 * step).to_s )
 
-		# Loop through list of sensors
-		Sensor.all.each do |sensor|
-			# Create random number between 1 and 3000
-			consumption = gaussian_rand(3000)
+		# Create random number between 1 and 3000
+		consumption = gaussian_rand(3000)
 
-			# Create measure
-			measure = Measure.new(:date                => current_date,
-					      :consumption         => consumption,
-					      :sensor              => sensor)
-            # puts consumption
-			measure.save
-		end
+		# Create measure
+		measure = Measure.new(:date                => current_date,
+				      :consumption         => consumption,
+				      :sensor              => sensor)
+		puts consumption
+		measure.save
 	end
     end
 
@@ -347,15 +315,18 @@ namespace "db" do
         Dir["app/models/*.rb"].each { |file| require file }
         DataMapper.finalize
 
+	# Get johndoe_1 sensor
+	sensor = Sensor.first({:sensor_hr => "johndoe_1"})
+
 	# Delete measures
-	Measure.all.each do |measure|
+	Measure.all({:sensor => sensor}).each do |measure|
 		measure.destroy
 	end
     end
 
 end
 
-namespace "cron" do
+namespace "nightly-cron" do
     task :twitter do
         require 'rubygems'
         require 'dm-core'
@@ -369,12 +340,43 @@ namespace "cron" do
         DataMapper.finalize
 
 	# Get all entry in Twitter table
-	TwitterAccount.all.each do |twitterAccount|
+	TwitterAccount.all.each do |account|
+		# Get user nickname / status
+		nickname = account.user.nickname
+		status = account.user.status
+
+		# Get sensor
+		sensor = Sensor.first({:sensor_hr => "#{nickname}_1"})
+
+		# Get begining of day and beginning of yesterday
+		now = DateTime.now
+		secs_to_substract = now.hour * 3600 + now.min * 60 + now.sec
+		beginning_of_day = DateTime.now - (secs_to_substract/86400.0)
+		beginning_of_yesterday = beginning_of_day - 1
+		beginning_of_yesterday_s = beginning_of_yesterday.strftime("%d/%m/%y")
+
+		# Get all measures from previous day
+		measures = %w{}
+        	Measure.all({:sensor => sensor, :date.gt => beginning_of_yesterday, :date.lt => beginning_of_day}).each do |measure|
+			measures << measure.consumption
+        	end
+
+		# Get average, min, max of measures
+		sum, min, max = 0, 999999, 0
+		measures.each do |m|
+			sum = sum + m
+		        min = m if(m<min)
+			max = m if(m>max)	
+		end
+
+		# Message
+		message = %{Date: #{beginning_of_yesterday_s} - Moyenne: #{sum/measures.size}, Min: #{min}, Max: #{max}. # #{status} #}
+
 		# Get keys
-		consumer_token=twitterAccount.consumer_token
-		consumer_secret=twitterAccount.consumer_secret
-		access_token=twitterAccount.access_token
-		access_secret=twitterAccount.access_secret
+		consumer_token=account.consumer_token
+		consumer_secret=account.consumer_secret
+		access_token=account.access_token
+		access_secret=account.access_secret
 
 		# OAuth connect
 		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
@@ -382,7 +384,7 @@ namespace "cron" do
 		client = Twitter::Base.new(oauth)
 
 		# Update timeline
-		client.update("Test using twitter gem")
+		client.update(message)
 	end
     end
     task :facebook do
@@ -398,15 +400,116 @@ namespace "cron" do
         DataMapper.finalize
 
 	# Get all entry in Facebook table
-	FacebookAccount.all.each do |facebookAccount|
+	FacebookAccount.all.each do |account|
+		# Get user nickname
+		nickname = account.user.nickname
+		status = account.user.status
+
+		# Get sensor
+		sensor = Sensor.first({:sensor_hr => "#{nickname}_1"})
+
+		# Get begining of day and beginning of yesterday
+		now = DateTime.now
+		secs_to_substract = now.hour * 3600 + now.min * 60 + now.sec
+		beginning_of_day = DateTime.now - (secs_to_substract/86400.0)
+		beginning_of_yesterday = beginning_of_day - 1
+		beginning_of_yesterday_s = beginning_of_yesterday.strftime("%d/%m/%y")
+
+		# Get all measures from previous day
+		measures = %w{}
+        	Measure.all({:sensor => sensor, :date.gt => beginning_of_yesterday, :date.lt => beginning_of_day}).each do |measure|
+			measures << measure.consumption
+        	end
+
+		# Get average, min, max of measures
+		sum, min, max = 0, 999999, 0
+		measures.each do |m|
+			sum = sum + m
+		        min = m if(m<min)
+			max = m if(m>max)	
+		end
+
+		# Message
+		message = %{Date: #{beginning_of_yesterday_s} - Moyenne: #{sum/measures.size}, Min: #{min}, Max: #{max}, # #{status} #}
+
 		# Get key
-		access_token=facebookAccount.access_token
+		access_token=account.access_token
 
 		# Connect
 		graph = Koala::Facebook::GraphAPI.new(access_token)
 
 		# Update wall
-		graph.put_object("me", "feed", :message => "Test using koala")
+		graph.put_object("me", "feed", :message => message)
+	end
+    end
+end
+
+namespace "realtime-cron" do
+    task :twitter do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	require 'twitter'
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	# Get all entry in Twitter table which need to be published
+	TwitterAccount.all({:publish => true}).each do |account|
+		# Get user nickname / status
+		nickname = account.user.nickname
+		status = account.user.status
+
+		# Message
+		message = %{Nouveau status: #{status}}
+
+		# Get keys
+		consumer_token=account.consumer_token
+		consumer_secret=account.consumer_secret
+		access_token=account.access_token
+		access_secret=account.access_secret
+
+		# OAuth connect
+		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
+		oauth.authorize_from_access(access_token, access_secret)
+		client = Twitter::Base.new(oauth)
+
+		# Update timeline
+		client.update(message)
+	end
+    end
+    task :facebook do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	require 'koala'
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	# Get all entry in Facebook table
+	FacebookAccount.all({:publish => true}).each do |account|
+		# Get user nickname
+		nickname = account.user.nickname
+		status = account.user.status
+
+		# Message
+		message = %{Nouveau status: #{status}}
+
+		# Get key
+		access_token=account.access_token
+
+		# Connect
+		graph = Koala::Facebook::GraphAPI.new(access_token)
+
+		# Update wall
+		graph.put_object("me", "feed", :message => message)
 	end
     end
 end
