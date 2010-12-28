@@ -19,12 +19,57 @@ var MainApplication = function () {
         $.cookie('user',null);
         $.cookie('password',null);
         $.cookie('remember',null);
+        $.cookie('lastSelectedView',null);
         return true; // in order not to disable the link
+    }
+
+
+    // execute the function action after all files are loaded only if needed
+    //
+    // example of usage:
+    //
+    // files=[]; 
+    // tests=[];
+    //
+    // files.push('/static/js/date.js');
+    // tests.push('Date.prototype.setISO8601');
+
+    // files.push('/static/js/flot/jquery.flot.js');
+    // tests.push('$.flot');
+    //
+    // mainApplication.run_after_dependencies( files, tests, 
+    //         function() {
+    //            $('#content').load("/static/html/user_stats.html",
+    //                function(){ self.htmlLoaded(self);});
+    //            });
+    //
+    //
+    this.run_after_dependencies = function( files, tests, action ) {
+        self=this;
+        if ( files.length==0 ) {
+            action();
+        } else {
+            file=files.pop();
+            test=tests.pop();
+            eval('o='+test+';');
+            if ( typeof o == "undefined") {
+                $.getScript(file,function() {
+                    self.run_after_dependencies(files, tests, action);
+                });
+            } else {
+                self.run_after_dependencies(files, tests, action);
+            }
+        }
     }
 
     this.run = function() {
 	    if ( self.getUserFromCookie() ) {
-	    	self.showUserConsumption();
+            var lastSelectedView=$.cookie('lastSelectedView');
+            if ( lastSelectedView == 'stats' ) {
+	    	    self.showUserStats();
+            } else {
+	    	    self.showUserConsumption();
+            }
         } else {
             self.showLoginView();
         }
@@ -32,7 +77,13 @@ var MainApplication = function () {
     }
 
     this.showUserConsumption = function() {
+        $.cookie('lastSelectedView','consumption',{expires: 14});
         this.showView('consumption');
+    }
+
+    this.showUserStats = function() {
+        $.cookie('lastSelectedView','stats',{expires: 14});
+        this.showView('stats');
     }
 
     this.showLoginView = function() {
