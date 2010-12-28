@@ -67,6 +67,8 @@ var MainApplication = function () {
             var lastSelectedView=$.cookie('lastSelectedView');
             if ( lastSelectedView == 'stats' ) {
 	    	    self.showUserStats();
+            } else if ( lastSelectedView == 'account' ) {
+	    	    self.showUserAccount();
             } else {
 	    	    self.showUserConsumption();
             }
@@ -85,6 +87,12 @@ var MainApplication = function () {
         $.cookie('lastSelectedView','stats',{expires: 14});
         this.showView('stats');
     }
+
+    this.showUserAccount = function() {
+        $.cookie('lastSelectedView','account',{expires: 14});
+        this.showView('account');
+    }
+
 
     this.showLoginView = function() {
         this.showView("login");
