@@ -1,27 +1,39 @@
-var ConsumptionView = function() {
+var StatsView = function() {
     this.user = mainApplication.user;
     this.password = mainApplication.password;
     this.login_params = { l: this.user, p: this.password, v:2 };
 
     this.chartDatas=[[]];
-    this.chartDatasFrom=[null];
-    this.chartDatasTo=[null];
-    this.chartDataMax=3000;
+    this.chartDatasFrom=[];
+    this.chartDatasTo=[];
+    this.chartDatasMax=3000;
 }
 
-ConsumptionView.prototype.show = function(){
+StatsView.prototype.show = function(){
     var self=this;
-    $.getScript('/static/js/date.js', function(){
-        $('#content').load("/static/html/user_stats.html",
-                            function(){ self.htmlLoaded(self);});
-    })
+    $('#menu').load('/static/html/menu.html');
+
+    var files=[];
+    var tests=[];
+
+    files.push('/static/js/date.js');
+    tests.push('Date.prototype.setISO8601');
+
+    files.push('/static/js/flot/jquery.flot.js');
+    tests.push('$.flot');
+    mainApplication.run_after_dependencies( files, tests, 
+            function() {
+               $('#content').load("/static/html/user_stats.html",
+                   function(){ self.htmlLoaded(self);});
+               });
+
 }
 
-ConsumptionView.prototype.htmlLoaded = function(self) {
+StatsView.prototype.htmlLoaded = function(self) {
     self.showLineChartSubview();
 }
 
-ConsumptionView.prototype.showLineChartSubview = function() {
+StatsView.prototype.showLineChartSubview = function() {
     var self=this;
     $.getJSON(  '/users/'+self.user+'/sensors.json', 
                 self.login_params,
@@ -31,22 +43,22 @@ ConsumptionView.prototype.showLineChartSubview = function() {
                 });
 }
 
-ConsumptionView.prototype.getChartDatas = function() {
+StatsView.prototype.getChartDatas = function() {
     var self=this;
 
     var now=new Date();
 
     // set the ( from -> to ) parameters for charts 0
     var chartIndex=0; 
-    self.mainFrom[chartIndex]=now.n_hours_ago(1);
-    self.mainTo[chartIndex]=now;
+    self.chartDatasFrom[chartIndex]=now.n_hours_ago(1);
+    self.chartDatasTo[chartIndex]=now;
     self.getChartDataForIndex(chartIndex);
 }
 
-ConsumptionView.prototype.getChartDataForIndex = function (index) {
+StatsView.prototype.getChartDataForIndex = function (index) {
     var self=this;
-    var params={from:       self.mainFrom[index].toString(),
-                to:         self.mainTo[index].toString(),
+    var params={from:       self.chartDatasFrom[index].toString(),
+                to:         self.chartDatasTo[index].toString(),
                 interval:   5};
     for ( key in self.login_params) { 
         params[key]=self.login_params[key]; 
@@ -54,10 +66,10 @@ ConsumptionView.prototype.getChartDataForIndex = function (index) {
     $.getJSON('/users/'+self.user+'/sensors/'+self.sensor+'/measures.json', 
             params,
             function(measure) { 
-                self.initData( self.chartDatasFrom.getTime(), measure, index ); });
+                self.initData( self.chartDatasFrom[index].getTime(), measure, index ); });
 }
 
-ConsumptionView.prototype.initData = function (from, data, chartIndex) {
+StatsView.prototype.initData = function (from, data, chartIndex) {
     var self=this;
 
     tab=self.chartDatas[chartIndex];
@@ -68,29 +80,29 @@ ConsumptionView.prototype.initData = function (from, data, chartIndex) {
             tab[index]= [ from + (index*interval*1000), value==-1?null:value ];
 	    }
     });
-    if ( data["max"] > self.dataMax ) {
-        self.chartDataMax=data["max"];
+    if ( data["max"] > self.chartDatasMax ) {
+        self.chartDatasMax=data["max"];
     }
     self.draw_graphic();
 }
 
-ConsumptionView.prototype.draw_graphic = function() {
+StatsView.prototype.draw_graphic = function() {
     var self=this;
     // draw something inside $('#graph')
-    var from=self.last_midnight.getTime();
-    var to=self.next_midnight.getTime();
+    var from=((new Date()).midnight()).getTime();
+    var to=(((new Date()).n_days_ago(-1)).midnight()).getTime();
 
-    var maximum = self.mainDataMax>self.secondaryDataMax ? self.mainDataMax : self.secondaryDataMax;
+    var maximum = self.chartDatasMax;
     maximum=Math.ceil(maximum/1000) * 1000;
 
     $.plot($('#graph'), [ 
-            { color: "#CFF", data: self.mainData, lines: {show: true, fill: true}, label: "Today" },
-            { color: "#555", data: self.secondaryData, lines: {show: true, fill: false}, label: "Yesterday" }
+            { color: "#CFF", data: self.chartDatas[0], lines: {show: true, fill: true}, label: "Today" },
+            { color: "#555", data: self.chartDatas[1], lines: {show: true, fill: false}, label: "Yesterday" }
                             ], 
             {  
                 xaxis: {
 	                mode: "time",
-	                min: from+self.interval*1000,
+	                min: from,
 	                max: to
 	            },
                 yaxis: { min: 0, max: maximum}, 

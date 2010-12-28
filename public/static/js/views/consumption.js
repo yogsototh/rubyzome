@@ -2,20 +2,20 @@ var ConsumptionView = function() {
     this.user = mainApplication.user;
     this.password = mainApplication.password;
     this.login_params = { l: this.user, p: this.password, v:2 };
-
-    this.chartDatas=[[]];
-    this.chartDatasFrom=[null];
-    this.chartDatasTo=[null];
-    this.chartDataMax=3000;
 }
 
 ConsumptionView.prototype.show = function(){
     var self=this;
     $('#menu').load('/static/html/menu.html');
+    if (typeof Date.prototype.setISO8601  == "undefined") {
     $.getScript('/static/js/date.js', function(){
         $('#content').load("/static/html/user_consumption.html",
                             function(){ self.htmlLoaded(self);});
     })
+    } else {
+        $('#content').load("/static/html/user_consumption.html",
+                            function(){ self.htmlLoaded(self);});
+    }
 }
 
 ConsumptionView.prototype.htmlLoaded = function(self) {
