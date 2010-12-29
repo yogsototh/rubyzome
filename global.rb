@@ -7,4 +7,4 @@ $static_files_directory='/static'
 # the DB URL default is an sqlite db file: datas.db 
 # if the env variable DATABASE_URL is set it is the one choosen
 # With this it works seemlessly with heroku
-$db_url=ENV['DATABASE_URL'] || %{sqlite3:///tmp/datas.db}
+$db_url=ENV['DATABASE_URL'] || %{sqlite3://#{Dir.pwd}/datas.db}
