@@ -5,8 +5,10 @@ var MainApplication = function () {
     this.remember=false;
 
     this.log = function(msg) {
-        if (typeof console.log != 'undefined') {
-            console.log(msg);
+        if (typeof console != 'undefined') {
+            if (typeof console.log != 'undefined') {
+                console.log(msg);
+            }
         }
     }
 
