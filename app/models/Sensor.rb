@@ -3,11 +3,10 @@ class Sensor
     include DataMapper::Resource
 
     # Properties
-    property :id,               Serial
+    property :id,                Serial
     property :sensor_hr,        String
-    property :description,      String
-    property :address,          String
-    property :last_cleaned,     DateTime
+    property :description,        String
+    property :address,                String
 
     # Associations
     belongs_to  :user,      :model => "User"
