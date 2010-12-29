@@ -246,12 +246,12 @@ namespace "db" do
         end
     end
 
-    # Add history to johndoe sensor_1 (measures every 5 minutes for 24 hours => 288 measures)
-    task :add_measures do
+    # Add history to specified sensor (measures every 5 minutes for 24 hours => 288 measures)
+    task :add_measures, :sensor do |t, args|
         require 'rubygems'
         require 'dm-core'
         require 'global'
-	    require 'time'
+	require 'time'
 
         def min(a,b)
             a<b ? a : b
@@ -280,8 +280,13 @@ namespace "db" do
         Dir["app/models/*.rb"].each { |file| require file }
         DataMapper.finalize
 
-	# Maesures will only be added to "johndoe_1" sensor
-	sensor = Sensor.first({:sensor_hr => "johndoe_1"})
+	# Measures will be added to specified sensor
+	sensor = Sensor.first({:sensor_hr => args.sensor})
+
+	if(sensor.nil?) then 
+		puts "Sensor does not exist"
+		exit 0
+	end
 
 	now=Time.now
 	# One measure every 1 minutes
@@ -303,7 +308,7 @@ namespace "db" do
 	end
     end
 
-    task :delete_measures do
+    task :delete_measures, :sensor do |t, args|
         require 'rubygems'
         require 'dm-core'
         require 'global'
@@ -315,8 +320,13 @@ namespace "db" do
         Dir["app/models/*.rb"].each { |file| require file }
         DataMapper.finalize
 
-	# Get johndoe_1 sensor
-	sensor = Sensor.first({:sensor_hr => "johndoe_1"})
+	# Measures will be deleted for specified sensor
+	sensor = Sensor.first({:sensor_hr => args.sensor})
+
+	if(sensor.nil?) then 
+		puts "Sensor does not exist"
+		exit 0
+	end
 
 	# Delete measures
 	Measure.all({:sensor => sensor}).each do |measure|
