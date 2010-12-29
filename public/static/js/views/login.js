@@ -9,19 +9,16 @@ LoginView.prototype.show = function() {
 LoginView.prototype.handleCookie = function() {
     // save cookie
     if ($('#remember').attr('checked')) {
-        $.cookie('user',mainApplication.user,{expires: 14});
-        $.cookie('password',mainApplication.password,{expires: 14});
-        $.cookie('remember',true,{expires: 14});
+        mainApplication.setRemember(true);
     } else {
-        $.cookie('user',null);
-        $.cookie('password',null);
-        $.cookie('remember',true,null);
+        mainApplication.setRemember(false);
     }
 }
 
 // function called when form is submited
 LoginView.prototype.submitForm = function() {
     var self=this;
+
     mainApplication.setUser( $('[name=l]').val());
     mainApplication.setPassword( $('[name=p]').val());
 
@@ -55,7 +52,7 @@ LoginView.prototype.clear = function() {
     $(this).removeClass('inactive');
 }
 LoginView.prototype.inputDefaultValue = function(o,defaultValue) {
-    console.log('inputDefaultValue: '+defaultValue);
+    mainApplication.log('inputDefaultValue: '+defaultValue);
     if (o.value == '') {
         o.value=defaultValue; 
         $(o).addClass('inactive')

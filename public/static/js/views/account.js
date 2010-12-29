@@ -28,9 +28,9 @@ AccountView.prototype.showUserAccount = function() {
 
 AccountView.prototype.update_resource = function (self) {
 
-    console.log('self.user = '+self.user);
-    console.log('self.password = '+self.password);
-    console.log('self.message = '+self.message);
+    mainApplication.log('self.user = '+self.user);
+    mainApplication.log('self.password = '+self.password);
+    mainApplication.log('self.message = '+self.message);
 
     $.post(
 	    '/accounts/'+self.user+'.json', 
@@ -41,6 +41,7 @@ AccountView.prototype.update_resource = function (self) {
 	        _method: 'PUT'
 	    },
 	    function() {
+            mainApplication.setPassword(self.password);
 	        $("#info").prepend('<div id="updated'+num+'">'+self.user+' updated!</div>');
 	        setTimeout(function(){$('#updated'+num).remove()},1500);
 	        self.num++;

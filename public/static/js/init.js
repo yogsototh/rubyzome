@@ -2,11 +2,52 @@ var MainApplication = function () {
     self=this;
     this.user="";
     this.password="";
+    this.remember=false;
 
-    this.setUser = function(user) { this.user = user; }
-    this.setPassword = function(password) { this.password = password; }
+    this.log = function(msg) {
+        if (typeof console.log != 'undefined') {
+            console.log(msg);
+        }
+    }
 
-    this.getUserFromCookie = function() {
+    this.save = function (info,value) { 
+        this.log('save("'+info+'","'+value+'")');
+        $.cookie(info,value,{expires: 14}); 
+    }
+    this.forget = function (info) { 
+        this.log('forget("'+info+'")');
+        $.cookie(info,null); 
+    }
+
+    this.setRemember = function(remember) { 
+        if (remember) {
+            this.save('user',this.user);
+            this.save('password',this.password);
+            this.save('remember',true);
+        } else {
+            this.forget('user');
+            this.forget('password');
+            this.forget('remember');
+        }
+    }
+
+    this.setUser = function(user) { 
+        this.user = user; 
+        if (this.remember) {
+            this.save('user',this.user);
+        } 
+    }
+
+    this.setPassword = function(password) { 
+        this.password = password; 
+        if (this.remember) {
+            this.save('password',this.password);
+        } 
+    }
+
+    this.retrieveSavedPreferences = function() {
+        var self=this;
+        self.remember = $.cookie('remember');
         self.user = $.cookie('user');
         if (self.user) {
             self.password = $.cookie('password'); 
@@ -23,7 +64,6 @@ var MainApplication = function () {
         return true; // in order not to disable the link
     }
 
-
     // execute the function action after all files are loaded only if needed
     //
     // example of usage:
@@ -33,7 +73,7 @@ var MainApplication = function () {
     //
     // files.push('/static/js/date.js');
     // tests.push('Date.prototype.setISO8601');
-
+    //
     // files.push('/static/js/flot/jquery.flot.js');
     // tests.push('$.flot');
     //
@@ -62,16 +102,30 @@ var MainApplication = function () {
         }
     }
 
+    this.connectionSuccessful = function(self, success, failed ) {
+        $.ajax({url: '/users/'+self.user+'.json',
+                data: {l: self.user, p: self.password},
+                success: success,
+                error: failed
+                });
+    }
+
     this.run = function() {
-	    if ( self.getUserFromCookie() ) {
-            var lastSelectedView=$.cookie('lastSelectedView');
-            if ( lastSelectedView == 'stats' ) {
-	    	    self.showUserStats();
-            } else if ( lastSelectedView == 'account' ) {
-	    	    self.showUserAccount();
-            } else {
-	    	    self.showUserConsumption();
-            }
+        var self=this;
+	    if ( self.retrieveSavedPreferences() ) {
+            self.connectionSuccessful(
+                    self,
+                    function() {
+                        var lastSelectedView=$.cookie('lastSelectedView');
+                        if ( lastSelectedView == 'stats' ) {
+	    	                self.showUserStats();
+                        } else if ( lastSelectedView == 'account' ) {
+	    	                self.showUserAccount();
+                        } else {
+	    	                self.showUserConsumption();
+                        }
+                    },
+                    function() { self.showLoginView() } );
         } else {
             self.showLoginView();
         }
