@@ -308,6 +308,62 @@ namespace "db" do
 	end
     end
 
+    task :fast_add_history do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	    require 'time'
+
+        def min(a,b)
+            a<b ? a : b
+        end
+        def max(a,b)
+            a>b ? a : b
+        end
+
+        def gaussian_rand (n)
+            u1 = u2 = w = g1 = g2 = 0  # declare
+            begin
+                u1 = 2 * rand - 1
+                u2 = 2 * rand - 1
+                w = u1 * u1 + u2 * u2
+            end while w >= 1
+
+            w = Math::sqrt( ( -2 * Math::log(w)) / w )
+            g2 = u1 * w;
+            g1 = u2 * w;
+            return min(max(0,((g1+4)*n/8)),n)
+        end
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	now=Time.now
+	# One measure every 1 minutes
+	step=1
+	(-90..100).each do |i|
+		# Get current date
+		puts %{#{i} - #{(now + i * 60 * step).to_s}}
+		current_date = DateTime.parse( (now + i * 60 * step).to_s )
+
+		# Loop through list of sensors
+		Sensor.all.each do |sensor|
+			# Create random number between 1 and 3000
+			consumption = gaussian_rand(3000)
+
+			# Create measure
+			measure = Measure.new(:date                => current_date,
+					      :consumption         => consumption,
+					      :sensor              => sensor)
+            # puts consumption
+			measure.save
+		end
+	end
+    end
+
     task :delete_measures, :sensor do |t, args|
         require 'rubygems'
         require 'dm-core'
