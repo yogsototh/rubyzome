@@ -4,7 +4,7 @@ class FacebookAccount
 
         # Properties
         property :id,			Serial
-        property :access_token,		String
+        property :access_token,		String, :length => 100
 	property :publish,		Boolean, :default => false
 
         # Associations
