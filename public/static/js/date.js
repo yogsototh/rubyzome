@@ -24,12 +24,21 @@ Date.prototype.setISO8601 = function (string) {
     return this
 }
 
+Date.prototype.next_n_hours = function(n) {
+    return new Date((new Date).getTime() + n*60*60*1000);
+}
 Date.prototype.n_hours_ago = function(n) {
-    return new Date((new Date).getTime() - n*60*60*1000);
+    return this.next_n_hours(-n);
 }
 Date.prototype.one_hour_ago = function() { return this.n_hours_ago(1); }
+
+Date.prototype.next_n_days = function(n) { return this.next_n_hours(24*n); }
 Date.prototype.n_days_ago = function(n) { return this.n_hours_ago(24*n); }
+
+Date.prototype.yesterday = function() { return this.n_days_ago(1); }
+
 Date.prototype.one_day_ago = function() { return this.n_days_ago(1); }
+Date.prototype.tomorrow = function() { return this.next_n_days(1); }
 
 Date.prototype.midnight = function() {
     return new Date(this.getFullYear(), 

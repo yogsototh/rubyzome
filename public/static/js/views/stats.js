@@ -32,6 +32,9 @@ StatsView.prototype.show = function(){
 
 StatsView.prototype.htmlLoaded = function(self) {
     self.showLineChartSubview();
+    $('#weekButton').click(function(){self.showWeek()});
+    $('#dayButton').click(function(){self.showDay()});
+    $('#hourButton').click(function(){self.showLastHour()});
 }
 
 StatsView.prototype.showLineChartSubview = function() {
@@ -40,12 +43,59 @@ StatsView.prototype.showLineChartSubview = function() {
                 self.login_params,
                 function(json) {
 				    self.sensor=json[0]["sensor_hr"];
-                    self.getChartDatas();
+                    self.showLastHour();
                 });
 }
 
-StatsView.prototype.getChartDatas = function() {
+StatsView.prototype.showWeek = function() {
     var self=this;
+
+    mainApplication.save('chart','days');
+    var now=new Date();
+    var previous_monday=new Date().n_days_ago( now.getDay() + 7 ).midnight();
+    var last_monday=new Date().n_days_ago( now.getDay() ).midnight();
+    var next_monday=new Date().next_n_days( 7 - now.getDay() ).midnight();
+
+    // set the ( from -> to ) parameters for charts 0
+    var chartIndex=0; 
+    self.chartDatas[chartIndex]=[];
+    self.chartDatasFrom[chartIndex]=last_monday;
+    self.chartDatasTo[chartIndex]=next_monday;
+    self.getChartDataForIndex(chartIndex);
+
+    chartIndex=1; 
+    self.chartDatas[chartIndex]=[];
+    self.chartDatasFrom[chartIndex]=previous_monday;
+    self.chartDatasTo[chartIndex]=last_monday;
+    self.getChartDataForIndex(chartIndex);
+}
+StatsView.prototype.showDay = function() {
+    var self=this;
+
+    mainApplication.save('chart','days');
+
+    var yesterday_midnight=new Date().yesterday().midnight();
+    var last_midnight=new Date().midnight();
+    var next_midnight=new Date().tomorrow().midnight();
+
+    // set the ( from -> to ) parameters for charts 0
+    var chartIndex=0; 
+    self.chartDatas[chartIndex]=[];
+    self.chartDatasFrom[chartIndex]=last_midnight;
+    self.chartDatasTo[chartIndex]=next_midnight;
+    self.getChartDataForIndex(chartIndex);
+
+    chartIndex=1; 
+    self.chartDatas[chartIndex]=[];
+    self.chartDatasFrom[chartIndex]=yesterday_midnight;
+    self.chartDatasTo[chartIndex]=last_midnight;
+    self.getChartDataForIndex(chartIndex);
+}
+
+StatsView.prototype.showLastHour = function() {
+    var self=this;
+
+    mainApplication.save('chart','hour');
 
     var now=new Date();
 
@@ -56,8 +106,8 @@ StatsView.prototype.getChartDatas = function() {
     self.chartDatasTo[chartIndex]=now;
     self.getChartDataForIndex(chartIndex);
 
-    // chartIndex=1; 
-    // self.chartDatas[chartIndex]=[];
+    chartIndex=1; 
+    self.chartDatas[chartIndex]=[];
     // self.chartDatasFrom[chartIndex]=now.n_hours_ago(2);
     // self.chartDatasTo[chartIndex]=now.n_hours_ago(1);
     // self.getChartDataForIndex(chartIndex);
