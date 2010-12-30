@@ -50,7 +50,11 @@ StatsView.prototype.showLineChartSubview = function() {
 StatsView.prototype.showWeek = function() {
     var self=this;
 
-    mainApplication.save('chart','days');
+    mainApplication.save('chart','week');
+    self.mainLabel="Current week";
+    self.secondLabel="Past week";
+    $('#graph_loading').fadeIn();
+
     var now=new Date();
     var previous_monday=new Date().n_days_ago( now.getDay() + 7 ).midnight();
     var last_monday=new Date().n_days_ago( now.getDay() ).midnight();
@@ -73,6 +77,9 @@ StatsView.prototype.showDay = function() {
     var self=this;
 
     mainApplication.save('chart','days');
+
+    self.mainLabel="Today";
+    self.secondLabel="Yesterday";
 
     var yesterday_midnight=new Date().yesterday().midnight();
     var last_midnight=new Date().midnight();
@@ -161,8 +168,8 @@ StatsView.prototype.draw_graphic = function() {
             (self.chartDatas[1].length == 0) ) {
         datas[0] = { color: "#CFF", data: self.chartDatas[0], lines: {show: true, fill: true} };
     } else {
-        datas[0] = { color: "#CFF", data: self.chartDatas[0], lines: {show: true, fill: true}, label: "Today" };
-        datas[1] = { color: "#555", data: self.chartDatas[1], lines: {show: true, fill: false}, label: "Yesterday" };
+        datas[0] = { color: "#CFF", data: self.chartDatas[0], lines: {show: true, fill: true}, label: self.mainLabel };
+        datas[1] = { color: "#555", data: self.chartDatas[1], lines: {show: true, fill: false}, label: self.secondLabel };
     }
 
     $.plot($('#graph'), datas, 
@@ -184,7 +191,12 @@ StatsView.prototype.draw_graphic = function() {
                     margin: 0,
                     backgroundColor: '#222',
                     backgroundOpacity: 0.9 
-                }
+                },
+                hooks: {
+                           draw: function(plot, canvascontext) {
+                                    $('#graph_loading').fadeOut(); }
+                       }
 
             });
+
 }
