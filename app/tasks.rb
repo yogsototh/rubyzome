@@ -392,19 +392,19 @@ namespace "db" do
 
 end
 
-namespace "nightly-cron" do
-    task :twitter do
-        require 'rubygems'
-        require 'dm-core'
-        require 'global'
-	require 'twitter'
+namespace "twitter" do
+    require 'rubygems'
+    require 'dm-core'
+    require 'global'
+    require 'twitter'
 
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        DataMapper.finalize
+    # Connect to DB 
+    DataMapper.setup(:default, $db_url)
+    # Include all models
+    Dir["app/models/*.rb"].each { |file| require file }
+    DataMapper.finalize
 
+    task :update_conso do
 	# Get all entry in Twitter table
 	TwitterAccount.all.each do |account|
 		# Get user nickname / status
@@ -453,18 +453,61 @@ namespace "nightly-cron" do
 		client.update(message)
 	end
     end
-    task :facebook do
-        require 'rubygems'
-        require 'dm-core'
-        require 'global'
-	require 'koala'
+    task :update_status do
+	# Get all entry in Twitter table which need to be published
+	TwitterAccount.all({:publish => true}).each do |account|
+		# Get user nickname / status
+		nickname = account.user.nickname
+		status = account.user.status
 
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        DataMapper.finalize
+		# Message
+		message = %{Nouveau status: #{status}}
 
+		# Get keys
+		consumer_token=account.consumer_token
+		consumer_secret=account.consumer_secret
+		access_token=account.access_token
+		access_secret=account.access_secret
+
+		# OAuth connect
+		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
+		oauth.authorize_from_access(access_token, access_secret)
+		client = Twitter::Base.new(oauth)
+
+		# Update timeline
+		client.update(message)
+
+		# Set publish flag to false
+		account.publish = false
+		account.save
+	end
+    end
+    task :set_publish, :value, :nickname do |t,args|
+	# Get Twitter account with this nickname
+	value = args.value
+	nickname = args.nickname
+	user = User.first({:nickname => nickname})
+	account = TwitterAccount.first({:user => user})
+	if !account.nil? then
+		account.publish = value
+		account.save
+	end
+    end
+end
+
+namespace "facebook" do
+    require 'rubygems'
+    require 'dm-core'
+    require 'global'
+    require 'koala'
+
+    # Connect to DB 
+    DataMapper.setup(:default, $db_url)
+    # Include all models
+    Dir["app/models/*.rb"].each { |file| require file }
+    DataMapper.finalize
+
+    task :update_conso do
 	# Get all entry in Facebook table
 	FacebookAccount.all.each do |account|
 		# Get user nickname
@@ -508,57 +551,7 @@ namespace "nightly-cron" do
 		graph.put_object("me", "feed", :message => message)
 	end
     end
-end
-
-namespace "realtime-cron" do
-    task :twitter do
-        require 'rubygems'
-        require 'dm-core'
-        require 'global'
-	require 'twitter'
-
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        DataMapper.finalize
-
-	# Get all entry in Twitter table which need to be published
-	TwitterAccount.all({:publish => true}).each do |account|
-		# Get user nickname / status
-		nickname = account.user.nickname
-		status = account.user.status
-
-		# Message
-		message = %{Nouveau status: #{status}}
-
-		# Get keys
-		consumer_token=account.consumer_token
-		consumer_secret=account.consumer_secret
-		access_token=account.access_token
-		access_secret=account.access_secret
-
-		# OAuth connect
-		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
-		oauth.authorize_from_access(access_token, access_secret)
-		client = Twitter::Base.new(oauth)
-
-		# Update timeline
-		client.update(message)
-	end
-    end
-    task :facebook do
-        require 'rubygems'
-        require 'dm-core'
-        require 'global'
-	require 'koala'
-
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        DataMapper.finalize
-
+    task :update_status do
 	# Get all entry in Facebook table
 	FacebookAccount.all({:publish => true}).each do |account|
 		# Get user nickname
@@ -576,6 +569,21 @@ namespace "realtime-cron" do
 
 		# Update wall
 		graph.put_object("me", "feed", :message => message)
+
+		# Set publish flag to false
+		account.publish = false
+		account.save
+	end
+    end
+    task :set_publish, :value, :nickname do |t,args|
+	# Get Facebook account with this nickname
+	value = args.value
+	nickname = args.nickname
+	user = User.first({:nickname => nickname})
+	account = FacebookAccount.first({:user => user})
+	if !account.nil? then
+		account.publish = value
+		account.save
 	end
     end
 end
