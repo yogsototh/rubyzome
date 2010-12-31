@@ -545,6 +545,10 @@ namespace "realtime-cron" do
 
 		# Update timeline
 		client.update(message)
+
+		# Set publish flag to false
+		account.publish = false
+		account.save
 	end
     end
     task :facebook do
@@ -576,6 +580,10 @@ namespace "realtime-cron" do
 
 		# Update wall
 		graph.put_object("me", "feed", :message => message)
+
+		# Set publish flag to false
+		account.publish = false
+		account.save
 	end
     end
 end
