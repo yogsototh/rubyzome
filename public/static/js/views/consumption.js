@@ -44,7 +44,7 @@ ConsumptionView.prototype.showInstantConsumptionSubview = function() {
 ConsumptionView.prototype.no_instant_data=function(last_measure_date,time_without_measure) {
     var self=this;
     var message="<div>Disconnected</div>";
-    var nb_days=Math.ceil( time_without_measure / ( 1000 * 60 * 60 * 24 ) );
+    var nb_days=Math.ceil( time_without_measure / ( 1000 * 60 * 60 * 24 ) ) - 1;
     if ( nb_days > 0 ) {
         if ( nb_days == 1 ) {
             message+=nb_days+" day ago";
@@ -53,7 +53,13 @@ ConsumptionView.prototype.no_instant_data=function(last_measure_date,time_withou
         }
     } else  {
         var d=new Date(time_without_measure);
-        message+=d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+" ago";
+        if (d.getHours()>0) {
+            message+=d.getHours()+" hours ago"
+        } else if (d.getMinutes()>0) {
+            message+=d.getMinutes()+" minutes ago";
+        } else {
+            message+=d.getSeconds()+" seconds ago";
+        }
     }
     message+="<div style=\"margin-top: 1em;font-size: .5em;\">Last measure date: <br/>"+last_measure_date+"</div>";
         
@@ -83,7 +89,7 @@ ConsumptionView.prototype.getInstantConsumptionDatas = function(self) {
                         // var datestring=measure["to"].slice(0,19).replace('T',' ')+' GMT';
                         var datestring = measure["to"];
                         var last_measure_date=(new Date()).setISO8601(datestring) ;
-                        var last_measure_time = last_measure_date.getTime() + last_measure_date.getTimezoneOffset() * 60 * 1000;
+                        var last_measure_time = last_measure_date.getTime() + ( (new Date()).getTimezoneOffset() - last_measure_date.getTimezoneOffset() )*60*60*1000;
                         var now=(new Date()).getTime() ;
                         var time_without_measure = now - last_measure_time;
                         if ( time_without_measure > self.max_time ) {
