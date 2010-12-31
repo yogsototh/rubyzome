@@ -92,11 +92,11 @@ ConsumptionView.prototype.getInstantConsumptionDatas = function(self) {
                         var last_measure_time = last_measure_date.getTime() + ( (new Date()).getTimezoneOffset() - last_measure_date.getTimezoneOffset() )*60*60*1000;
                         var now=(new Date()).getTime() ;
                         var time_without_measure = now - last_measure_time;
-                        if ( time_without_measure > self.max_time ) {
-                            self.no_instant_data(last_measure_date,time_without_measure);
-                        } else {
+                        // if ( time_without_measure > self.max_time ) {
+                        //     self.no_instant_data(last_measure_date,time_without_measure);
+                        // } else {
                             self.show_instant_data(last);
-                        }
+                        // }
                         setTimeout( function() { 
                             self.getInstantConsumptionDatas(self)}, 2000);
                     }
