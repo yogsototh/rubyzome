@@ -392,8 +392,8 @@ namespace "db" do
 
 end
 
-namespace "nightly-cron" do
-    task :twitter do
+namespace "twitter" do
+    task :update_consumption do
         require 'rubygems'
         require 'dm-core'
         require 'global'
@@ -453,7 +453,50 @@ namespace "nightly-cron" do
 		client.update(message)
 	end
     end
-    task :facebook do
+    task :update_status do
+        require 'rubygems'
+        require 'dm-core'
+        require 'global'
+	require 'twitter'
+
+        # Connect to DB 
+        DataMapper.setup(:default, $db_url)
+        # Include all models
+        Dir["app/models/*.rb"].each { |file| require file }
+        DataMapper.finalize
+
+	# Get all entry in Twitter table which need to be published
+	TwitterAccount.all({:publish => true}).each do |account|
+		# Get user nickname / status
+		nickname = account.user.nickname
+		status = account.user.status
+
+		# Message
+		message = %{Nouveau status: #{status}}
+
+		# Get keys
+		consumer_token=account.consumer_token
+		consumer_secret=account.consumer_secret
+		access_token=account.access_token
+		access_secret=account.access_secret
+
+		# OAuth connect
+		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
+		oauth.authorize_from_access(access_token, access_secret)
+		client = Twitter::Base.new(oauth)
+
+		# Update timeline
+		client.update(message)
+
+		# Set publish flag to false
+		account.publish = false
+		account.save
+	end
+    end
+end
+
+namespace "facebook" do
+    task :update_consumption do
         require 'rubygems'
         require 'dm-core'
         require 'global'
@@ -508,50 +551,7 @@ namespace "nightly-cron" do
 		graph.put_object("me", "feed", :message => message)
 	end
     end
-end
-
-namespace "realtime-cron" do
-    task :twitter do
-        require 'rubygems'
-        require 'dm-core'
-        require 'global'
-	require 'twitter'
-
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        DataMapper.finalize
-
-	# Get all entry in Twitter table which need to be published
-	TwitterAccount.all({:publish => true}).each do |account|
-		# Get user nickname / status
-		nickname = account.user.nickname
-		status = account.user.status
-
-		# Message
-		message = %{Nouveau status: #{status}}
-
-		# Get keys
-		consumer_token=account.consumer_token
-		consumer_secret=account.consumer_secret
-		access_token=account.access_token
-		access_secret=account.access_secret
-
-		# OAuth connect
-		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
-		oauth.authorize_from_access(access_token, access_secret)
-		client = Twitter::Base.new(oauth)
-
-		# Update timeline
-		client.update(message)
-
-		# Set publish flag to false
-		account.publish = false
-		account.save
-	end
-    end
-    task :facebook do
+    task :update_status do
         require 'rubygems'
         require 'dm-core'
         require 'global'
