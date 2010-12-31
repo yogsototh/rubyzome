@@ -16,6 +16,12 @@ class FacebookaccountController < Rubyzome::RestController
 
 	# Get access token
 	begin
+                # Delete current Facebookaccount if any
+                currentFacebookAccount = user.facebookAccount
+                if(!currentFacebookAccount.nil?) then
+                        currentFacebookAccount.destroy
+                end 
+
 		facebook_key = clean_hash([:access_token])
 		facebookAccount = FacebookAccount.new(facebook_key)
 		facebookAccount.save

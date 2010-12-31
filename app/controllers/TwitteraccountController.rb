@@ -16,6 +16,12 @@ class TwitteraccountController < Rubyzome::RestController
 
 	# Get consumer and access token
 	begin
+		# Delete current twitter account if any
+		currentTwitterAccount = user.twitterAccount
+		if(!currentTwitterAccount.nil?) then
+			currentTwitterAccount.destroy
+		end
+
 		twitter_keys = clean_hash([:consumer_token, :consumer_secret, :access_token, :access_secret])
 		twitterAccount = TwitterAccount.new(twitter_keys)
 		twitterAccount.save
