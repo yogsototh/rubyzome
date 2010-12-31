@@ -41,8 +41,23 @@ ConsumptionView.prototype.showInstantConsumptionSubview = function() {
                 });
 }
 
-ConsumptionView.prototype.no_instant_data=function(time) {
-    $('#instantconsumptionvalue').html("Disconnect since: "+time/(60*1000)+" seconds");
+ConsumptionView.prototype.no_instant_data=function(last_measure_date,time_without_measure) {
+    var self=this;
+    var message="<div>Disconnected</div>";
+    var nb_days=Math.ceil( time_without_measure / ( 1000 * 60 * 60 * 24 ) );
+    if ( nb_days > 0 ) {
+        if ( nb_days == 1 ) {
+            message+=nb_days+" day ago";
+        } else {
+            message+=nb_days+" days ago";
+        }
+    } else  {
+        var d=new Date(time_without_measure);
+        message+=d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+" ago";
+    }
+    message+="<div style=\"margin-top: 1em;font-size: .5em;\">Last measure date: <br/>"+last_measure_date+"</div>";
+        
+    $('#instantconsumptionvalue').html(message);
     $('#instanthourlycostvalue').html( 'n/a' );
     $('#instantdailycostvalue').html( 'n/a' );
     $('#instantmonthlycostvalue').html( 'n/a' );
@@ -72,7 +87,7 @@ ConsumptionView.prototype.getInstantConsumptionDatas = function(self) {
                         var now=(new Date()).getTime() ;
                         var time_without_measure = now - last_measure_time;
                         if ( time_without_measure > self.max_time ) {
-                            self.no_instant_data(time_without_measure);
+                            self.no_instant_data(last_measure_date,time_without_measure);
                         } else {
                             self.show_instant_data(last);
                         }
