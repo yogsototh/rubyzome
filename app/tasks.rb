@@ -393,18 +393,18 @@ namespace "db" do
 end
 
 namespace "twitter" do
-    task :update_consumption do
-        require 'rubygems'
-        require 'dm-core'
-        require 'global'
-	require 'twitter'
+    require 'rubygems'
+    require 'dm-core'
+    require 'global'
+    require 'twitter'
 
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        DataMapper.finalize
+    # Connect to DB 
+    DataMapper.setup(:default, $db_url)
+    # Include all models
+    Dir["app/models/*.rb"].each { |file| require file }
+    DataMapper.finalize
 
+    task :update_conso do
 	# Get all entry in Twitter table
 	TwitterAccount.all.each do |account|
 		# Get user nickname / status
@@ -454,17 +454,6 @@ namespace "twitter" do
 	end
     end
     task :update_status do
-        require 'rubygems'
-        require 'dm-core'
-        require 'global'
-	require 'twitter'
-
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        DataMapper.finalize
-
 	# Get all entry in Twitter table which need to be published
 	TwitterAccount.all({:publish => true}).each do |account|
 		# Get user nickname / status
@@ -493,21 +482,32 @@ namespace "twitter" do
 		account.save
 	end
     end
+    task :set_publish, :value, :nickname do |t,args|
+	# Get Twitter account with this nickname
+	value = args.value
+	nickname = args.nickname
+	user = User.first({:nickname => nickname})
+	account = TwitterAccount.first({:user => user})
+	if !account.nil? then
+		account.publish = value
+		account.save
+	end
+    end
 end
 
 namespace "facebook" do
-    task :update_consumption do
-        require 'rubygems'
-        require 'dm-core'
-        require 'global'
-	require 'koala'
+    require 'rubygems'
+    require 'dm-core'
+    require 'global'
+    require 'koala'
 
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        DataMapper.finalize
+    # Connect to DB 
+    DataMapper.setup(:default, $db_url)
+    # Include all models
+    Dir["app/models/*.rb"].each { |file| require file }
+    DataMapper.finalize
 
+    task :update_conso do
 	# Get all entry in Facebook table
 	FacebookAccount.all.each do |account|
 		# Get user nickname
@@ -552,17 +552,6 @@ namespace "facebook" do
 	end
     end
     task :update_status do
-        require 'rubygems'
-        require 'dm-core'
-        require 'global'
-	require 'koala'
-
-        # Connect to DB 
-        DataMapper.setup(:default, $db_url)
-        # Include all models
-        Dir["app/models/*.rb"].each { |file| require file }
-        DataMapper.finalize
-
 	# Get all entry in Facebook table
 	FacebookAccount.all({:publish => true}).each do |account|
 		# Get user nickname
@@ -583,6 +572,17 @@ namespace "facebook" do
 
 		# Set publish flag to false
 		account.publish = false
+		account.save
+	end
+    end
+    task :set_publish, :value, :nickname do |t,args|
+	# Get Facebook account with this nickname
+	value = args.value
+	nickname = args.nickname
+	user = User.first({:nickname => nickname})
+	account = FacebookAccount.first({:user => user})
+	if !account.nil? then
+		account.publish = value
 		account.save
 	end
     end
