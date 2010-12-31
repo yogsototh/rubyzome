@@ -3,6 +3,6 @@ Dependencies:
 Install CoffeeScript: http://jashkenas.github.com/coffee-script
 Depend on Node.js and npm
 
-Usage:
+Automatic compilation of js is done via:
 
-coffee --watch --ouput public/static/js coffee/**/*.coffee
+coffee/autocompile

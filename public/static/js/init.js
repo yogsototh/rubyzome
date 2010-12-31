@@ -1,6 +1,6 @@
 (function() {
-  var Application, mainApplication;
-  Application = (function() {
+  var mainApplication;
+  window.Application = (function() {
     function Application() {}
     Application.prototype.user = "";
     Application.prototype.password = "";
@@ -139,13 +139,13 @@
       var self, viewClassName, viewFileName, viewObjectName;
       self = this;
       viewObjectName = viewName + "View";
-      viewClassName = viewName.capitalize() + "View";
+      viewClassName = "window." + viewName.capitalize() + "View";
       viewFileName = viewName + ".js";
       return eval("if ( typeof(self." + viewObjectName + ") == \"undefined\" ) {                $.getScript('/static/js/views/" + viewFileName + "',function(){                    self." + viewObjectName + " = new " + viewClassName + "(mainApplication);                    self." + viewObjectName + ".show();                });            } else {                self." + viewObjectName + ".show();            }");
     };
     return Application;
   })();
-  mainApplication = new Application;
+  mainApplication = new window.Application;
   $(document).ready(function() {
     return mainApplication.run();
   });

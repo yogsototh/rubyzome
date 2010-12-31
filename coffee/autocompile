@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+function start {
+    for fic in coffee/**/*.coffee; do
+        targetDir=$( echo $fic|sed 's#coffee/#public/static/js/#;s#/[^/]*$##')
+        print "$fic -> $targetDir"
+        coffee --watch --output $targetDir $fic &
+    done
+}
+function stop {
+    kill $( ps x | grep '/bin/coffee'| grep -v 'grep' | awk '{print $1}' )
+}
+
+
+case $1 in
+start) start ;;
+stop) stop ;;
+restart) stop && start ;;
+*) stop && start;;
+esac
+
+

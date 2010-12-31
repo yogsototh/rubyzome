@@ -1,71 +1,77 @@
-var LoginView = function() {}
-
-LoginView.prototype.show = function() {
-    var self=this;
-    $('#titles h1').html('Sign in');
-    $('#content').load( "/static/html/login.html",
-                    function() { self.htmlLoaded(self) });
-}
-
-LoginView.prototype.handleCookie = function() {
-    // save cookie
-    if ($('#remember').attr('checked')) {
-        mainApplication.setRemember(true);
-    } else {
-        mainApplication.setRemember(false);
+(function() {
+  window.LoginView = (function() {
+    function LoginView(app) {
+      this.app = app;
     }
-}
-
-// function called when form is submited
-LoginView.prototype.submitForm = function() {
-    var self=this;
-
-    mainApplication.setUser( $('[name=l]').val());
-    mainApplication.setPassword( $('[name=p]').val());
-
-    self.handleCookie();
-
-    $.ajax( {
-            url: '/users/'+mainApplication.user+'.json',
-            data: { "l": mainApplication.user, "p": mainApplication.password },
-            success: function() { 
-                mainApplication.showUserConsumption(); 
-            },
-            error: function(){
-                $("#info").prepend('<div id="error">Authentication failed</div>');
-                setTimeout(function(){$('#error').remove()},2000); 
-            }});
-
-    return false;
-}
-
-LoginView.prototype.htmlLoaded = function() {
-    var self=this;
-    self.autoclear('username','User Name');
-    self.autoclear('password','');
-    $('form[name=login_form]').submit( function() { return self.submitForm() });
-}
-
-//--  start: autoclear inputs  --
-LoginView.prototype.clear = function() {
-    this.value='';
-    this.select();
-    $(this).removeClass('inactive');
-}
-LoginView.prototype.inputDefaultValue = function(o,defaultValue) {
-    mainApplication.log('inputDefaultValue: '+defaultValue);
-    if (o.value == '') {
-        o.value=defaultValue; 
-        $(o).addClass('inactive')
-    }
-}
-
-// usage with id
-LoginView.prototype.autoclear = function(id,defaultValue) {
-    var self=this;
-    $('#'+id).click( self.clear );
-    $('#'+id).focus( self.clear );
-    // this designe l'input alors que self designe la classe dans la sous fonction
-    $('#'+id).blur( function() { self.inputDefaultValue(this,defaultValue) } );
-}
-//-- end: autoclear inputs  --
+    LoginView.prototype.show = function() {
+      var self;
+      self = this;
+      $('#titles h1').html('Sign in');
+      return $('#content').load("/static/html/login.html", function() {
+        return self.htmlLoaded(self);
+      });
+    };
+    LoginView.prototype.handleCookie = function() {
+      if ($('#remember').attr('checked')) {
+        return this.app.setRemember(true);
+      } else {
+        return this.app.setRemember(false);
+      }
+    };
+    LoginView.prototype.formSubmitted = function() {
+      var self;
+      self = this;
+      self.app.setUser($('[name=l]').val());
+      self.app.setPassword($('[name=p]').val());
+      self.handleCookie();
+      $.ajax({
+        url: '/users/' + self.app.user + '.json',
+        data: {
+          "l": self.app.user,
+          "p": self.app.password
+        },
+        success: function() {
+          return self.app.showUserConsumption();
+        },
+        error: function() {
+          $("#info").prepend('<div id="error">Authentication failed</div>');
+          return setTimeout((function() {
+            return $('#error').remove();
+          }), 2000);
+        }
+      });
+      return false;
+    };
+    LoginView.prototype.htmlLoaded = function(self) {
+      self.autoclear('username', 'User Name');
+      self.autoclear('password', '');
+      return $('form[name=login_form]').submit(function() {
+        return self.formSubmitted();
+      });
+    };
+    LoginView.prototype.clear = function() {
+      this.value = '';
+      this.select();
+      return $(this).removeClass('inactive');
+    };
+    LoginView.prototype.inputDefaultValue = function(o, defaultValue) {
+      var self;
+      self = this;
+      self.app.log('inputDefaultValue: ' + defaultValue);
+      if (o.value === '') {
+        o.value = defaultValue;
+        return $(o).addClass('inactive');
+      }
+    };
+    LoginView.prototype.autoclear = function(id, defaultValue) {
+      var self;
+      self = this;
+      $('#' + id).click(self.clear);
+      $('#' + id).focus(self.clear);
+      return $('#' + id).blur(function() {
+        return self.inputDefaultValue(this, defaultValue);
+      });
+    };
+    return LoginView;
+  })();
+}).call(this);

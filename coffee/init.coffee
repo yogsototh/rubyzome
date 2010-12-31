@@ -1,4 +1,4 @@
-class Application
+class window.Application
     user: ""
     password: ""
     remember: false
@@ -142,7 +142,7 @@ class Application
     showView: (viewName) ->
         self=this
         viewObjectName=viewName+"View"
-        viewClassName=viewName.capitalize()+"View"
+        viewClassName="window."+viewName.capitalize()+"View"
         viewFileName=viewName+".js"
         eval( "if ( typeof(self.#{viewObjectName}) == \"undefined\" ) {
                 $.getScript('/static/js/views/#{viewFileName}',function(){
@@ -153,7 +153,7 @@ class Application
                 self.#{viewObjectName}.show();
             }" )
 
-mainApplication = new Application
+mainApplication = new window.Application
 
 # after document loaded
 $(document).ready( -> 
