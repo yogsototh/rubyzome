@@ -24,7 +24,7 @@ body, #info {
 #content b, 
 #content strong,
 #content em {
-    color: #399;
+    color: #45A5D1;
 }
 #entete {
     margin: 1.5em 0;
@@ -35,7 +35,7 @@ body, #info {
 }
 #titles {
     float: left;
-    color: #399;
+    color: #45A5D1;
     margin-left: 0;
 }
 .flush { clear: both; }
@@ -53,7 +53,7 @@ content {
 a,
 a:link,
 a:visited {
-        color: #399; }
+        color: #45A5D1; }
 a:hover,
 a:active {
     color: #F88;
@@ -98,10 +98,10 @@ a:active {
     color: #888
 }
 .button {
-    background-color: #EFEFEF;
+    background-color: #4AD;
     text-align: center;
     margin: .1em;
-    color: #888;
+    color: #FFF;
     padding: .5em;
     border-radius: 3px;
     -moz-border-radius: 3px;
@@ -111,15 +111,15 @@ a:active {
         cursor: pointer;
     }
     .button.short {
-        border: solid 2px #444;
+        border: solid 2px #39C;
         margin-left: 1em;
         width: 5em;
         display: inline-block;
     }
     .button.short:hover {
-        color: #399;
-        border-color: #ACC;
-        background-color: #588;
+        color: #EFF;
+        border-color: #28B;
+        background-color: #39C;
     }
     .button.short.selected {
         color: #8AA;
@@ -172,7 +172,7 @@ table tr td {
     padding: .8em;
     border: solid 1px #333; }
 table tr.r0 td {
-    background-color: #EFEFEF; }
+    background-color: #DAEEF7; }
 table tr.r1 td {
     background-color: #222; }
 table input {
@@ -204,24 +204,15 @@ table input {
   #blackpage img { background: none border: none }
   #blackpage a { cursor: pointer }
 
-.button {
-    background-color: #333;
-    color: #888;
-    border: 2px #555;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    cursor: pointer;
-}
 #presentationimage {
     border: 1px solid #888;
-    background-color: #EFEFEF;
+    background-color: #DAEEF7;
     padding: 8px
 }
 
 #titles {
    border: 1px solid #888;
-   background-color: #EFEFEF;
+   background-color: #DAEEF7;
    padding: 8px;
 }
 
@@ -242,8 +233,8 @@ table input {
 #instantconsumption {
     margin: 1em;
     font-size: 1.5em;
-    background-color: #EFEFEF;
-    border: 1px solid #333;
+    background-color: #DAEEF7;
+    border: 1px solid #EFF;
     color: #888;
     margin: 1em;
     padding: 1em;
@@ -254,29 +245,52 @@ table input {
 #message {
     margin: 1em;
     font-size: 1.4em;
-    background-color: #EFEFEF;
-    border: 1px solid #333;
-    color: #888;
+    background-color: #DAEEF7;
+    border: 1px solid #EFF;
+    color: #333;
     margin: 1em;
     padding: 1em;
-    border-radius: 3px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 #instantinformations {
     margin-left: auto;
     margin-right: auto;
     width: 30em;
-    border: solid 1px #333;
+    border: solid 1px #CED;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    float: right;
 }
+#instantinformations table {
+    margin: 0 auto;
+}
+#consumptionAnalogic {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2em;
+    width: 20em;
+    border: solid 1px #CED;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    float: left;
+}
+#consumptionAnalogic table {
+    width: 100%;
+}
+#consumptionAnalogic table tr td {
+    border: solid 1px #EEE;
 #costs table {
     margin: 0 auto; }
 #instantconsumptionvalue {
     font-weight: bold;
     margin-top: 1em;
     padding: .5em;
-    color: #399;
-    background-color: #EFEFEF;
+    color: #45A5D1;
+    background-color: #DAEEF7;
     border-radius: 3px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -301,10 +315,11 @@ table input {
    text-align: center;
    margin-left: auto;
    margin-right: auto;
+   background-color: #F00;
 }
 #graphinfo {
     text-align: center;
-    background-color: #EFEFEF;
+    background-color: #DAEEF7;
     border: 1px solid #EEE;
     color: #888;
     margin: 1em;

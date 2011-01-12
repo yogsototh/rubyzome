@@ -77,6 +77,16 @@ ConsumptionView.prototype.show_instant_data=function(cons) {
     $('#instanthourlycostvalue').html( (cons * KWH_COST * HOURLY_COST_MULTI).toFixed(2) + " €");
     $('#instantdailycostvalue').html( (cons * KWH_COST * DAILY_COST_MULTI).toFixed(2) + " €");
     $('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
+    var i=1;
+    var cons_color="#4C4";
+    while (i< Math.floor( ( cons * 16 ) / 3500 )) {
+        mainApplication.log('#consumptionAnalogic table tr.c'+i+' td');
+        $('#consumptionAnalogic table tr.c'+i+' td').css({backgroundColor: cons_color});
+        if (i>4) cons_color="#4CC";
+        if (i>8) cons_color="#CC4";
+        if (i>12) cons_color="#C44";
+        i++;
+    }
 }
 
 ConsumptionView.prototype.getInstantConsumptionDatas = function(self) {
