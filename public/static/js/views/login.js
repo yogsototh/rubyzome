@@ -2,6 +2,7 @@ var LoginView = function() {}
 
 LoginView.prototype.show = function() {
     var self=this;
+    $('#pageNavbar').html('');
     $('#titles h1').html('Sign in');
     $('#content').load( "/static/html/login.html",
                     function() { self.htmlLoaded(self) });

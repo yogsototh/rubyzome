@@ -7,7 +7,7 @@ var ConsumptionView = function() {
 ConsumptionView.prototype.show = function(){
     var self=this;
     $('#titles h1').html('Welcome ' + mainApplication.user);
-    $('#menu').load('/static/html/menu.html');
+    $('#pageNavbar').load('/static/html/menu.html');
     var files=[];
     var tests=[];
 
@@ -80,6 +80,10 @@ ConsumptionView.prototype.show_instant_data=function(cons) {
 }
 
 ConsumptionView.prototype.getInstantConsumptionDatas = function(self) {
+
+    if ( typeof $('#instantconsumptionvalue') == "undefined" ) {
+        return false;                 
+    }
     $.getJSON( '/users/'+self.user+'/sensors/'+self.sensor+'/measures.json',
                 self.login_params,
                 function(measure) {
