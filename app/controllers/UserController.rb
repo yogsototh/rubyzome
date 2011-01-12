@@ -30,29 +30,27 @@ class UserController < Rubyzome::RestController
     def update
         check_authentication
         user = get_user
-
-
-p user
+	current_status = user.status
 
         begin
-	    current_status = user.status
-            clean_hash([:nickname,:status]).each { |key,value|
-		# Check if status has changed
-		if(key.eql?(:status) && !value.eql?(current_status)) then
-			# Update Twitter and Facebook account entries for current user
-			account =TwitterAccount.first({:user => user})
-			account.publish = true
-			account.save
+	    # Get params
+            params = clean_hash([:nickname,:status])
+	    nickname = params[:nickname]
+	    new_status = params[:status]
 
-			account = FacebookAccount.first({:user => user})
-			account.publish = true
-			account.save
-
-			# Note: cron job will update the status asynchronously
-		end
-                user.update( {key => value} )
-            }
+	    # Update user
+	    user.update( {:nickname => nickname, :status => new_status} )
             user.save
+
+	    # Update status if changed
+	    if !new_status.eql?(current_status) then
+			# Update Twitter account 
+			update_twitter(nickname, new_status)
+
+			# Update Facebook account
+			update_facebook(nickname, new_status)
+	    end
+
         rescue Exception => e
             raise Rubyzome::Error,"Cannot update user: #{e.message}"        
         end

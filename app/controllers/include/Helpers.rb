@@ -119,4 +119,69 @@ module Helpers
         start_date = DateTime.now - days_nbr.to_i
         return start_date
     end
+
+    ### TWITTER ###
+
+    def update_twitter(nickname, status)
+	require 'twitter'
+	puts "About to update Twitter account for user #{nickname} with #{status}"
+
+        # Get user from nickname
+	user = User.first({:nickname => nickname})
+
+	# Get Twitter account if exists
+	account = TwitterAccount.first({:user => user})
+	if account.nil? then
+		puts "No twitter account found for user #{nickname}"
+		return
+	end
+
+	# Build message
+	message = %{Nouveau status: #{status}}
+
+	# Get keys
+	consumer_token=account.consumer_token
+	consumer_secret=account.consumer_secret
+	access_token=account.access_token
+	access_secret=account.access_secret
+
+	# OAuth connect
+	oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
+	oauth.authorize_from_access(access_token, access_secret)
+	client = Twitter::Base.new(oauth)
+
+	# Update timeline
+	client.update(message)
+    end
+
+
+    ### FACEBOOK ###
+
+    def update_facebook(nickname, status)
+	require 'koala'
+	puts "About to update Facebook account for user #{nickname} with #{status}"
+
+        # Get user from nickname
+	user = User.first({:nickname => nickname})
+
+        # Get Facebook account if exists
+	account = FacebookAccount.first({:user => user})
+	if account.nil? then
+		puts "No facebook account found for user #{nickname}"
+		return
+	end
+
+	# Build message
+	message = %{Nouveau status: #{status}}
+
+	# Get key
+	access_token=account.access_token
+
+	# Connect
+	graph = Koala::Facebook::GraphAPI.new(access_token)
+
+	# Update wall
+	graph.put_object("me", "feed", :message => message)
+    end
+    
 end

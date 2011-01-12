@@ -453,33 +453,37 @@ namespace "twitter" do
 		client.update(message)
 	end
     end
-    task :update_status do
-	# Get all entry in Twitter table which need to be published
-	TwitterAccount.all({:publish => true}).each do |account|
-		# Get user nickname / status
-		nickname = account.user.nickname
-		status = account.user.status
+    task :update_status, :nickname do |t, args|
+	# Get Twitter account with this nickname
+	nickname = args.nickname
+	if !nickname.nil? then
+		user = User.first({:nickname => nickname})
+		account = TwitterAccount.first({:user => user})
+		if !account.nil? then
+			# Get status
+			status = account.user.status
 
-		# Message
-		message = %{Nouveau status: #{status}}
+			# Build message
+			message = %{Nouveau status: #{status}}
 
-		# Get keys
-		consumer_token=account.consumer_token
-		consumer_secret=account.consumer_secret
-		access_token=account.access_token
-		access_secret=account.access_secret
+			# Get keys
+			consumer_token=account.consumer_token
+			consumer_secret=account.consumer_secret
+			access_token=account.access_token
+			access_secret=account.access_secret
 
-		# OAuth connect
-		oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
-		oauth.authorize_from_access(access_token, access_secret)
-		client = Twitter::Base.new(oauth)
+			# OAuth connect
+			oauth = Twitter::OAuth.new(consumer_token, consumer_secret)
+			oauth.authorize_from_access(access_token, access_secret)
+			client = Twitter::Base.new(oauth)
 
-		# Update timeline
-		client.update(message)
+			# Update timeline
+			client.update(message)
 
-		# Set publish flag to false
-		account.publish = false
-		account.save
+			# Set publish flag to false
+			account.publish = false
+			account.save
+		end
 	end
     end
     task :set_publish, :value, :nickname do |t,args|
@@ -551,28 +555,32 @@ namespace "facebook" do
 		graph.put_object("me", "feed", :message => message)
 	end
     end
-    task :update_status do
-	# Get all entry in Facebook table
-	FacebookAccount.all({:publish => true}).each do |account|
-		# Get user nickname
-		nickname = account.user.nickname
-		status = account.user.status
+    task :update_status, :nickname do |t, args|
+	# Get Facebook account with this nickname
+	nickname = args.nickname
+	if !nickname.nil? then
+		user = User.first({:nickname => nickname})
+		account = FacebookAccount.first({:user => user})
+		if !account.nil? then
+			# Get status
+			status = account.user.status
 
-		# Message
-		message = %{Nouveau status: #{status}}
+			# Build message
+			message = %{Nouveau status: #{status}}
 
-		# Get key
-		access_token=account.access_token
+			# Get key
+			access_token=account.access_token
 
-		# Connect
-		graph = Koala::Facebook::GraphAPI.new(access_token)
+			# Connect
+			graph = Koala::Facebook::GraphAPI.new(access_token)
 
-		# Update wall
-		graph.put_object("me", "feed", :message => message)
+			# Update wall
+			graph.put_object("me", "feed", :message => message)
 
-		# Set publish flag to false
-		account.publish = false
-		account.save
+			# Set publish flag to false
+			account.publish = false
+			account.save
+		end
 	end
     end
     task :set_publish, :value, :nickname do |t,args|
