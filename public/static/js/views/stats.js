@@ -12,7 +12,7 @@ var StatsView = function() {
 StatsView.prototype.show = function(){
     var self=this;
     $('#titles h1').html('Welcome ' + mainApplication.user);
-    $('#menu').load('/static/html/menu.html');
+    $('#pageNavbar').load('/static/html/menu.html');
 
     var files=[];
     var tests=[];
@@ -31,6 +31,11 @@ StatsView.prototype.show = function(){
 }
 
 StatsView.prototype.htmlLoaded = function(self) {
+    if ( typeof $('#graph') == 'undefined') {
+        alert('ERROR');
+    } else {
+        $('#graph').css({height: '25em'});
+    }
     self.showLineChartSubview();
     $('#weekButton').click(function(){self.showWeek()});
     $('#dayButton').click(function(){self.showDay()});
@@ -168,10 +173,10 @@ StatsView.prototype.draw_graphic = function() {
     var datas=[];
     if ( ( typeof self.chartDatas[1] == 'undefined' ) || 
             (self.chartDatas[1].length == 0) ) {
-        datas[0] = { color: "#CFF", data: self.chartDatas[0], lines: {show: true, fill: true} };
+        datas[0] = { data: self.chartDatas[0], lines: {show: true, fill: true} };
     } else {
-        datas[0] = { color: "#CFF", data: self.chartDatas[0], lines: {show: true, fill: true}, label: self.mainLabel };
-        datas[1] = { color: "#555", data: self.chartDatas[1], lines: {show: true, fill: false}, label: self.secondLabel };
+        datas[0] = { data: self.chartDatas[0], lines: {show: true, fill: true}, label: self.mainLabel };
+        datas[1] = { data: self.chartDatas[1], lines: {show: true, fill: false}, label: self.secondLabel };
     }
 
     $.plot($('#graph'), datas, 
@@ -182,16 +187,11 @@ StatsView.prototype.draw_graphic = function() {
 	                max: to
 	            },
                 yaxis: { min: 0, max: maximum}, 
-                grid: {
-                    color: '#888',
-                    backgroundColor: {
-                        colors: ['#011111','#010101']} 
-                },
                 legend: {
-                    labelBoxBorderColor: '#000',
+                    labelBoxBorderColor: '#FFF',
                     position: 'nw',
                     margin: 0,
-                    backgroundColor: '#222',
+                    backgroundColor: '#FFF',
                     backgroundOpacity: 0.9 
                 },
                 hooks: {
