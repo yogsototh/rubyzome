@@ -9,7 +9,7 @@ var AccountView = function() {
 AccountView.prototype.show = function(){
     var self=this;
     $('#titles h1').html('Welcome ' + mainApplication.user);
-    $('#menu').load('/static/html/menu.html');
+    $('#pageNavbar').load('/static/html/menu.html');
     $('#content').load("/static/html/user_account.html",
                             function(){ self.htmlLoaded(self);});
 }

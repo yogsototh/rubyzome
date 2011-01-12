@@ -12,7 +12,7 @@ var StatsView = function() {
 StatsView.prototype.show = function(){
     var self=this;
     $('#titles h1').html('Welcome ' + mainApplication.user);
-    $('#menu').load('/static/html/menu.html');
+    $('#pageNavbar').load('/static/html/menu.html');
 
     var files=[];
     var tests=[];

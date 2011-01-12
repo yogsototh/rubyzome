@@ -20,8 +20,6 @@ body, #info {
     text-align: center;
     padding: 2em;
     min-height: 500px;
-    border-top: 1px solid #666;
-    border-bottom: 1px solid #666;
 }
 #content b, 
 #content strong,
@@ -271,6 +269,8 @@ table input {
     width: 30em;
     border: solid 1px #333;
 }
+#costs table {
+    margin: 0 auto; }
 #instantconsumptionvalue {
     font-weight: bold;
     margin-top: 1em;
@@ -290,7 +290,7 @@ table input {
     width: 35em; 
     float: right;
     padding: 1.5em;
-    border: solid 1px #333;
+    border: solid 1px #EEE;
     border-radius: 3px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -305,7 +305,7 @@ table input {
 #graphinfo {
     text-align: center;
     background-color: #EFEFEF;
-    border: 1px solid #333;
+    border: 1px solid #EEE;
     color: #888;
     margin: 1em;
     padding: 1em;
@@ -321,5 +321,19 @@ table input {
 }
 .centerblock {
     margin: 0 auto;
-    width: 960px;
+}
+#menu {
+    margin-top: 1em;
+}
+#menu a {
+    color: #888;
+    font-shadow: 0 1px #000;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: .5em;
+    margin: 0 1em;
+    padding: .5em;
+}
+#menu a:hover {
+    background-color: #666;
 }
