@@ -80,7 +80,7 @@ ConsumptionView.prototype.show_instant_data=function(cons) {
     var i=1;
     var cons_color="#4C4";
     while (i<16) {
-        if ( Math.floor( ( cons * 16 ) / 3500 )) {
+        if ( Math.floor( ( cons * 16 ) / 2000 )) {
             mainApplication.log('#consumptionAnalogic table tr.c'+i+' td');
             if (i>4) cons_color="#4CC";
             if (i>8) cons_color="#CC4";
