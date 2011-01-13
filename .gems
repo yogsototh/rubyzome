@@ -1,4 +1,4 @@
-dm-core
+dm-core --version '~> 1.0.2'
 dm-migrations
 dm-postgres-adapter
 erubis
