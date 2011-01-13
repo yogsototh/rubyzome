@@ -439,3 +439,17 @@ table.contentMarketSegmentation tr.tableContent th {
 table.contentMarketSegmentation tr.tableContent td {
   border: 1px solid #bfbfbf;
 }
+#instantconsumptionvalue {
+    font-weight: bold;
+    margin-top: 1em;
+    padding: .5em;
+    color: #45A5D1;
+    background-color: #DAEEF7;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+.c1 td, .c2 td, .c3 td, .c4 td { background-color: #efe; }
+.c5 td, .c6 td, .c7 td, .c8 td { background-color: #eff; }
+.c9 td, .c10 td, .c11 td, .c12 td { background-color: #ffe; }
+.c13 td, .c14 td, .c15 td, .c16 td { background-color: #fee; }

@@ -79,13 +79,16 @@ ConsumptionView.prototype.show_instant_data=function(cons) {
     $('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
     var i=1;
     var cons_color="#4C4";
-    while (i<16) {
+    while (i<=16) {
         if ( Math.floor( ( cons * 16 ) / 2000 ) > i-1) {
             if (i>4) cons_color="#4CC";
             if (i>8) cons_color="#CC4";
             if (i>12) cons_color="#C44";
         } else {
-            cons_color="#FFF";
+            cons_color="#EFE";
+            if (i>4) cons_color="#EFF";
+            if (i>8) cons_color="#FFE";
+            if (i>12) cons_color="#FEE";
         }
         $('#consumptionAnalogic table tr.c'+i+' td').css({backgroundColor: cons_color});
         i++;
