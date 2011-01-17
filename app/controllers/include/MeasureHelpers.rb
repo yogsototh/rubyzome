@@ -99,6 +99,7 @@ module MeasureHelpers
         sum=0
         nb=0
         ms.each do |m|
+            # puts %{#{m.consumption}\t#{next_step}\t#{m.date}\t#{sum}}
             if Time.parse( m.date.to_s) < next_step
                 sum+=m.consumption
                 nb+=1
@@ -108,48 +109,12 @@ module MeasureHelpers
                 else
                     measures <<= Measure.new({:date => next_step, :consumption => -1})
                 end
-                sum=0
-                nb=0
+                sum=m.consumption
+                nb=1
                 next_step += iint
             end
         end
 
-        # # Split timeframe (from..to) into timeframes of "interval" length
-        # timeframe = (ifrom..ito)
-        # interval_from_sec = timeframe.first
-        # measures=[]
-        # timeframe.step(iint) do |interval_to_sec|
-        #     # Do not take first value into account
-        #     next if interval_to_sec == timeframe.first
-
-        #     # Make sure current "from" to current "to" is wider than an interval
-        #     next if interval_to_sec - interval_from_sec < interval.to_i
-
-        #     # Convert interval_from_sec and interval_to_sec into DateTime
-        #     interval_from_date = Time.at(interval_from_sec)
-        #     interval_to_date = Time.at(interval_to_sec)
-
-        #     tot = 0
-        #     avg = 0
-        #     ms =  Measure.all({ :sensor => sensor,
-        #                         :date.gt => interval_from_date,
-        #                         :date.lt => interval_to_date,
-        #                         :limit => sqrt_ft})
-
-        #     # Make sure list of measures is not emtpy
-        #     # if it is, return -1 as consumption
-        #     if ms.length == 0
-        #         m = Measure.new({:date => interval_from_date, :consumption => -1})
-        #         measures << m
-        #     else
-        #         ms.each { |m| tot = tot + m.consumption }
-        #         avg = tot / ms.length 
-        #         m = Measure.new({:date => interval_from_date, :consumption => avg})
-        #         measures << m
-        #     end
-
-        #     interval_from_sec = interval_to_sec
-        # end
         encapsulate(measures, interval)
     end
 end
