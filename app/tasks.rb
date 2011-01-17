@@ -308,7 +308,7 @@ namespace "db" do
 	end
     end
 
-    task :fast_add_history do
+    task :fast_init do
         require 'rubygems'
         require 'dm-core'
         require 'global'
@@ -344,7 +344,7 @@ namespace "db" do
 	now=Time.now
 	# One measure every 1 minutes
 	step=1
-	(-90..100).each do |i|
+	(-90..0).each do |i|
 		# Get current date
 		puts %{#{i} - #{(now + i * 60 * step).to_s}}
 		current_date = DateTime.parse( (now + i * 60 * step).to_s )
