@@ -13,6 +13,8 @@ function getUserFromCookie() {
 
 function logout() {
     $.cookie('user',null);
+    $.cookie('password',null);
+    $.cookie('remember',null);
     return true; // in order not to disable the link
 }
 
@@ -25,38 +27,52 @@ function select_and_active() {
 	$(this).removeClass('inactive')
 }
 
+function clearInput() {
+    this.value=''; 
+    this.select(); 
+    $(this).removeClass('inactive');
+}
+
+function setDefaultInput(elem, defaultValue) {
+    if (!elem.value) {
+        elem.value=defaultValue; 
+        $(elem).addClass('inactive');
+    }
+}
+
+
+function showLoginView() {
+    $('#content').load("/static/html/login.html",function(){
+	    $("#username").click(clearInput);
+	    $("#username").focus(clearInput);
+	    $("#username").blur( function() {setDefaultInput(this,"User Name");});
+	    $("#password").click(clearInput);
+	    $("#password").focus(clearInput)
+
+	    $('form[name=login_form]').submit(function (){
+	    	user = $('[name=l]').val();
+	    	password = $('[name=p]').val();
+            if ($('#remember').attr('checked')) {
+                $.cookie('user',user,{expires: 14});
+                $.cookie('password',password,{expires: 14});
+                $.cookie('remember',true,{expires: 14});
+            } else {
+                $.cookie('user',null);
+                $.cookie('password',null);
+                $.cookie('remember',true,null);
+            }
+	    	showUserConsumption();
+	    	return false;
+            });
+    });
+}
+
 // after document loaded
 $(document).ready(function(){ 
 	if ( getUserFromCookie() ) {
 		showUserConsumption();
     } else {
-	    $("#username").click(function() { $(this).select(); $(this).removeClass('inactive'); });
-	    $("#username").focus(function() { $(this).select(); $(this).removeClass('inactive'); });
-	    $("#password").click(function() { $(this).select(); $(this).removeClass('inactive'); });
-	    $("#password").focus(function() { $(this).select(); $(this).removeClass('inactive'); });
-
-	    $('#username').change(function(){
-	    	if ( $(this).val() == '' || $(this).val() == 'User Name') {
-	    		$(this).val('User Name');
-	    		$(this).addClass('inactive');
-	    	}
-	    });
-
-	    $('#password').change(function(){
-	    	if ( $(this).val() == '' ) {
-	    		$(this).val('password');
-	    		$(this).addClass('inactive');
-	    	}
-	    });
-
-	    $('form[name=login_form]').submit(function (){
-	    	user = $('[name=l]').val();
-	    	password = $('[name=p]').val();
-            $.cookie('user',user);
-            $.cookie('password',password);
-	    	showUserConsumption();
-	    	return false;
-            });
+        showLoginView();
     }
     $('#blackpage').fadeOut();
 });
@@ -72,7 +88,7 @@ function showUserConsumption(){
 		data: login_param , 
 		success: function(json){
 			$('#content').load("/static/html/user_consumption.html",function(){
-				$('#username strong').html(user);
+				// $('#username strong').html(user);
 
 				$.getJSON('/users/' + user + '.json',
 					  login_param,
@@ -85,24 +101,15 @@ function showUserConsumption(){
 				// only for first sensor
 				sensor=json[0]["sensor_hr"];
 				var last_measure_param = { "l": user, "p" : password, "v": 2 };
-				var last_day_measure_param = { "l": user, "p" : password, "from" : one_day_ago.toString(), "v": 2, "to": now.toString(), interval: 1800 };
-				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
-					draw_graphic( measure );
-				});
-				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
-					var len=measure["data"].length;
-					var last=measure["data"][len-1];
-					//var cons=last["consumption"]
-					var cons=last;
-					var KWH_COST=0.082;
-					var HOURLY_COST_MULTI = 0.001;
-					var DAILY_COST_MULTI = 0.024;
-					var MONTHLY_COST_MULTI = 0.720;
-					$('#instantconsumptionvalue').html( cons + ' Watts' );
-					$('#instanthourlycostvalue').html( (cons * KWH_COST * HOURLY_COST_MULTI).toFixed(2) + " €");
-					$('#instantdailycostvalue').html( (cons * KWH_COST * DAILY_COST_MULTI).toFixed(2) + " €");
-					$('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
-				});
+
+                update_dates();
+				var last_day_measure_param = { "l": user, "p" : password, "from" : last_midnight.toString(), "v": 2, "to": next_midnight.toString(), interval: 300 };
+
+				var past_day_measure_param = { "l": user, "p" : password, "from" : preceeding_midnight.toString(), "v": 2, "to": last_midnight.toString(), interval: 300 };
+                update_today_graphic(prefix_url, user, password, sensor, last_day_measure_param);
+                update_yesterday_graphic(prefix_url, user, password, sensor, past_day_measure_param);
+                update_instant_consumption(prefix_url, user, password, sensor, last_measure_param);
+                $('#dayButton').addClass('selected');
 				showMenu();
 				showTitle();
 				return false;	
@@ -115,6 +122,42 @@ function showUserConsumption(){
 	});
 }
 
+function update_today_graphic(prefix_url, user, password, sensor, last_day_measure_param) {
+        if ( $('#instantconsumptionvalue').length > 0 ) {
+				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_day_measure_param, function(measure) {
+					initTodayData( measure );
+				});
+            setTimeout(function() {update_graphic(prefix_url,user,password,sensor,last_day_measure_param);}, 300000);
+        }
+}
+function update_yesterday_graphic(prefix_url, user, password, sensor, past_day_measure_param) {
+        if ( $('#instantconsumptionvalue').length > 0 ) {
+				$.getJSON(prefix_url+'/'+sensor+'/measures.json', past_day_measure_param, function(measure) {
+					initYesterdayData( measure );
+				});
+            setTimeout(function() {update_graphic(prefix_url,user,password,sensor,last_day_measure_param);}, 300000);
+        }
+}
+function update_instant_consumption(prefix_url, user, password, sensor, last_measure_param) {
+        if ( $('#instantconsumptionvalue').length > 0 ) {
+				$.getJSON(prefix_url+'/'+sensor+'/measures.json', last_measure_param, function(measure) {
+					var len=measure["data"].length;
+					var last=measure["data"][len-1];
+
+					//var cons=last["consumption"]
+					var cons=last;
+					var KWH_COST=0.082;
+					var HOURLY_COST_MULTI = 0.001;
+					var DAILY_COST_MULTI = 0.024;
+					var MONTHLY_COST_MULTI = 0.720;
+					$('#instantconsumptionvalue').html( cons + ' Watts' );
+					$('#instanthourlycostvalue').html( (cons * KWH_COST * HOURLY_COST_MULTI).toFixed(2) + " €");
+					$('#instantdailycostvalue').html( (cons * KWH_COST * DAILY_COST_MULTI).toFixed(2) + " €");
+					$('#instantmonthlycostvalue').html( (cons * KWH_COST * MONTHLY_COST_MULTI).toFixed(2) + " €");
+				});
+            setTimeout(function() {update_instant_consumption(prefix_url,user,password,sensor,last_measure_param);}, 3000);
+        }
+}
 function showUserAccount(){
 	$('#content').load('/static/html/user_account.html', function(){
 		tr = $('<tr class="r0" id="line' + user + '"><td>' + user + '</td><td><input type="text" id="pw' + user + '"  value="' + password + '"/></td> <td>' + stat + '</td> <td><span class="button" onclick="update_resource(\'account\',\'' + user + '\')">update</span></td></tr>');
@@ -200,26 +243,89 @@ Date.prototype.setISO8601 = function (string) {
     this.setTime(Number(time));
 }
 
-function draw_graphic( data ) {
-    // draw something inside $('#graph')
-    var from=new Date();
-    var to=new Date();
-    from.setISO8601(data["from"]);
-    to.setISO8601(data["to"]);
-    var datatabs=new Array();
+var todayData=[];
+var yesterdayData=[];
+var maxToday=3000;
+var maxYesterday=3000;
+
+function initYesterdayData(data) {
     var interval=data["interval"];
+    var from=last_midnight;
+    var to=next_midnight;
+    yesterdayData=[];
     $.each(data["data"],function(index, value) {
-	if (index) {
-	    datatabs[index]=[ from.getTime() + (index*interval*1000), value ];
-	}
+	    if (index) {
+            yesterdayData.push( [ from.getTime() + (index*interval*1000), value==-1?null:value ] );
+	    }
     });
-    $.plot($('#graph'), [ datatabs ], { xaxis: {
-	    mode: "time",
-	    min: from.getTime(),
-	    max: to.getTime()
-	},
-	yaxis: { min: 0, max: 3000 } });
+    maxYesterday=data["max"];
+    draw_graphic(interval);
 }
 
-var now=new Date
-var one_day_ago=new Date((new Date).getTime() - 24 * 3600000)
+function initTodayData(data) {
+    var interval=data["interval"];
+    var from=last_midnight;
+    var to=next_midnight;
+    todayData=[];
+    $.each(data["data"],function(index, value) {
+	    if (index) {
+            todayData[index]=[ from.getTime() + (index*interval*1000), value==-1?null:value ];
+	    }
+    });
+    maxToday=data["max"];
+    draw_graphic(interval);
+}
+
+function draw_graphic(interval) {
+    // draw something inside $('#graph')
+    var from=last_midnight;
+    var to=next_midnight;
+
+    var maximum = maxToday>maxYesterday ? maxToday : maxYesterday;
+    maximum=Math.ceil(maximum/1000) * 1000;
+
+    $.plot($('#graph'), [ 
+            { color: "#CFF", data: todayData, lines: {show: true, fill: true}, label: "Today" },
+            { color: "#555", data: yesterdayData, lines: {show: true, fill: false}, label: "Yesterday" }
+                            ], 
+            {  
+                xaxis: {
+	                mode: "time",
+	                min: from.getTime()+interval*1000,
+	                max: to.getTime()
+	            },
+                yaxis: { min: 0, max: maximum}, 
+                grid: {
+                    color: '#888',
+                    backgroundColor: {
+                        colors: ['#011111','#010101']} 
+                },
+                legend: {
+                    labelBoxBorderColor: '#000',
+                    position: 'nw',
+                    margin: 0,
+                    backgroundColor: '#222',
+                    backgroundOpacity: 0.9 
+                }
+
+            });
+}
+
+var now;
+var one_day_ago;
+var preceeding_midnight;
+var yesterday_midnight;
+var last_midnight;
+var next_midnight;
+
+function update_dates() {
+    now=new Date;
+    one_day_ago=new Date((new Date).getTime() - 24*60*60*1000);
+    preceeding_midnight=new Date(one_day_ago.getFullYear(), one_day_ago.getMonth(), one_day_ago.getDate(), 0, 0, 0, 0);
+    yesterday_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    last_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    next_midnight=new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+}
+
+update_dates();
+

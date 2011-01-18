@@ -1,6 +1,31 @@
-<a href="" onclick="showUserConsumption();return false;">My consumption</a>
-
-<a href="" onclick="showUserAccount();return false;">Account settings</a>
-
-<a href="/" onclick="logout();">Logout</a>
-
+<ul class="pageNavbar_items">
+    <li>
+        <div class="arrow">
+            <a href="" onclick="mainApplication.showUserConsumption();return false;">
+                <span>My consumption</span>
+            </a>
+        </div>
+    </li>
+    <li>
+        <div class="arrow">
+            <a href="" onclick="mainApplication.showUserStats();return false;">
+                <span>Statistics</span>
+            </a>
+        </div>
+    </li>
+    <li>
+        <div class="arrow">
+            <a href="" onclick="mainApplication.showUserAccount();return false;">
+                <span>Account settings</span>
+            </a>
+        </div>
+    </li>
+    <li>
+        <div class="arrow">
+            <a href="/" onclick="mainApplication.logout();">
+                <span>Logout</span>
+            </a>
+        </div>
+    </li>
+</ul>
+<div class="clear"></div>

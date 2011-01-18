@@ -4,7 +4,8 @@ class FacebookAccount
 
         # Properties
         property :id,			Serial
-        property :access_token,		String
+        property :access_token,		Text
+	property :publish,		Boolean, :default => false
 
         # Associations
         belongs_to :user
