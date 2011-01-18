@@ -31,6 +31,16 @@ module MeasureHelpers
     end
 
     def encapsulate(measures, interval = 0 )
+        if measures.nil? or measures.length == 0
+            return {
+                'from'		=> nil,
+                'to'		=> nil,
+                'max'		=> 0,
+                'interval'	=> interval.to_i,
+                'data'		=> [],
+            }
+        end
+
         localFrom=to_client_timezone(measures[0].date)
         localTo=to_client_timezone(measures[-1].date)
         if @version.nil?
@@ -90,9 +100,9 @@ module MeasureHelpers
         end
 
         ms =  Measure.all({ :sensor => sensor,
-                                    :date.gt => from,
-                                    :date.lt => to,
-                                    :limit => @fetch_limit})
+                            :date.gt => from,
+                            :date.lt => to,
+                            :limit => @fetch_limit})
 
         measures=[]
         next_step=from + iint
@@ -100,18 +110,21 @@ module MeasureHelpers
         nb=0
         ms.each do |m|
             # puts %{#{m.consumption}\t#{next_step}\t#{m.date}\t#{sum}}
-            if Time.parse( m.date.to_s) < next_step
+            t=Time.parse( m.date.to_s)
+            if t < next_step
                 sum+=m.consumption
                 nb+=1
             else
                 if nb>0
                     measures <<= Measure.new({:date => next_step, :consumption => sum/nb})
-                else
+                end
+                next_step += iint
+                while t > next_step
                     measures <<= Measure.new({:date => next_step, :consumption => -1})
+                    next_step += iint
                 end
                 sum=m.consumption
                 nb=1
-                next_step += iint
             end
         end
 
