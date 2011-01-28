@@ -43,21 +43,27 @@ class TwitteraccountController < Rubyzome::RestController
     end
 
     def update
+	# Not used
+    end
+
+    end
+
+    def delete
 	check_authentication
 	account = get_account
 	user = get_user(:l)
 	check_ownership_user_account(user,account)
 
+	# Get consumer and access token
 	begin
-		# TODO
+		# Delete current twitter account if any
+		currentTwitterAccount = user.twitterAccount
+		if(!currentTwitterAccount.nil?) then
+			currentTwitterAccount.destroy
+		end
 	rescue Exception => e
-		raise Rubyzome::Error,"Cannot update twitter object: #{e.message}"
+		raise Rubyzome::Error, "Cannot create twitterAccount object: #{e.message}"
 	end
-
-	clean_id(account.attributes.merge(account.user.attributes))
     end
-
-    def delete
-	action_not_available
     end
 end

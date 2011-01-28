@@ -43,23 +43,24 @@ class FacebookaccountController < Rubyzome::RestController
     end
 
     def update
+	# Not used
+    end
+
+    def delete
 	check_authentication
 	account = get_account
 	user = get_user(:l)
 	check_ownership_user_account(user,account)
 
+	# Get access token
 	begin
-		facebookAccount = user.facebookAccount
-		facebook_key = clean_hash([:access_token])
-		facebookAccount << facebook_key
-		facebookAccount.save
-		clean_id(facebookAccount.attributes.merge(user.attributes))
+                # Delete current Facebookaccount if any
+                currentFacebookAccount = user.facebookAccount
+                if(!currentFacebookAccount.nil?) then
+                        currentFacebookAccount.destroy
+                end 
 	rescue Exception => e
-		raise Rubyzome::Error,"Cannot update facebook object: #{e.message}"
+		raise Rubyzome::Error, "Cannot create facebookAccount object: #{e.message}"
 	end
-    end
-
-    def delete
-	action_not_available
     end
 end
