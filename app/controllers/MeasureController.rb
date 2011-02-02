@@ -26,9 +26,11 @@ class MeasureController < Rubyzome::RestController
 
         # return last measure if from not given
         if from.nil?
+            client_date = @request[:refdate]
+            @client_offset=DateTime.parse(client_date).offset
             return show_last_measure(sensor)
         end
-
+        
         @client_offset=DateTime.parse(from).offset
 
         # if only from is given return all values from 'from'
