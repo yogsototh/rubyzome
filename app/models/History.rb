@@ -14,7 +14,7 @@ class History
         property :interval,  Integer # interval in seconds
 
         # Associations
-        has_n :measure,     :model => "Measure"
         belongs_to :sensor, :model => "Sensor"
+        has n, :measure,   :model => "Measure"
 end
 
