@@ -58,6 +58,20 @@ module Helpers
         return sensor
     end
 
+    ### HISTORY STUFF ###
+
+    def get_history(id=:history)
+        history_id = @request[id]
+        if(history_id.nil?) then
+            raise Rubyzome::Error, "No history id provided"
+        end
+        history = History.first({:history => history_id})
+        if(history.nil?) then
+            raise Rubyzome::Error,"History #{history_id} does not exist"
+        end
+        return history
+    end
+
     ### MEASURE STUFF ###
 
     def get_measure(id=:measure_id)
@@ -89,6 +103,12 @@ module Helpers
     def check_ownership_sensor_measure(sensor,measure)
         if measure.sensor != sensor then
             raise Rubyzome::Error, "Measure #{measure.measure_hr} does not belong to Sensor #{sensor.sensor_hr}"
+        end
+    end
+
+    def check_ownership_sensor_history(sensor,history)
+        if history.sensor != sensor then
+            raise Rubyzome::Error, "History #{history.id} does not belong to Sensor #{sensor.sensor_hr}"
         end
     end
 
