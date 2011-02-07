@@ -241,6 +241,20 @@ namespace "db" do
                                   :user             => user) 
                 sensor.save
 
+                # create History
+                [60*5,60*30,60*60*6].each do |interval|
+                    case interval
+                    when 5*60 then name="5min"
+                    when 60*30 then name="30min"
+                    when 60*60*6 then name="6h"
+                    else name=interval.to_s
+                    end
+                    history=History.new(:name => "#{nickname}_#{sensor_nb}_#{name}", 
+                                    :interval => interval, 
+                                    :sensor => sensor ) 
+                    history.save
+                end
+
                 # Note: measure creation (for johndoe_1 sensor) should be done using db:add_measures tasks
             end
         end
