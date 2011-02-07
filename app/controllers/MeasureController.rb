@@ -85,10 +85,12 @@ class MeasureController < Rubyzome::RestController
             hml = h.measure.last
             interval  = h.interval
             if hml.nil?
+                last_history_date = DateTime.parse("01/01/1970")
             else
                 last_history_date = hml.date
             end
             last_history_time = Time.parse( last_history_date.to_s )
+            puts "#{interval - last_measure_time.to_i + last_history_time.to_i} sec before update history"
             if last_measure_time - last_history_time  > interval
                 n=Time.now
                 last_history_time = n - interval - n.to_i%interval
