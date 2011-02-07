@@ -1,4 +1,4 @@
-class Measure
+class HMeasure
         # Includes
         include DataMapper::Resource
 
@@ -9,6 +9,6 @@ class Measure
         property :consumption,  Integer
 
         # Associations
-        belongs_to :sensor,     :model => "Sensor"
+        belongs_to :history,     :model => "History"
 end
 

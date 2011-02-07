@@ -171,13 +171,19 @@ namespace "db" do
             account.save
 
             # Create sensors for each users
-            nb_sensors=rand(3)+1
+            nb_sensors=1
             (1..nb_sensors).each do |sensor_nb|
                 sensor=Sensor.new(:sensor_hr    => "#{nickname}_#{sensor_nb}",
                                   :description  => "Sensor #{sensor_nb} of #{firstname} #{lastname}",
                                   :address      => "Same as user",
                                   :user         => user) 
                 sensor.save
+
+                # create History
+                history=History.new(:name => "#{nickname}_#{sensor_nb}_5min", 
+                                    :interval => 60*5, 
+                                    :sensor => sensor ) 
+                history.save
 
                 # Create measure for each sensor: one measure each 30 minutes for the past 2 days
                 nb_measures=96

@@ -58,6 +58,34 @@ module Helpers
         return sensor
     end
 
+    ### HISTORY STUFF ###
+
+    def get_history(id=:history_id)
+        history_id = @request[id]
+        if(history_id.nil?) then
+            raise Rubyzome::Error, "No history provided"
+        end
+        history = History.first({:name => history_id})
+        if(history.nil?) then
+            raise Rubyzome::Error,"History #{history_id} does not exist"
+        end
+        return history
+    end
+
+    ### HMEASURE STUFF ###
+
+    def get_hmeasure(id=:measure_id)
+        measure_id = @request[id]
+        if(measure_id.nil?) then
+            raise Rubyzome::Error, "No measure provided"
+        end
+        measure = HMeasure.first({:id => measure_id})
+        if(measure.nil?) then
+            raise Rubyzome::Error,"HMeasure #{measure_id} does not exist"
+        end
+        return measure
+    end
+
     ### MEASURE STUFF ###
 
     def get_measure(id=:measure_id)
@@ -65,7 +93,7 @@ module Helpers
         if(measure_id.nil?) then
             raise Rubyzome::Error, "No measure provided"
         end
-        measure = Measure.first({:measure_hr => measure_id})
+        measure = Measure.first({:id => measure_id})
         if(measure.nil?) then
             raise Rubyzome::Error,"Measure #{measure_id} does not exist"
         end
@@ -88,7 +116,13 @@ module Helpers
 
     def check_ownership_sensor_measure(sensor,measure)
         if measure.sensor != sensor then
-            raise Rubyzome::Error, "Measure #{measure.measure_hr} does not belong to Sensor #{sensor.sensor_hr}"
+            raise Rubyzome::Error, "Measure #{measure.id} does not belong to Sensor #{sensor.sensor_hr}"
+        end
+    end
+
+    def check_ownership_history_hmeasure(history,hmeasure)
+        if hmeasure.history != history then
+            raise Rubyzome::Error, "HMeasure #{hmeasure.id} does not belong to Sensor #{history.name}"
         end
     end
 
@@ -108,6 +142,7 @@ module Helpers
         hash.delete(:user_id)
         hash.delete(:account_id)
         hash.delete(:sensor_id)
+        hash.delete(:history_id)
         hash
     end
 
