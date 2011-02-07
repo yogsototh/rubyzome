@@ -20,7 +20,7 @@ class MeasureController < Rubyzome::RestController
 		    sensor = get_sensor
 		    check_ownership_user_sensor(user,sensor)
 
-            @fetch_limit=200
+            @fetch_limit=500
 
             # Get filter params
             from		= @request[:from]
