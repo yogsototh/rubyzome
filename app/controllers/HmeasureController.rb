@@ -9,6 +9,7 @@ class HmeasureController < Rubyzome::RestController
 
     def index
         check_authentication
+        requestor = get_user(:l)
         user = get_user
 		check_ownership_requestor_user(requestor,user)
 		sensor = get_sensor

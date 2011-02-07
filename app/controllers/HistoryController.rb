@@ -9,7 +9,7 @@ class HistoryController < Rubyzome::RestController
 	    requestor = get_user(:l)
 	    user = get_user
 	    check_ownership_requestor_user(requestor,user)
-        sensor = get_sensor(:sensor)
+        sensor = get_sensor
 	    check_ownership_user_sensor(user,sensor)
         History.all({:sensor => sensor}).map do |x| 
 		    clean_id(x.attributes)
@@ -25,7 +25,7 @@ class HistoryController < Rubyzome::RestController
 	    requestor = get_user(:l)
 	    user = get_user
 	    check_ownership_requestor_user(requestor,user)
-	    sensor = get_sensor(:sensor)
+	    sensor = get_sensor
 	    check_ownership_user_sensor(user,sensor)
         history = get_history
         check_ownership_sensor_history(sensor,history)

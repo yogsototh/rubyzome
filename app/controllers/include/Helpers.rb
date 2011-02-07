@@ -60,12 +60,12 @@ module Helpers
 
     ### HISTORY STUFF ###
 
-    def get_history(id=:history)
+    def get_history(id=:history_id)
         history_id = @request[id]
         if(history_id.nil?) then
             raise Rubyzome::Error, "No history id provided"
         end
-        history = History.first({:history => history_id})
+        history = History.first({:name => history_id})
         if(history.nil?) then
             raise Rubyzome::Error,"History #{history_id} does not exist"
         end
