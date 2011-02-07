@@ -11,10 +11,11 @@ class History
 
         # Properties
         property :id,        Serial
+        property :name,      String
         property :interval,  Integer # interval in seconds
 
         # Associations
         belongs_to :sensor, :model => "Sensor"
-        has n, :measure,   :model => "Measure"
+        has n, :measure,   :model => "HMeasure"
 end
 
