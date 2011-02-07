@@ -19,7 +19,7 @@ class HistoryController < Rubyzome::RestController
         sensor=get_sensor
         check_mandatory_params([:interval,:name])
         begin
-            history=History.new(clean_hash[:interval,:name])
+            history=History.new(clean_hash([:interval,:name]))
             history.sensor = sensor
             history.save
         rescue Exception => e
