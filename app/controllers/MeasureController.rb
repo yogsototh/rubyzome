@@ -96,7 +96,7 @@ class MeasureController < Rubyzome::RestController
                 last_history_time = n - interval - n.to_i%interval
                 last_history_date = last_history_time.to_datetime
                 puts "Active update for #{h.name}"
-                to   = ( last_history_date.to_time + interval ).to_datetime
+                to   = ( n - n.to_i % interval ).to_datetime
                 from = last_history_date
                 measures = Measure.all({:sensor => sensor, 
                                        :date.gt => from, 
