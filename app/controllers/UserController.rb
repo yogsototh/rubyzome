@@ -30,12 +30,27 @@ class UserController < Rubyzome::RestController
     def update
         check_authentication
         user = get_user
+	current_status = user.status
 
         begin
-            clean_hash([:nickname,:status]).each { |key,value|
-                user.update( {key => value} )
-            }
+	    # Get params
+            params = clean_hash([:nickname,:status])
+	    nickname = params[:nickname]
+	    new_status = params[:status]
+
+	    # Update user
+	    user.update( {:nickname => nickname, :status => new_status} )
             user.save
+
+	    # Update status if changed
+	    if !new_status.eql?(current_status) then
+			# Update Twitter account 
+			update_twitter(nickname, new_status)
+
+			# Update Facebook account
+			update_facebook(nickname, new_status)
+	    end
+
         rescue Exception => e
             raise Rubyzome::Error,"Cannot update user: #{e.message}"        
         end
