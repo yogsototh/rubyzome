@@ -4,6 +4,11 @@ require 'time'
 class MobileController < Rubyzome::ServiceRestController
     require 'app/controllers/include/Helpers.rb'
     include Helpers
+    require 'app/controllers/include/MeasureHelpers.rb'
+    include MeasureHelpers
+	require 'app/controllers/include/HMeasureHelpers.rb'
+    include HMeasureHelpers
+
 
     def services
         {    
@@ -12,12 +17,7 @@ class MobileController < Rubyzome::ServiceRestController
         }
     end
 
-    require 'app/controllers/include/MeasureHelpers.rb'
-    include MeasureHelpers
-
-    # Get all measure for a given sensor
-    # curl -i -d'l=login&p=password' -XGET http://gpadm.loc/sensors/main_home/measures
-    def info
+    def _measure_index
         check_authentication
         requestor = get_user(:l)
         user = get_user
@@ -25,28 +25,27 @@ class MobileController < Rubyzome::ServiceRestController
         sensor = get_sensor
         check_ownership_user_sensor(user,sensor)
 
-        @fetch_limit=200
+        @fetch_limit=500
 
         # Get filter params
-        nickname    = @request[:l]
-        from        = @request[:from]
-        to          = @request[:to]
-        interval    = @request[:interval]
-
-        @version=2
-
-        # Get status
-        status = User.first({:nickname => nickname}).status;
+        from		= @request[:from]
+        to	 	    = @request[:to]
+        interval 	= @request[:interval]
 
         # return last measure if from not given
         if from.nil?
-            return show_last_measure(sensor).merge({:status=>status})
+            client_date = @request[:refdate]
+            if not client_date.nil?
+                @client_offset=DateTime.parse(client_date).offset
+            end
+            return show_last_measure(sensor)
         end
 
-        # if only from is given return all values from 'from'
         @client_offset=DateTime.parse(from).offset
+
+        # if only from is given return all values from 'from'
         if to.nil?
-            return show_measure_from(sensor,from).merge({:status=>status})
+            return show_measure_from(sensor,from)
         end
 
         # Get time for "from" and "to" strings
@@ -60,9 +59,37 @@ class MobileController < Rubyzome::ServiceRestController
 
         # if from and to given but not interval
         if interval.nil? or interval.to_i <= 0
-            return show_measure_from_to(sensor,from,to).merge({:status => status})
+            return show_measure_from_to(sensor,from,to)
         end
 
-        return show_measure_from_to_with_interval(sensor,from,to,interval).merge({:status => status})
+        best=nil
+        max=0
+        History.all({:sensor => sensor}).each do |h|
+            puts "H: #{h.interval}"
+            if h.interval <= interval.to_i
+                max=h.interval
+                best=h
+            end
+        end
+        if best.nil?
+            return show_measure_from_to_with_interval(sensor,from,to,interval)
+        else
+            return show_hmeasure_from_to_with_interval(best,from,to)
+        end
+    end
+
+    # Get all measure for a given sensor
+    # curl -i -d'l=login&p=password' -XGET http://gpadm.loc/sensors/main_home/measures
+    def info
+        check_authentication
+        requestor = get_user(:l)
+        user = get_user
+        check_ownership_requestor_user(requestor,user)
+        sensor = get_sensor
+        check_ownership_user_sensor(user,sensor)
+
+        @fetch_limit=500
+        status = User.first({:nickname => @request[:l]}).status
+        return _measure_index().merge({:status=>status})
     end
 end
