@@ -17,14 +17,7 @@ class MobileController < Rubyzome::ServiceRestController
         }
     end
 
-    def _measure_index
-        check_authentication
-        requestor = get_user(:l)
-        user = get_user
-        check_ownership_requestor_user(requestor,user)
-        sensor = get_sensor
-        check_ownership_user_sensor(user,sensor)
-
+    def _measure_index(user,sensor)
         @fetch_limit=500
 
         # Get filter params
@@ -90,6 +83,6 @@ class MobileController < Rubyzome::ServiceRestController
 
         @fetch_limit=500
         status = User.first({:nickname => @request[:l]}).status
-        return _measure_index().merge({:status=>status})
+        return _measure_index(user,sensor).merge({:status=>status})
     end
 end
