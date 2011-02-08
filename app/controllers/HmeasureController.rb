@@ -8,6 +8,7 @@ class HmeasureController < Rubyzome::RestController
 
 
     def index
+        begin
         check_authentication
         requestor = get_user(:l)
         user = get_user
@@ -27,7 +28,9 @@ class HmeasureController < Rubyzome::RestController
         # return last measure if from not given
         if from.nil?
             client_date = @request[:refdate]
-            @client_offset=DateTime.parse(client_date).offset
+            if not client_date.nil?
+                @client_offset=DateTime.parse(client_date).offset
+            end
             return show_last_hmeasure(history)
         end
 
@@ -48,6 +51,10 @@ class HmeasureController < Rubyzome::RestController
         end
 
         return show_hmeasure_from_to(history,from,to)
+        rescue Exception => e
+            puts e.backtrace.join("\n")
+            return Rubyzome::Error, e.message
+        end
     end
 
     def create

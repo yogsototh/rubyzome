@@ -4,7 +4,7 @@ module HMeasureHelpers
     include TimezoneHelper
 
     def show_last_hmeasure(history)
-        return show_hmeasure_from_to_with_interval(history, (Time.now - history.interval*( @fetch_limit - 1)).to_datetime, DateTime.now )
+        return show_hmeasure_from_to_with_interval(history, DateTime.parse((Time.now - history.interval*( @fetch_limit - 1)).to_s), DateTime.now )
     end
 
     def show_hmeasure_from(history, from) 
