@@ -27,7 +27,7 @@ module HMeasureHelpers
             raise Rubyzome::Error, "timeframe is not wide enough to fit an interval"
         end
         if ((ito - ifrom) / iint) > @fetch_limit then
-            raise Rubyzome::Error, "Too much datas requested"
+            raise Rubyzome::Error, %{Too much datas requested : #{(ito -ifrom) / iint}. Please use a wider interval or a shorter 'to - from' duration.}
         end
 
         ms = HMeasure.all({ :history => history,
