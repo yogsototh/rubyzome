@@ -81,7 +81,7 @@ class MobileController < Rubyzome::ServiceRestController
         sensor = get_sensor
         check_ownership_user_sensor(user,sensor)
 
-        @fetch_limit=500
+        @version=2
         status = User.first({:nickname => @request[:l]}).status
         return _measure_index(user,sensor).merge({:status=>status})
     end
