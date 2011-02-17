@@ -1,0 +1,55 @@
+#!/usr/bin/env zsh
+
+(($#<1)) && {
+    print -- "usage: $0:t [-f] controllerName"
+    exit 1
+}>&2
+controllerName=$1
+rootdir=$PWD
+
+function error {
+    print -- $* >&2
+    exit 1
+}
+
+while [[ ! ( -f $rootdir/config.ru  && -d $rootdir/rubyzome) ]]; do
+    if [[ $rootdir = '/' ]]; then
+        print -- "$PWD does not appear to be in a rubyzome project"
+        exit 1
+    fi
+    rootdir=$rootdir:h
+done
+[[ ! -d $rootdir/app ]] && error "Can't find $rootdir/app directory."
+[[ ! -d $rootdir/app/controllers ]] && mkdir $rootdir/app/controllers
+dst=$rootdir/app/controllers/${controllerName}Controller.rb 
+[[ -f $dst ]] && ((FORCE == 0)) && error "$dst already exists"
+
+>$dst cat <<END
+require 'rubyzome/controllers/RestController.rb'
+class AccountController < Rubyzome::RestController
+    require 'rubyzome/controllers/helpers/glue.rb'
+    import ResourcesFromRequest
+
+    def index
+        $controllerName.all({:id => @request[$controllerName]})
+    end
+
+    def create
+	    action_not_available
+    end
+
+    def show
+        get_resource($controllerName)
+    end
+
+    def update
+	    action_not_available
+	end
+
+    def delete
+	    action_not_available
+    end
+end
+END
+
+print -- "$dst created"

@@ -1,32 +1,23 @@
 #!/usr/bin/env zsh
 
-rootDir="$(dirname $(dirname $(dirname $0)))"
-
-FORCE=0; [[ $1 = '-f' ]] && { FORCE=1; shift }
-
-(($#<1)) && {
-    print -- "usage: $0:t [-f] project_name"
+if (($#<1)); then
+    print -- "usage:\tgit <operation> <arguments>"
+    print -- "operations:"
+    print -P -- "\t%Bcreate-project%b\tCreate a new project"
+    print -P -- "\t%Bcreate-controller%b\tCreate a new controller"
+    print -P -- "\t%Bcreate-model%b\tCreate a new model"
+    print -P -- "\t%Bcreate-view%b\tCreate a new view"
     exit 1
-}>&2
+fi
 
-projectName=$1
+directory=$0:h
+if [[ "" = $directory ]]; then
+    rz='rubyzome'
+else
+    rz=$directory'/rubyzome'
+fi
 
-((FORCE==1)) && {
-    [[ -e $projectName ]] && { \rm -rf $projectName }
-}
+action=$1
+shift
 
-[[ -e $projectName ]] && {
-    print -- "$projectName already exists"
-    exit 1
-}>&2
-
-mkdir $projectName
-
-cp -r $rootDir/* $projectName
-(($?)) && {
-    print -- "something went wrong (tried to copy $fic)"
-}>&2
-mkdir $projectName/app
-
-print -- 'Congratulation, your project is created'
-print -- 'Now you should begin by populating the app/ directory'
+${rz}-${action} $@
