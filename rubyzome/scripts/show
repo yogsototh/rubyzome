@@ -7,4 +7,4 @@ else
     make_request=$directory'/make_request'
 fi
 # print -- "cmd: $make_request GET $*"
-eval $make_request DELETE $*
+eval $make_request GET $*
