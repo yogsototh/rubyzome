@@ -1,9 +1,37 @@
 namespace "test" do
-    server="http://localhost:8080"
-    user="johndoe"
-    pass="guest"
+    require 'httparty'
+    user='luc'
+    class Local
+        include HTTParty
+        base_uri "localhost:8080"
+        def initialize(u,p)
+            @user=u
+            @pass=p
+        end
+        def post(uri,options)
+            options[:query][:l]=@user
+            options[:query][:p]=@pass
+            self.class.post(uri,options)
+        end
+        def get(uri,options)
+            options[:query][:l]=@user
+            options[:query][:p]=@pass
+            self.class.get(uri,options)
+        end
+        def put(uri,options)
+            options[:query][:l]=@user
+            options[:query][:p]=@pass
+            self.class.put(uri,options)
+        end
+        def delete(uri,options)
+            options[:query][:l]=@user
+            options[:query][:p]=@pass
+            self.class.delete(uri,options)
+        end
+    end
 
     task :all do
+        Rake.application.invoke_task("test:history")
         Rake.application.invoke_task("test:measures")
         Rake.application.invoke_task("test:mobiles")
     end
@@ -17,6 +45,24 @@ namespace "test" do
             puts content
         else
             puts "Passed"
+        end
+    end
+
+    task :history do
+        local=Local.new('adm','adm')
+        [60,300,1800].each do |t|
+            main_uri="/users/#{user}"
+            main_uri<<="/sensors/#{user}_1"
+            main_uri<<="/historys/#{user}_#{t}/hmeasures.json"
+            target_uri=main_uri
+            local.get( target_uri, :query => {} )
+        end
+        main_uri="/users/#{user}"
+        main_uri<<="/sensors/#{user}_1"
+        main_uri<<="/measures.json"
+        (1..10000).each do |n|
+            local.post(main_uri, :query => {:consumption => (rand*2000).to_i})
+            sleep 3
         end
     end
 
