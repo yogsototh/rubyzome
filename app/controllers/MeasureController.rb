@@ -86,7 +86,7 @@ class MeasureController < Rubyzome::RestController
         from = last_history_date
         if sub_intervals.length == 0
             # Use Measures directly
-            puts "Active update (measure) for #{h.name}"
+            puts "Active update (measure) for #{h.name}: from: #{from} to: #{to}"
             measures = Measure.all({:sensor => sensor, 
                                    :date.gt => from, 
                                    :date.lt => to, 
@@ -103,15 +103,16 @@ class MeasureController < Rubyzome::RestController
                                    :limit => @fetch_limit})
         end
         sum=0
-        last_date=nil
         last_time=last_history_time
+        complete_duration=0
         measures.each do |m|
             new_time = Time.parse( m[:date].to_s )
             duration = new_time - last_time
+            complete_duration+=duration
             last_time = new_time
             sum+=m[:consumption]*duration
         end
-        sum /= interval
+        sum /= complete_duration
         measure=HMeasure.new({
             :date => to, 
             :consumption => sum})
