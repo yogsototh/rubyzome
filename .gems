@@ -9,3 +9,4 @@ rack
 rack-rewrite
 twitter --version 0.9.12
 koala
+newrelic_rpm

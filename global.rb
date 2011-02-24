@@ -14,3 +14,8 @@ $db_url = case ENV['GPENV']
 	when "Y" then "" # TODO
 	else ENV['DATABASE_URL'] || %{sqlite3://#{Dir.pwd}/datas.db}
 end
+
+# configure the newrelic heroku addons
+case ENV['GPENV']
+    when "PRODUCTION" then require 'newrelic_rpm'
+end
