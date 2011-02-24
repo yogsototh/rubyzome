@@ -68,7 +68,7 @@ class MeasureController < Rubyzome::RestController
             measure = Measure.new( new_measure_values )
             measure.sensor = sensor
             measure.save
-            update_history(sensor,measure)
+            update_histories(sensor,measure)
         rescue Exception => e
             puts e.backtrace.join("\n")
             raise Rubyzome::Error, "Cannot create new measure: #{e.message}"
@@ -77,13 +77,60 @@ class MeasureController < Rubyzome::RestController
         clean_id(measure.attributes)
     end
 
-    def update_history(sensor,last_measure)
+    def update_history(h, last_history_by_interval, interval, sensor)
+        puts "update_history(#{h.name}, #{last_history_by_interval}, #{interval})"
+        sub_intervals=last_history_by_interval.keys.select { |i| i < h.interval }
+        n=Time.now
+        last_history_time = n - interval - n.to_i%interval
+        last_history_date = last_history_time.to_datetime
+        to   = ( n - n.to_i % interval ).to_datetime
+        from = last_history_date
+        if sub_intervals.length == 0
+            # Use Measures directly
+            puts "Active update (measure) for #{h.name}"
+            measures = Measure.all({:sensor => sensor, 
+                                   :date.gt => from, 
+                                   :date.lt => to, 
+                                   :limit => @fetch_limit})
+        else
+            # Use Best Sub-History
+            subhistory=last_history_by_interval[sub_intervals.max]
+
+            # Use Measures directly
+            puts "Active update (subhistory #{subhistory.name}) for #{h.name}"
+            measures = HMeasure.all({:history => subhistory, 
+                                   :date.gt => from, 
+                                   :date.lt => to, 
+                                   :limit => @fetch_limit})
+        end
+        sum=0
+        last_date=nil
+        last_time=last_history_time
+        measures.each do |m|
+            new_time = Time.parse( m[:date].to_s )
+            duration = new_time - last_time
+            last_time = new_time
+            sum+=m[:consumption]*duration
+        end
+        sum /= interval
+        measure=HMeasure.new({
+            :date => to, 
+            :consumption => sum})
+        measure.history = h
+        measure.save
+    end
+
+    def update_histories(sensor,last_measure)
         @fetch_limit=200
         last_measure_date = last_measure[:date]
         last_measure_time=Time.parse( last_measure_date.to_s )
+        history_by_interval={}
         sensor.history.each do |h|
+            history_by_interval[h.interval] = h
+        end
+        history_by_interval.keys.sort.each do |interval|
+            h   = history_by_interval[interval]
             hml = h.measure.last
-            interval  = h.interval
             if hml.nil?
                 last_history_date = DateTime.parse("01/01/1970")
             else
@@ -92,31 +139,7 @@ class MeasureController < Rubyzome::RestController
             last_history_time = Time.parse( last_history_date.to_s )
             puts "#{interval - last_measure_time.to_i + last_history_time.to_i} sec before update history"
             if last_measure_time - last_history_time  > interval
-                n=Time.now
-                last_history_time = n - interval - n.to_i%interval
-                last_history_date = last_history_time.to_datetime
-                puts "Active update for #{h.name}"
-                to   = ( n - n.to_i % interval ).to_datetime
-                from = last_history_date
-                measures = Measure.all({:sensor => sensor, 
-                                       :date.gt => from, 
-                                       :date.lt => to, 
-                                       :limit => @fetch_limit})
-                sum=0
-                last_date=nil
-                last_time=last_history_time
-                measures.each do |m|
-                    new_time = Time.parse( m[:date].to_s )
-                    duration = new_time - last_time
-                    last_time = new_time
-                    sum+=m[:consumption]*duration
-                end
-                sum /= interval
-                measure=HMeasure.new({
-                            :date => to, 
-                            :consumption => sum})
-                measure.history = h
-                measure.save
+                update_history(h, history_by_interval, interval, sensor)
             end
         end
     end
