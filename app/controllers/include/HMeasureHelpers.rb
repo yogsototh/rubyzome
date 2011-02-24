@@ -33,33 +33,10 @@ module HMeasureHelpers
         ms = HMeasure.all({ :history => history,
                             :date.gt => from,
                             :date.lt => to,
+                            :sort => :date.asc,
                             :limit => @fetch_limit})
 
-        hmeasures=[]
-        next_step=from + iint
-        sum=0
-        nb=0
-        ms.each do |m|
-            # puts %{#{m.consumption}\t#{next_step}\t#{m.date}\t#{sum}}
-            t=Time.parse( m.date.to_s)
-            if t < next_step
-                sum+=m.consumption
-                nb+=1
-            else
-                if nb>0
-                    hmeasures <<= HMeasure.new({:date => next_step, :consumption => sum/nb})
-                end
-                next_step += iint
-                while t > next_step
-                    hmeasures <<= HMeasure.new({:date => next_step, :consumption => -1})
-                    next_step += iint
-                end
-                sum=m.consumption
-                nb=1
-            end
-        end
-
-        encapsulate(hmeasures, iint)
+        encapsulate(ms.values, iint)
     end
 
 end
