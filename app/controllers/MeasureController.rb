@@ -78,7 +78,6 @@ class MeasureController < Rubyzome::RestController
     end
 
     def update_history(h, last_history_by_interval, interval, sensor)
-        puts "update_history(#{h.name}, #{last_history_by_interval}, #{interval})"
         sub_intervals=last_history_by_interval.keys.select { |i| i < h.interval }
         n=Time.now
         last_history_time = n - interval - n.to_i%interval
@@ -137,7 +136,7 @@ class MeasureController < Rubyzome::RestController
                 last_history_date = hml.date
             end
             last_history_time = Time.parse( last_history_date.to_s )
-            puts "#{interval - last_measure_time.to_i + last_history_time.to_i} sec before update history"
+            # puts "#{interval - last_measure_time.to_i + last_history_time.to_i} sec before update history"
             if last_measure_time - last_history_time  > interval
                 update_history(h, history_by_interval, interval, sensor)
             end
